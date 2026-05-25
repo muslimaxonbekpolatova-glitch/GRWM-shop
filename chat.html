@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GRWM — Direct & Orders</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #000000;
+      color: #ffffff;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* CHAT MAIN HEADER */
+    .chat-header {
+      padding: 24px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .chat-title {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    /* BUYURTMA IKONKASI VA BILDIRISHNOMA */
+    .order-trigger-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .order-icon {
+      font-size: 24px;
+      transition: color 0.3s;
+      color: rgba(255, 255, 255, 0.4); /* Standart holat */
+    }
+
+    /* Buyurtma kelganda qizil rangga kirish */
+    .order-trigger-box.has-order .order-icon {
+      color: #ff3b30;
+      animation: pulse 1.5s infinite;
+    }
+
+    .order-count-text {
+      font-size: 9px;
+      color: rgba(255, 255, 255, 0.4);
+      margin-top: 2px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .order-trigger-box.has-order .order-count-text {
+      color: #ff3b30;
+      font-weight: 600;
+    }
+
+    /* FULL WIDTH INBOX LIST */
+    .inbox-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px 20px;
+      width: 100%;
+    }
+
+    .chat-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .user-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #111;
+    }
+
+    .chat-info {
+      flex: 1;
+    }
+
+    .chat-user {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    .chat-preview {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    /* FULL SCREEN ACTIVE CHAT ROOM */
+    .active-chat-room {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: calc(100vh - 65px);
+      background: #000000;
+      z-index: 1500;
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.2s cubic-bezier(0.1, 0.9, 0.2, 1);
+    }
+
+    .active-chat-room.open {
+      transform: translateX(0);
+    }
+
+    .room-header {
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .back-btn {
+      background: none;
+      border: none;
+      color: #ffffff;
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .messages-display {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* MESSAGE BUBBLES */
+    .msg {
+      max-width: 75%;
+      padding: 12px 16px;
+      font-size: 13px;
+      line-height: 1.4;
+      border-radius: 18px;
+    }
+
+    .msg.incoming {
+      background: #121212;
+      color: #ffffff;
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+    }
+
+    .msg.outgoing {
+      background: #ffffff;
+      color: #000000;
+      align-self: flex-end;
+      border-bottom-right-radius: 4px;
+    }
+
+    /* CHAT ICHIDAGI AVTOMATIK BUYURTMA VIDEOSI VA DETALLARI KARTASI */
+    .order-media-card {
+      align-self: flex-start;
+      background: #111111;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      gap: 12px;
+      width: 100%;
+      max-width: 280px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .order-video-preview {
+      width: 65px;
+      height: 85px;
+      object-fit: cover;
+      border-radius: 6px;
+      background: #222;
+    }
+
+    .order-info-text {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .status-badge {
+      font-size: 8px;
+      background: #ff3b30;
+      color: #fff;
+      padding: 2px 6px;
+      font-weight: 700;
+      text-transform: uppercase;
+      align-self: flex-start;
+      margin-bottom: 6px;
+      letter-spacing: 0.5px;
+    }
+
+    .order-p-title { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+    .order-p-meta { font-size: 11px; color: rgba(255,255,255,0.5); line-height: 1.3; }
+
+    /* INPUT ROW */
+    .input-row {
+      padding: 16px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      background: #000000;
+    }
+
+    .chat-input {
+      flex: 1;
+      background: #121212;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 12px 18px;
+      color: #ffffff;
+      border-radius: 24px;
+      font-size: 13px;
+      outline: none;
+    }
+
+    .send-btn {
+      background: none;
+      border: none;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    /* INSTAGRAM BOTTOM BAR */
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 65px;
+      background: #000000;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 1000;
+    }
+    .nav-btn { background: none; border: none; color: rgba(255, 255, 255, 0.4); font-size: 24px; cursor: pointer; }
+    .nav-btn.active { color: #ffffff; }
+
+    @keyframes pulse {
+      0% { opacity: 0.7; }
+      50% { opacity: 1; }
+      100% { opacity: 0.7; }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- MESSAGES HEADER -->
+  <div class="chat-header">
+    <div class="chat-title">Xabarlar</div>
+    
+    <!-- BUYURTMA BERILGANDA QIZIL RANGGA KIRUVCHI VA SONINI KO'RSATUVCHI IKONKA BOX -->
+    <div class="order-trigger-box has-order" id="orderBox" onclick="triggerOrderFlow()">
+      <span class="order-icon">🛍️</span>
+      <span class="order-count-text" id="orderCountLabel">1 Buyurtma</span>
+    </div>
+  </div>
+
+  <!-- FULL WIDTH INBOX RO'YXATI -->
+  <div class="inbox-list">
+    <div class="chat-item" onclick="openChatRoom('monochrome.uz', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100')">
+      <img class="user-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100">
+      <div class="chat-info">
+        <div class="chat-user"><span>monochrome.uz</span> <span style="font-size:10px; color:rgba(255,255,255,0.3)">Hozir</span></div>
+        <div class="chat-preview" id="lastMsgPreview">Suhbatni boshlash uchun bosing</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FULL SCREEN CHAT ROOM -->
+  <div class="active-chat-room" id="chatRoom">
+    <div class="room-header">
+      <button class="back-btn" onclick="closeChatRoom()">←</button>
+      <img class="user-avatar" id="roomAvatar" src="" style="width:32px; height:32px;">
+      <span class="chat-user" id="roomUsername" style="margin:0;"></span>
+    </div>
+
+    <!-- CHAT DISPLAY -->
+    <div class="messages-display" id="msgDisplay">
+      <!-- Avtomatlashtirilgan xabarlar shu yerga tushadi -->
+    </div>
+
+    <!-- INPUT ROW -->
+    <div class="input-row">
+      <input type="text" class="chat-input" id="chatInput" placeholder="Xabar yozing...">
+      <button class="send-btn" onclick="sellerReply()">Yuborish</button>
+    </div>
+  </div>
+
+  <!-- FIXED BOTTOM BAR -->
+  <div class="bottom-bar">
+    <button class="nav-btn" onclick="location.href='home.html'">🏠</button>
+    <button class="nav-btn" onclick="location.href='reels.html'">🎬</button>
+    <button class="nav-btn" onclick="location.href='upload.html'">➕</button>
+    <button class="nav-btn active" onclick="location.href='chat.html'">💬</button>
+    <button class="nav-btn" onclick="location.href='profile.html'">👤</button>
+  </div>
+
+  <script>
+    let isOrderLoaded = false;
+
+    function openChatRoom(username, avatar) {
+      document.getElementById('roomUsername').textContent = username;
+      document.getElementById('roomAvatar').src = avatar;
+      document.getElementById('chatRoom').classList.add('open');
+    }
+
+    function closeChatRoom() {
+      document.getElementById('chatRoom').classList.remove('open');
+    }
+
+    /* 1. IKONKAGA TEGILGANDA BUYURTMA VIDEOSI VA MA'LUMOTLARINI CHATGA TUSHIRISH */
+    function triggerOrderFlow() {
+      // Chat oynasini ochish
+      openChatRoom('monochrome.uz', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100');
+      
+      const display = document.getElementById('msgDisplay');
+      
+      if (!isOrderLoaded) {
+        display.innerHTML = ''; // Tozalash
+
+        // Avtomat karta yaratish (Video + O'lcham + Rang)
+        const orderCard = document.createElement('div');
+        orderCard.className = 'order-media-card';
+        orderCard.innerHTML = `
+          <video class="order-video-preview" autoplay loop muted playsinline src="https://commondatastorage.googleapis.com/gtv-videos-library/sample/BigBuckBunny.mp4"></video>
+          <div class="order-info-text">
+            <span class="status-badge">Yangi Buyurtma</span>
+            <div class="order-p-title">Premium Minimal Hoodie</div>
+            <div class="order-p-meta">O'lcham: <b>XL</b><br>Rang: <b>Grafit</b></div>
+          </div>
+        `;
+        display.appendChild(orderCard);
+        
+        // Buyurtma o'qilgani uchun qizil bildirishnomaning sonini o'chirish
+        const ob = document.getElementById('orderBox');
+        ob.classList.remove('has-order');
+        document.getElementById('orderCountLabel').textContent = '0 Buyurtma';
+        document.getElementById('orderCountLabel').style.color = 'rgba(255,255,255,0.2)';
+        
+        isOrderLoaded = true;
+      }
+    }
+
+    /* 2. SOTUVCHI JAVOB BERISHI BILAN AVTOMAT CHAT REJIMIGA O'TISH */
+    function sellerReply() {
+      const input = document.getElementById('chatInput');
+      const text = input.value.trim();
+      if(!text) return;
+
+      const display = document.getElementById('msgDisplay');
+      
+      // Sotuvchining xabarini (Outgoing) chiqarish
+      const msgBubble = document.createElement('div');
+      msgBubble.className = 'msg outgoing';
+      msgBubble.textContent = text;
+      display.appendChild(msgBubble);
+
+      // Preview oynasini yangilash
+      document.getElementById('lastMsgPreview').textContent = JSON.stringify(text).substring(1, 25) + '...';
+
+      input.value = '';
+      display.scrollTop = display.scrollHeight;
+
+      // Avtomat xaridor tomonidan 1 soniyadan keyin javob qaytarish (Simulyatsiya - chat rejimi jonlangani isboti)
+      setTimeout(() => {
+        const replyBubble = document.createElement('div');
+        replyBubble.className = 'msg incoming';
+        replyBubble.textContent = "Rahmat! To'lov qayerga qilinadi?";
+        display.appendChild(replyBubble);
+        display.scrollTop = display.scrollHeight;
+        document.getElementById('lastMsgPreview').textContent = "Rahmat! To'lov qayerga...";
+      }, 1200);
+    }
+  </script>
+</body>
+      </html>
