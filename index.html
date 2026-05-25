@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GRWM — Kirish</title>
+  <title>GRWM — Welcome</title>
   <style>
     * {
       margin: 0;
@@ -17,325 +17,111 @@
       background: #000000;
       color: #ffffff;
       display: flex;
-      align-items: center;
+      flex-direction: column;
       justify-content: center;
-      min-height: 100vh;
-      padding: 24px;
+      align-items: center;
+      height: 100vh;
+      padding: 20px;
+      overflow: hidden;
     }
 
-    .auth-container {
+    .login-container {
       width: 100%;
-      max-width: 380px;
+      max-width: 320px;
+      text-align: center;
       display: flex;
       flex-direction: column;
+      gap: 30px;
     }
 
-    .brand-logo {
-      font-size: 36px;
-      font-weight: 700;
+    .brand-title {
+      font-size: 28px;
+      font-weight: 800;
       letter-spacing: 4px;
-      text-align: center;
-      margin-bottom: 40px;
       text-transform: uppercase;
     }
 
-    .auth-card {
-      display: none;
-      flex-direction: column;
-    }
-
-    .auth-card.active {
+    .form-group {
       display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
 
-    h2 {
-      font-size: 16px;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 20px;
-      color: rgba(255, 255, 255, 0.6);
-      text-align: center;
-    }
-
-    .input-group {
-      margin-bottom: 16px;
-    }
-
-    input[type="text"], input[type="email"], input[type="tel"] {
+    .input-field {
       width: 100%;
-      padding: 16px;
       background: #111111;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 16px;
       color: #ffffff;
       font-size: 14px;
+      border-radius: 8px;
       outline: none;
       transition: border-color 0.2s;
     }
 
-    input:focus {
-      border-color: rgba(255, 255, 255, 0.5);
+    .input-field:focus {
+      border-color: rgba(255, 255, 255, 0.3);
     }
 
-    .btn-minimal {
+    .submit-btn {
       width: 100%;
-      padding: 16px;
       background: #ffffff;
       color: #000000;
       border: none;
-      font-size: 14px;
-      font-weight: 600;
+      padding: 16px;
+      font-size: 13px;
+      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 1px;
+      border-radius: 8px;
       cursor: pointer;
       margin-top: 10px;
-      transition: opacity 0.2s;
+      transition: background 0.2s;
     }
 
-    .btn-minimal:active {
-      opacity: 0.8;
+    .submit-btn:active {
+      background: rgba(255, 255, 255, 0.8);
     }
 
-    .btn-secondary {
-      background: transparent;
-      color: rgba(255, 255, 255, 0.5);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      margin-top: 12px;
+    .footer-note {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.3);
+      letter-spacing: 0.5px;
     }
-
-    .method-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-
-    .avatar-label {
-      display: block;
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      border: 1px dashed rgba(255, 255, 255, 0.3);
-      margin: 0 auto 20px auto;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      color: rgba(255,255,255,0.4);
-      cursor: pointer;
-      overflow: hidden;
-      background: #111111;
-    }
-
-    .avatar-label img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .status-msg {
-      font-size: 13px;
-      padding: 12px;
-      margin-bottom: 16px;
-      text-align: center;
-      display: none;
-    }
-    .status-msg.error { background: rgba(255,0,0,0.1); color: #ff5555; display: block; }
-    .status-msg.success { background: rgba(0,255,0,0.1); color: #55ff55; display: block; }
   </style>
 </head>
 <body>
 
-  <div class="auth-container">
-    <div class="brand-logo">GRWM</div>
-    <div class="status-msg" id="statusMsg"></div>
+  <div class="login-container">
+    <!-- BREND NOMI -->
+    <h1 class="brand-title">GRWM</h1>
 
-    <!-- 1-BOSQICH -->
-    <div class="auth-card active" id="step1">
-      <h2>Ilovaga kirish</h2>
-      <div class="method-grid">
-        <button class="btn-minimal" onclick="chooseMethod('phone')">Telefon</button>
-        <button class="btn-minimal" onclick="chooseMethod('email')">Email</button>
-      </div>
-    </div>
-
-    <!-- 2-BOSQICH -->
-    <div class="auth-card" id="step2">
-      <h2 id="step2Title">Ma'lumotni kiriting</h2>
-      <div class="input-group" id="phoneInputGroup" style="display: none;">
-        <input type="tel" id="userPhone" placeholder="+998 90 123 45 67">
-      </div>
-      <div class="input-group" id="emailInputGroup" style="display: none;">
-        <input type="email" id="userEmail" placeholder="example@mail.com">
-      </div>
-      <button class="btn-minimal" onclick="sendVerificationCode()">Kod yuborish</button>
-      <button class="btn-minimal btn-secondary" onclick="goBack(1)">Orqaga</button>
-    </div>
-
-    <!-- 3-BOSQICH -->
-    <div class="auth-card" id="step3">
-      <h2>Tasdiqlash kodi</h2>
-      <div class="input-group">
-        <input type="text" id="verifyCode" placeholder="0000" maxlength="4" style="text-align: center; letter-spacing: 8px; font-size: 18px;">
-      </div>
-      <button class="btn-minimal" onclick="checkVerificationCode()">Tasdiqlash</button>
-      <button class="btn-minimal btn-secondary" onclick="goBack(2)">Orqaga</button>
-    </div>
-
-    <!-- 4-BOSQICH -->
-    <div class="auth-card" id="step4">
-      <h2>Profil yaratish</h2>
+    <!-- LOGIN FORMASI -->
+    <div class="form-group">
+      <input type="text" class="input-field" placeholder="Telefon raqam yoki Email" id="userInput">
+      <input type="password" class="input-field" placeholder="Parol" id="passInput">
       
-      <label class="avatar-label" for="avatarFile">
-        <span id="avatarPlaceholder">Rasm yuklash</span>
-        <img id="avatarPreview" style="display: none;">
-      </label>
-      <input type="file" id="avatarFile" accept="image/*" style="display: none;" onchange="previewImage(this)">
-
-      <div class="input-group">
-        <input type="text" id="fullName" placeholder="Ism va Familiya">
-      </div>
-      <div class="input-group">
-        <input type="text" id="username" placeholder="Akkaunt nomi (username)" oninput="cleanUsername(this)">
-      </div>
-      <button class="btn-minimal" id="submitRegBtn" onclick="completeRegistration()">Ilovaga kirish</button>
+      <!-- BOSILGANDA HOME.HTML GA O'TAYDIGAN TUGMA -->
+      <button class="submit-btn" onclick="handleLogin()">Kirish</button>
     </div>
 
+    <div class="footer-note">Premium Minimalist Store v1.0</div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    const SUPABASE_URL = 'https://wdoytdiugkhlniysdfri.supabase.co';
-    const SUPABASE_KEY = 'sb_publishable_qZHLHaUhp3dqBrj58ZtZWw_61gzjskd';
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    function handleLogin() {
+      const user = document.getElementById('userInput').value;
+      const pass = document.getElementById('passInput').value;
 
-    let authMethod = ''; 
-    let currentUserData = {};
-    let base64Avatar = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'; // Standart rasm
-
-    function showMsg(text, type='error') {
-      const msg = document.getElementById('statusMsg');
-      msg.textContent = text;
-      msg.className = `status-msg ${type}`;
-    }
-
-    function switchStep(stepNum) {
-      document.querySelectorAll('.auth-card').forEach(card => card.classList.remove('active'));
-      document.getElementById(`step${stepNum}`).classList.add('active');
-      showMsg('');
-    }
-
-    function goBack(stepNum) {
-      switchStep(stepNum);
-    }
-
-    function chooseMethod(method) {
-      authMethod = method;
-      document.getElementById('step2Title').textContent = method === 'phone' ? 'Telefon raqamingiz' : 'Elektron pochtangiz';
-      document.getElementById('phoneInputGroup').style.display = method === 'phone' ? 'block' : 'none';
-      document.getElementById('emailInputGroup').style.display = method === 'email' ? 'block' : 'none';
-      switchStep(2);
-    }
-
-    function sendVerificationCode() {
-      const phone = document.getElementById('userPhone').value.trim();
-      const email = document.getElementById('userEmail').value.trim();
-
-      if (authMethod === 'phone' && !phone) return showMsg('Telefon raqamni kiriting');
-      if (authMethod === 'email' && !email) return showMsg('Emailni kiriting');
-
-      currentUserData.loginValue = authMethod === 'phone' ? phone : email;
-      
-      alert("Sizning kirish kodingiz: 7777"); 
-      switchStep(3);
-    }
-
-    function checkVerificationCode() {
-      const code = document.getElementById('verifyCode').value.trim();
-      if (code === '7777') {
-        switchStep(4);
+      // Oddiy tekshiruv (bo'sh bo'lmasa bas, silliq o'tib ketadi)
+      if(user.trim() !== "" && pass.trim() !== "") {
+        // Muvaffaqiyatli bo'lsa Bosh sahifaga yo'naltirish
+        location.href = 'home.html';
       } else {
-        showMsg('Kod noto‘g‘ri. Qayta urinib ko‘ring.');
-      }
-    }
-
-    function cleanUsername(input) {
-      input.value = input.value.toLowerCase().replace(/[^a-z0-9_.]/g, '');
-    }
-
-    function previewImage(input) {
-      if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          document.getElementById('avatarPlaceholder').style.display = 'none';
-          const img = document.getElementById('avatarPreview');
-          img.src = e.target.result;
-          img.style.display = 'block';
-          base64Avatar = e.target.result; // Tanlangan rasm saqlanadi
-        }
-        reader.readAsDataURL(input.files[0]);
-      }
-    }
-
-    async function completeRegistration() {
-      const fullName = document.getElementById('fullName').value.trim();
-      const username = document.getElementById('username').value.trim();
-      const submitBtn = document.getElementById('submitRegBtn');
-
-      if (!fullName || !username) {
-        return showMsg('Iltimos, barcha maydonlarni to‘ldiring.');
-      }
-
-      if (username.length < 4) {
-        return showMsg('Username kamida 4 ta belgidan iborat bo‘lik kerak.');
-      }
-
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Tekshirilmoqda...';
-
-      try {
-        // Username bor-yo'qligini tekshirish
-        const { data: existingUser, error: checkError } = await supabase
-          .from('profiles')
-          .select('username')
-          .eq('username', username)
-          .maybeSingle();
-
-        if (checkError) throw checkError;
-
-        if (existingUser) {
-          submitBtn.disabled = false;
-          submitBtn.textContent = 'Ilovaga kirish';
-          return showMsg('Bu akkaunt nomi band. Boshqa nom tanlang!');
-        }
-
-        // Yangi profilni bazaga yozish
-        const { error: insertError } = await supabase
-          .from('profiles')
-          .insert([{
-            username: username,
-            full_name: fullName,
-            auth_method: authMethod,
-            login_identity: currentUserData.loginValue,
-            avatar_url: base64Avatar
-          }]);
-
-        if (insertError) throw insertError;
-
-        showMsg('Muvaffaqiyatli ro‘yxatdan o‘tdingiz!', 'success');
-        localStorage.setItem('grwm_username', username);
-
-        setTimeout(() => {
-          window.location.href = 'home.html';
-        }, 1500);
-
-      } catch (err) {
-        console.error(err);
-        showMsg('Xatolik yuz berdi. Qayta urinib ko‘ring.');
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Ilovaga kirish';
+        alert("Iltimos, maydonlarni to'ldiring! (Xohlagan login va parolni yozishingiz mumkin)");
       }
     }
   </script>
+
 </body>
-      </html>
+</html>
