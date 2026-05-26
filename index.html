@@ -3,125 +3,103 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GRWM — Welcome</title>
+  <title>GRWM — Auth Flow</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: #000000;
-      color: #ffffff;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      padding: 20px;
-      overflow: hidden;
+      background: #000000; color: #ffffff;
+      display: flex; justify-content: center; align-items: center;
+      height: 100vh; padding: 20px; overflow: hidden;
     }
-
-    .login-container {
-      width: 100%;
-      max-width: 320px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      gap: 30px;
+    .auth-container { width: 100%; max-width: 320px; text-align: center; }
+    .brand-title { font-size: 26px; font-weight: 800; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 30px; }
+    .step-box { display: none; flex-direction: column; gap: 14px; }
+    .step-box.active { display: flex; }
+    .step-title { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.4); margin-bottom: 5px; }
+    .minimal-input {
+      width: 100%; background: #111111; border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 16px; color: #ffffff; font-size: 14px; border-radius: 8px; outline: none;
     }
-
-    .brand-title {
-      font-size: 28px;
-      font-weight: 800;
-      letter-spacing: 4px;
-      text-transform: uppercase;
+    .minimal-input:focus { border-color: rgba(255, 255, 255, 0.3); }
+    .action-btn {
+      width: 100%; background: #ffffff; color: #000000; border: none; padding: 16px;
+      font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+      border-radius: 8px; cursor: pointer; margin-top: 8px;
     }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
+    /* Avatar style */
+    .avatar-picker {
+      width: 100px; height: 100px; border-radius: 50%; border: 1px dashed rgba(255,255,255,0.3);
+      margin: 10px auto; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; position: relative; overflow: hidden; background: #0b0b0b;
     }
-
-    .input-field {
-      width: 100%;
-      background: #111111;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      padding: 16px;
-      color: #ffffff;
-      font-size: 14px;
-      border-radius: 8px;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    .input-field:focus {
-      border-color: rgba(255, 255, 255, 0.3);
-    }
-
-    .submit-btn {
-      width: 100%;
-      background: #ffffff;
-      color: #000000;
-      border: none;
-      padding: 16px;
-      font-size: 13px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-top: 10px;
-      transition: background 0.2s;
-    }
-
-    .submit-btn:active {
-      background: rgba(255, 255, 255, 0.8);
-    }
-
-    .footer-note {
-      font-size: 11px;
-      color: rgba(255, 255, 255, 0.3);
-      letter-spacing: 0.5px;
-    }
+    .avatar-img { position: absolute; width: 100%; height: 100%; object-fit: cover; }
   </style>
 </head>
 <body>
 
-  <div class="login-container">
-    <!-- BREND NOMI -->
+  <div class="auth-container">
     <h1 class="brand-title">GRWM</h1>
 
-    <!-- LOGIN FORMASI -->
-    <div class="form-group">
-      <input type="text" class="input-field" placeholder="Telefon raqam yoki Email" id="userInput">
-      <input type="password" class="input-field" placeholder="Parol" id="passInput">
-      
-      <!-- BOSILGANDA HOME.HTML GA O'TAYDIGAN TUGMA -->
-      <button class="submit-btn" onclick="handleLogin()">Kirish</button>
+    <!-- BOSQICH 1: EMAIL / TEL -->
+    <div class="step-box active" id="authStep1">
+      <div class="step-title">1-Bosqich: Kirish</div>
+      <input type="text" class="minimal-input" placeholder="Telefon raqam yoki Email" id="loginInput">
+      <input type="password" class="minimal-input" placeholder="Parol" id="passwordInput">
+      <button class="action-btn" onclick="toStep2()">Kod yuborish</button>
     </div>
 
-    <div class="footer-note">Premium Minimalist Store v1.0</div>
+    <!-- BOSQICH 2: VERIFICATION CODE -->
+    <div class="step-box" id="authStep2">
+      <div class="step-title">2-Bosqich: Tasdiqlash</div>
+      <p style="font-size: 13px; color: rgba(255,255,255,0.6);">Sizga 4 xonali tasdiqlash kodi yuborildi.</p>
+      <input type="text" class="minimal-input" placeholder="0 0 0 0" id="codeInput" maxlength="4" style="text-align: center; letter-spacing: 8px; font-size: 18px;">
+      <button class="action-btn" onclick="toStep3()">Tasdiqlash</button>
+    </div>
+
+    <!-- BOSQICH 3: PROFILE DETALS -->
+    <div class="step-box" id="authStep3">
+      <div class="step-title">3-Bosqich: Shaxsiy ma'lumotlar</div>
+      <div class="avatar-picker" onclick="document.getElementById('avatarFile').click()">
+        <span id="avatarPrompt" style="font-size: 24px;">👤</span>
+        <input type="file" id="avatarFile" accept="image/*" style="display:none;" onchange="previewAvatar(event)">
+        <div id="avatarView"></div>
+      </div>
+      <input type="text" class="minimal-input" placeholder="Ism" id="firstName">
+      <input type="text" class="minimal-input" placeholder="Familiya" id="lastName">
+      <button class="action-btn" onclick="finishRegistration()">Tayyor</button>
+    </div>
   </div>
 
   <script>
-    function handleLogin() {
-      const user = document.getElementById('userInput').value;
-      const pass = document.getElementById('passInput').value;
+    function toStep2() {
+      if(document.getElementById('loginInput').value.trim() !== "" && document.getElementById('passwordInput').value.trim() !== "") {
+        document.getElementById('authStep1').classList.remove('active');
+        document.getElementById('authStep2').classList.add('active');
+      } else { alert("Iltimos, maydonlarni to'ldiring."); }
+    }
 
-      // Oddiy tekshiruv (bo'sh bo'lmasa bas, silliq o'tib ketadi)
-      if(user.trim() !== "" && pass.trim() !== "") {
-        // Muvaffaqiyatli bo'lsa Bosh sahifaga yo'naltirish
-        location.href = 'home.html';
-      } else {
-        alert("Iltimos, maydonlarni to'ldiring! (Xohlagan login va parolni yozishingiz mumkin)");
+    function toStep3() {
+      if(document.getElementById('codeInput').value.length === 4) {
+        document.getElementById('authStep2').classList.remove('active');
+        document.getElementById('authStep3').classList.add('active');
+      } else { alert("Tasdiqlash kodini kiriting (ixtiyoriy 4 ta raqam)."); }
+    }
+
+    function previewAvatar(event) {
+      const file = event.target.files[0];
+      if(file) {
+        const url = URL.createObjectURL(file);
+        document.getElementById('avatarPrompt').style.display = 'none';
+        document.getElementById('avatarView').innerHTML = `<img src="${url}" class="avatar-img">`;
       }
     }
-  </script>
 
+    function finishRegistration() {
+      if(document.getElementById('firstName').value.trim() !== "" && document.getElementById('lastName').value.trim() !== "") {
+        location.href = 'home.html';
+      } else { alert("Ism va familiyangizni kiriting."); }
+    }
+  </script>
 </body>
 </html>
