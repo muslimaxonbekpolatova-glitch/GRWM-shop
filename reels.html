@@ -3,344 +3,111 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GRWM — Reels Premium</title>
+  <title>GRWM — Reels</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: #000000;
-      color: #ffffff;
-      overflow: hidden;
-      height: 100vh;
-    }
-
-    /* REELS CONTAINER */
-    .reels-container {
-      width: 100%;
-      height: calc(100vh - 65px);
-      position: relative;
-      background: #000000;
-    }
-
-    .video-wrapper {
-      width: 100%;
-      height: 100%;
-      position: relative;
-    }
-
-    video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    /* DOUBLE TAP HEART ANIMATION */
-    .like-heart-anim {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(0);
-      font-size: 80px;
-      color: #ff3b30;
-      opacity: 0;
-      pointer-events: none;
-      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      z-index: 5;
-    }
-    .like-heart-anim.animate {
-      animation: heartPop 0.7s ease-out;
-    }
-
-    /* O'NG TOMONDAGI SILLIQ INSTAGRAM IKONALARI (SAVATCHA BILAN) */
-    .reel-actions {
-      position: absolute;
-      right: 16px;
-      bottom: 90px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-      z-index: 10;
-    }
-
-    .action-btn {
-      background: none;
-      border: none;
-      color: #ffffff;
-      font-size: 24px;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2px;
-      transition: transform 0.1s;
-    }
-    .action-btn:active { transform: scale(0.9); }
-    .action-btn span {
-      font-size: 10px;
-      color: rgba(255,255,255,0.6);
-    }
-    .action-btn.active { color: #ff3b30; }
-    .action-btn.saved { color: #ffcc00; }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #000; color: #fff; overflow: hidden; height: 100vh; }
     
-    /* Maxsus savatcha ikonkasi */
-    .action-btn.buy-icon { color: #00fff0; text-shadow: 0 0 10px rgba(0,255,240,0.3); }
+    .reels-container { height: calc(100vh - 65px); scroll-snap-type: y mandatory; overflow-y: scroll; width: 100%; }
+    .reel-video-box { width: 100%; height: calc(100vh - 65px); scroll-snap-align: start; position: relative; background: #050505; display: flex; align-items: center; justify-content: center; }
+    
+    .mock-video { width: 100%; height: 100%; object-fit: cover; background: linear-gradient(180deg, #111, #222); display: flex; align-items: center; justify-content: center; font-size: 14px; color: rgba(255,255,255,0.4); }
 
-    /* CHAP TOMONDAGI SOTUVCHI MATNLARI */
-    .reel-info {
-      position: absolute;
-      left: 16px;
-      bottom: 90px;
-      right: 85px;
-      z-index: 10;
-      background: linear-gradient(transparent, rgba(0,0,0,0.4));
-      padding: 10px;
-      border-radius: 8px;
-    }
+    /* OVERLAY ACTION BUTTONS */
+    .right-controls { position: absolute; right: 16px; bottom: 100px; display: flex; flex-direction: column; gap: 20px; z-index: 10; align-items: center; }
+    .action-icn-btn { background: none; border: none; color: #fff; font-size: 28px; cursor: pointer; display: flex; flex-direction: column; align-items: center; font-weight: normal; }
+    .action-icn-btn span { font-size: 11px; margin-top: 4px; color: rgba(255,255,255,0.7); }
+    .action-icn-btn.liked { color: #ff3b30; font-weight: bold; } /* Layk bosilgandagi rang */
 
-    .seller-profile {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 8px;
-    }
+    .bottom-info { position: absolute; left: 16px; bottom: 30px; z-index: 10; max-width: 70%; }
+    .product-tag { background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); padding: 8px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; border: none; color: #fff; cursor: pointer; margin-top: 8px; }
 
-    .seller-avatar {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 1px solid rgba(255,255,255,0.2);
+    /* UZUM STYLE MULTI-STEP BUY PANEL */
+    .buy-panel {
+      position: fixed; bottom: 0; left: 0; width: 100%; background: #0b0b0b;
+      border-top: 1px solid rgba(255,255,255,0.1); border-radius: 20px 20px 0 0;
+      transform: translateY(100%); transition: transform 0.3s cubic-bezier(0, 0, 0.2, 1); z-index: 2000; padding: 24px 20px;
     }
+    .buy-panel.open { transform: translateY(0); }
+    .panel-step { display: none; flex-direction: column; gap: 16px; }
+    .panel-step.active { display: flex; }
+    .p-title { font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: rgba(255,255,255,0.5); }
+    
+    .grid-options { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 5px; }
+    .opt-chip { padding: 12px 20px; background: #161616; border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; font-size: 13px; cursor: pointer; }
+    .opt-chip.selected { background: #fff; color: #000; border-color: #fff; font-weight: 600; }
+    
+    .panel-next-btn { background: #fff; color: #000; border: none; width: 100%; padding: 16px; font-size: 12px; font-weight: 700; text-transform: uppercase; border-radius: 8px; cursor: pointer; margin-top: 10px; }
+    .confirm-row { display: flex; gap: 12px; margin-top: 10px; }
+    .c-btn { flex: 1; padding: 16px; border: none; font-size: 12px; font-weight: 700; text-transform: uppercase; border-radius: 8px; cursor: pointer; }
+    .c-btn.yes { background: #fff; color: #000; }
+    .c-btn.no { background: #161616; color: #fff; }
 
-    .seller-username {
-      font-size: 13px;
-      font-weight: 600;
-    }
-
-    .product-title {
-      font-size: 14px;
-      font-weight: 500;
-      margin-bottom: 2px;
-    }
-
-    .product-desc {
-      font-size: 12px;
-      color: rgba(255,255,255,0.7);
-      margin-bottom: 12px;
-    }
-
-    .buy-trigger-btn {
-      background: #ffffff;
-      color: #000000;
-      border: none;
-      padding: 10px 18px;
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      cursor: pointer;
-    }
-
-    /* UZUM MARKET FORMAT STEP SHEET */
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.6);
-      backdrop-filter: blur(15px);
-      -webkit-backdrop-filter: blur(15px);
-      display: none;
-      align-items: flex-end;
-      z-index: 2000;
-    }
-    .modal-overlay.active { display: flex; }
-
-    .uzum-modal {
-      width: 100%;
-      background: #111111;
-      border-top: 1px solid rgba(255,255,255,0.08);
-      border-radius: 16px 16px 0 0;
-      padding: 24px;
-      padding-bottom: 35px;
-    }
-
-    .modal-step { display: none; }
-    .modal-step.active { display: block; }
-
-    .step-title {
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      color: rgba(255,255,255,0.4);
-      margin-bottom: 16px;
-    }
-
-    .squares-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 24px;
-    }
-
-    .square-box {
-      min-width: 48px;
-      height: 48px;
-      padding: 0 12px;
-      border: 1px solid rgba(255,255,255,0.1);
-      background: transparent;
-      color: #ffffff;
-      font-size: 13px;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-    }
-    .square-box.selected {
-      background: #ffffff;
-      color: #000000;
-      border-color: #ffffff;
-    }
-
-    .next-btn {
-      width: 100%;
-      padding: 16px;
-      background: #ffffff;
-      color: #000000;
-      border: none;
-      font-weight: 700;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      cursor: pointer;
-    }
-    .next-btn:disabled { opacity: 0.2; }
-
-    .final-buy-btn {
-      width: 100%;
-      padding: 16px;
-      background: #ff3b30;
-      color: #ffffff;
-      border: none;
-      font-weight: 700;
-      font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      cursor: pointer;
-      margin-bottom: 8px;
-    }
-
-    .cancel-btn {
-      width: 100%;
-      padding: 10px;
-      background: transparent;
-      color: rgba(255,255,255,0.4);
-      border: none;
-      font-size: 12px;
-      text-transform: uppercase;
-      cursor: pointer;
-    }
-
-    /* INSTAGRAM BOTTOM NAVIGATION BAR */
-    .bottom-bar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 65px;
-      background: #000000;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      z-index: 1000;
-    }
+    /* BOTTOM BAR */
+    .bottom-bar { position: fixed; bottom: 0; left: 0; width: 100%; height: 65px; background: #000; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
     .nav-btn { background: none; border: none; color: rgba(255, 255, 255, 0.4); font-size: 24px; cursor: pointer; }
     .nav-btn.active { color: #ffffff; }
-
-    /* ANIMATIONS */
-    @keyframes heartPop {
-      0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
-      30% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
-      60% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-      100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
-    }
   </style>
 </head>
 <body>
 
   <div class="reels-container">
-    <div class="video-wrapper" id="videoWrapper">
-      <!-- Ekran o'rtasidagi yashirin yurakcha animatsiyasi -->
-      <div class="like-heart-anim" id="popHeart">❤️</div>
+    <!-- REEL POST 1 -->
+    <div class="reel-video-box">
+      <div class="mock-video">🎬 [Reels Video Space - Swipe Up]</div>
       
-      <video id="reelVideo" playsinline loop autoplay src="https://commondatastorage.googleapis.com/gtv-videos-library/sample/BigBuckBunny.mp4"></video>
-    </div>
-
-    <!-- SILLIQ INSTAGRAM IKONALARI (O'NG TOMON) -->
-    <div class="reel-actions">
-      <button class="action-btn" id="likeBtn" onclick="toggleLike()">🤍<span id="likeCount">412</span></button>
-      <button class="action-btn" onclick="alert('Izohlar bo\'limi yuklanmoqda...')">💬<span>18</span></button>
-      
-      <!-- SIZ AYTGAN SOTIB OLISH (SAVATCHA) IKONKASI -->
-      <button class="action-btn buy-icon" onclick="openUzumModal()">🛍️<span>Xarid</span></button>
-      
-      <button class="action-btn" onclick="location.href='chat.html'">✈️</button>
-      <button class="action-btn" id="saveBtn" onclick="toggleSave()">🔖</button>
-    </div>
-
-    <!-- METAMA'LUMOTLAR VA AKSIYA (CHAP TOMON) -->
-    <div class="reel-info">
-      <div class="seller-profile">
-        <img class="seller-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100">
-        <span class="seller-username">monochrome.uz</span>
+      <div class="right-controls">
+        <!-- LAYK TUGMASI (Bosganda almashadi) -->
+        <button class="action-icn-btn" onclick="toggleLike(this)">🤍 <span>1.2k</span></button>
+        <button class="action-icn-btn" onclick="location.href='chat.html'">💬 <span>42</span></button>
       </div>
-      <div class="product-title">Premium Minimal Hoodie</div>
-      <div class="product-desc">Kuz-qish mavsumi uchun maxsus oversize bichim.</div>
-      <button class="buy-trigger-btn" onclick="openUzumModal()">Sotib olish</button>
+
+      <div class="bottom-info">
+        <h3>@grwm_premium</h3>
+        <p>Oversize Minimalist Trench Coat</p>
+        <button class="product-tag" onclick="openBuyFlow()">🛍 Sotib olish — 450,000 so'm</button>
+      </div>
     </div>
   </div>
 
-  <!-- UZUM MARKET STEP SHEET -->
-  <div class="modal-overlay" id="uzumModal">
-    <div class="uzum-modal">
-      
-      <!-- STEP 1: RANG -->
-      <div class="modal-step active" id="stepRang">
-        <div class="step-title">1. Rang tanlang</div>
-        <div class="squares-grid" id="rangGrid"></div>
-        <button class="next-btn" id="toSizeBtn" disabled onclick="goToStep('Olcham')">Keyingi</button>
+  <!-- UZUM STYLE MULTI-STEP PANEL -->
+  <div class="buy-panel" id="uzumPanel">
+    
+    <!-- STEP 1: SIZE -->
+    <div class="panel-step active" id="pStep1">
+      <div class="p-title">O'lchamni tanlang (Size)</div>
+      <div class="grid-options">
+        <div class="opt-chip" onclick="selectChip(this)">S</div>
+        <div class="opt-chip selected" onclick="selectChip(this)">M</div>
+        <div class="opt-chip" onclick="selectChip(this)">L</div>
+        <div class="opt-chip" onclick="selectChip(this)">XL</div>
       </div>
-
-      <!-- STEP 2: RAZMER -->
-      <div class="modal-step" id="stepOlcham">
-        <div class="step-title">2. O'lcham tanlang</div>
-        <div class="squares-grid" id="olchamGrid"></div>
-        <button class="next-btn" id="toConfirmBtn" disabled onclick="goToStep('Tasdiqlash')">Keyingi</button>
-      </div>
-
-      <!-- STEP 3: TASDIQLASH VA SOTIB OLISH -->
-      <div class="modal-step" id="stepTasdiqlash">
-        <div class="step-title" style="text-align: center; margin-bottom: 20px;">Tanlovingiz tasdiqlandimi?</div>
-        
-        <!-- ASOSIY SOTIB OLISH TUGMASI -->
-        <button class="final-buy-btn" onclick="finalizeOrder()">Sotib olish</button>
-        <button class="cancel-btn" onclick="closeUzumModal()">Bekor qilish</button>
-      </div>
-
+      <button class="panel-next-btn" onclick="nextBuyStep(2)">Keyingi</button>
     </div>
+
+    <!-- STEP 2: COLOR -->
+    <div class="panel-step" id="pStep2">
+      <div class="p-title">Rangni tanlang (Color)</div>
+      <div class="grid-options">
+        <div class="opt-chip selected" onclick="selectChip(this)">Matt Black</div>
+        <div class="opt-chip" onclick="selectChip(this)">Graphite Grey</div>
+        <div class="opt-chip" onclick="selectChip(this)">Sand Beige</div>
+      </div>
+      <button class="panel-next-btn" onclick="nextBuyStep(3)">Keyingi</button>
+    </div>
+
+    <!-- STEP 3: CONFIRMATION -->
+    <div class="panel-step" id="pStep3">
+      <div class="p-title" style="text-align: center; margin-bottom: 5px;">Haqiqatan ham sotib olasizmi?</div>
+      <div class="confirm-row">
+        <button class="c-btn yes" onclick="confirmPurchase(true)">Ha</button>
+        <button class="c-btn no" onclick="confirmPurchase(false)">Yo'q</button>
+      </div>
+    </div>
+
   </div>
 
-  <!-- INSTAGRAM BOTTOM BAR -->
+  <!-- FIXED BOTTOM NAVIGATION BAR -->
   <div class="bottom-bar">
     <button class="nav-btn" onclick="location.href='home.html'">🏠</button>
     <button class="nav-btn active" onclick="location.href='reels.html'">🎬</button>
@@ -349,96 +116,42 @@
     <button class="nav-btn" onclick="location.href='profile.html'">👤</button>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    const SUPABASE_URL = 'https://wdoytdiugkhlniysdfri.supabase.co';
-    const SUPABASE_KEY = 'sb_publishable_qZHLHaUhp3dqBrj58ZtZWw_61gzjskd';
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-    let selectedRang = null;
-    let selectedOlcham = null;
-
-    const ranglar = ['Qora', 'Oq', 'Kulrang'];
-    const olchamlar = ['S', 'M', 'L', 'XL'];
-
-    /* LIKE LOGIKASI */
-    function toggleLike() {
-      const btn = document.getElementById('likeBtn');
-      btn.classList.toggle('active');
-      btn.innerHTML = btn.classList.contains('active') ? '❤️ <span>413</span>' : '🤍 <span>412</span>';
-    }
-
-    /* DOUBLE TAP JARYONI */
-    let lastTap = 0;
-    document.getElementById('videoWrapper').addEventListener('click', function (e) {
-      const now = new Date().getTime();
-      const timesince = now - lastTap;
-      if ((timesince < 300) && (timesince > 0)) {
-        // Ekrandagi yurakcha animatsiyasi
-        const heart = document.getElementById('popHeart');
-        heart.classList.add('animate');
-        setTimeout(() => heart.classList.remove('animate'), 700);
-
-        // Likeni faollashtirish
-        const btn = document.getElementById('likeBtn');
-        if(!btn.classList.contains('active')) { toggleLike(); }
+    // LAYK FUNKSIYASI
+    function toggleLike(btn) {
+      btn.classList.toggle('liked');
+      if(btn.classList.contains('liked')) {
+        btn.innerHTML = "❤️ <span>1,201</span>";
+      } else {
+        btn.innerHTML = "🤍 <span>1,200</span>";
       }
-      lastTap = now;
-    });
-
-    function toggleSave() {
-      document.getElementById('saveBtn').classList.toggle('saved');
     }
 
-    /* MODAL (BOSQICHMA-BOSQICH) */
-    function openUzumModal() {
-      document.getElementById('uzumModal').classList.add('active');
-      goToStep('Rang');
-      renderRanglar();
+    // XARID PANELINI OCHISH
+    function openBuyFlow() {
+      document.getElementById('uzumPanel').classList.add('open');
+      nextBuyStep(1); // Birinchi stepdan boshlash
     }
 
-    function closeUzumModal() {
-      document.getElementById('uzumModal').classList.remove('active');
-      selectedRang = null; selectedOlcham = null;
+    function selectChip(element) {
+      const parent = element.parentElement;
+      parent.querySelectorAll('.opt-chip').forEach(c => c.classList.remove('selected'));
+      element.classList.add('selected');
     }
 
-    function goToStep(step) {
-      document.querySelectorAll('.modal-step').forEach(s => s.classList.remove('active'));
-      if(step === 'Rang') document.getElementById('stepRang').classList.add('active');
-      if(step === 'Olcham') {
-        document.getElementById('stepOlcham').classList.add('active');
-        renderOlchamlar();
+    function nextBuyStep(stepNum) {
+      document.querySelectorAll('.panel-step').forEach(s => s.classList.remove('active'));
+      document.getElementById(`pStep${stepNum}`).classList.add('active');
+    }
+
+    function confirmPurchase(isYes) {
+      const panel = document.getElementById('uzumPanel');
+      panel.classList.remove('open'); // Panelni yopish
+
+      if(isYes) {
+        alert("Buyurtmangiz qabul qilindi! Xaridingiz haqida Chat bo'limiga xabar yuborildi.");
       }
-      if(step === 'Tasdiqlash') document.getElementById('stepTasdiqlash').classList.add('active');
-    }
-
-    function renderRanglar() {
-      const grid = document.getElementById('rangGrid');
-      grid.innerHTML = '';
-      ranglar.forEach(r => {
-        const box = document.createElement('button');
-        box.className = `square-box ${selectedRang === r ? 'selected' : ''}`;
-        box.textContent = r;
-        box.onclick = () => { selectedRang = r; renderRanglar(); document.getElementById('toSizeBtn').disabled = false; };
-        grid.appendChild(box);
-      });
-    }
-
-    function renderOlchamlar() {
-      const grid = document.getElementById('olchamGrid');
-      grid.innerHTML = '';
-      olchamlar.forEach(o => {
-        const box = document.createElement('button');
-        box.className = `square-box ${selectedOlcham === o ? 'selected' : ''}`;
-        box.textContent = o;
-        box.onclick = () => { selectedOlcham = o; renderOlchamlar(); document.getElementById('toConfirmBtn').disabled = false; };
-        grid.appendChild(box);
-      });
-    }
-
-    function finalizeOrder() {
-      alert(`Muvaffaqiyatli xarid qilindi!\nRang: ${selectedRang}\nO'lcham: ${selectedOlcham}`);
-      closeUzumModal();
+      // "Yo'q" bosilganda hech qanday xabarsiz to'g'ridan-to'g'ri videoga qaytadi
     }
   </script>
 </body>
