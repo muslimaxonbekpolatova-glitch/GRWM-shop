@@ -11,12 +11,10 @@
     .profile-header { padding: 20px; }
     .top-info { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
     .avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 1px solid #333; }
-    
     .stats { display: flex; gap: 20px; flex-grow: 1; justify-content: center; margin: 0 10px; }
     .stat { text-align: center; }
     .val { font-weight: bold; display: block; }
     .lbl { font-size: 11px; color: #888; text-transform: uppercase; }
-    
     .bio { margin-bottom: 15px; font-size: 14px; }
     .edit-btn { width: 100%; padding: 8px; background: #222; border: none; color: #fff; border-radius: 5px; cursor: pointer; }
 
@@ -26,12 +24,15 @@
 
     .nav { position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; padding: 15px; background: #000; border-top: 1px solid #333; z-index: 1000; cursor: pointer; }
     
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; padding: 20px; }
-    .modal-content { max-width: 400px; margin: 20px auto; }
-    input, textarea { width: 100%; padding: 12px; margin-bottom: 10px; background: #222; border: none; color: #fff; border-radius: 5px; }
+    .viewer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: none; z-index: 9999; overflow-y: scroll; scroll-snap-type: y mandatory; }
+    .slide { width: 100%; height: 100vh; scroll-snap-align: start; position: relative; display: flex; flex-direction: column; }
+    .slide img { flex: 1; width: 100%; object-fit: cover; }
+    .viewer-actions { height: 15%; display: flex; padding: 20px; gap: 25px; font-size: 28px; background: #000; align-items: center; }
+    .close-v { position: absolute; top: 20px; right: 20px; cursor: pointer; font-size: 30px; z-index: 10000; color: #fff; }
     
-    .viewer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: none; z-index: 9999; }
-    .viewer-actions { display: flex; padding: 20px; gap: 25px; font-size: 28px; position: absolute; bottom: 50px; width: 100%; }
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; padding: 20px; }
+    .modal-content { max-width: 400px; margin: 50px auto; background: #111; padding: 20px; border-radius: 10px; }
+    input, textarea { width: 100%; padding: 12px; margin-bottom: 10px; background: #222; border: none; color: #fff; border-radius: 5px; }
   </style>
 </head>
 <body>
@@ -40,7 +41,7 @@
   <div class="top-info">
     <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="avatar" id="ava">
     <div class="stats">
-      <div class="stat"><span class="val">2</span><span class="lbl">Post</span></div>
+      <div class="stat"><span class="val">3</span><span class="lbl">Post</span></div>
       <div class="stat"><span class="val">1.2K</span><span class="lbl">Obunachi</span></div>
       <div class="stat"><span class="val">348</span><span class="lbl">Obuna</span></div>
     </div>
@@ -60,8 +61,8 @@
   <div class="modal-content">
     <input type="text" placeholder="Qidirish...">
     <textarea placeholder="Xabar yozing..."></textarea>
-    <button onclick="document.getElementById('chatM').style.display='none'" style="width:100%; padding:10px; background:#0095f6;">Yuborish</button>
-    <button onclick="document.getElementById('chatM').style.display='none'" style="width:100%; padding:10px; background:transparent;">Yopish</button>
+    <button onclick="document.getElementById('chatM').style.display='none'" style="width:100%; padding:10px; background:#0095f6; cursor:pointer;">Yuborish</button>
+    <button onclick="document.getElementById('chatM').style.display='none'" style="width:100%; padding:10px; background:transparent; cursor:pointer;">Yopish</button>
   </div>
 </div>
 
@@ -69,24 +70,38 @@
   <div class="modal-content">
     <input type="text" id="inName" placeholder="Ism Familiya">
     <textarea id="inBio" placeholder="Bio"></textarea>
-    <button onclick="save()" style="width:100%; padding:10px; background:#0095f6;">Saqlash</button>
-    <button onclick="document.getElementById('editM').style.display='none'" style="width:100%; padding:10px; background:transparent;">Yopish</button>
+    <button onclick="save()" style="width:100%; padding:10px; background:#0095f6; cursor:pointer;">Saqlash</button>
+    <button onclick="document.getElementById('editM').style.display='none'" style="width:100%; padding:10px; background:transparent; cursor:pointer;">Yopish</button>
   </div>
 </div>
 
 <div class="viewer" id="v">
-  <img src="https://picsum.photos/500/900" style="width:100%; height:85%; object-fit:cover;">
-  <div class="viewer-actions">
-    <span onclick="this.style.color='red'">♥</span>
-    <span onclick="document.getElementById('chatM').style.display='block'">💬</span>
-    <span onclick="document.getElementById('chatM').style.display='block'">✈️</span>
-  </div>
-  <span onclick="document.getElementById('v').style.display='none'" style="position:absolute; top:20px; right:20px; cursor:pointer; font-size:30px;">✕</span>
+  <div class="close-v" onclick="document.getElementById('v').style.display='none'">✕</div>
+  <div id="slides"></div>
 </div>
 
 <script>
   const g = document.getElementById('grid');
-  [1,2,3].forEach(() => g.innerHTML += `<div class="item" onclick="document.getElementById('v').style.display='block'"><img src="https://picsum.photos/500/500"></div>`);
+  const s = document.getElementById('slides');
+  [1,2,3].forEach((i) => {
+    g.innerHTML += `<div class="item" onclick="openV(${i-1})"><img src="https://picsum.photos/500/900?${i}"></div>`;
+    s.innerHTML += `
+      <div class="slide">
+        <img src="https://picsum.photos/500/900?${i}">
+        <div class="viewer-actions">
+          <span onclick="this.style.color='red'" style="cursor:pointer;">♥</span>
+          <span onclick="document.getElementById('chatM').style.display='block'" style="cursor:pointer;">💬</span>
+          <span onclick="document.getElementById('chatM').style.display='block'" style="cursor:pointer;">✈️</span>
+        </div>
+      </div>`;
+  });
+
+  function openV(idx) {
+    const v = document.getElementById('v');
+    v.style.display = 'block';
+    v.scrollTop = idx * window.innerHeight;
+  }
+
   function save() {
     const n = document.getElementById('inName').value;
     const b = document.getElementById('inBio').value;
