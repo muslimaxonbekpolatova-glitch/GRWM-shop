@@ -2,22 +2,23 @@
 <html lang="uz">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>GRWM — Kirish</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #000; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #000; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
     .auth-card { width: 100%; max-width: 320px; text-align: center; }
     .logo { font-size: 32px; font-weight: 800; letter-spacing: 5px; margin-bottom: 40px; }
     .step { display: none; flex-direction: column; gap: 14px; }
     .step.active { display: flex; }
     .min-input { width: 100%; background: #111; border: 1px solid rgba(255,255,255,0.08); padding: 16px; color: #fff; font-size: 14px; border-radius: 8px; outline: none; transition: border-color 0.2s; }
     .min-input:focus { border-color: rgba(255,255,255,0.3); }
-    .min-btn { width: 100%; background: #fff; color: #000; border: none; padding: 16px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; border-radius: 8px; cursor: pointer; margin-top: 10px; }
+    .min-btn { width: 100%; background: #fff; color: #000; border: none; padding: 16px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; border-radius: 8px; cursor: pointer; margin-top: 10px; transition: background 0.2s; }
+    .min-btn:active { background: rgba(255,255,255,0.8); }
     .avatar-wrapper { position: relative; width: 90px; height: 90px; margin: 0 auto 15px; cursor: pointer; }
     .avatar-upload { width: 100%; height: 100%; border-radius: 50%; border: 1px dashed rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center; background: #0a0a0a; overflow: hidden; }
     .avatar-img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
-    .info-text { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.5; }
+    .info-text { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.5; margin-bottom: 5px; }
   </style>
 </head>
 <body>
@@ -26,13 +27,13 @@
     <div class="logo">GRWM</div>
 
     <div class="step active" id="s1">
-      <input type="text" class="min-input" placeholder="Telefon raqam yoki Email" id="loginTarget">
+      <input type="text" class="min-input" placeholder="Telefon raqam yoki Email" id="loginTarget" autocomplete="off">
       <button class="min-btn" onclick="sendVerification()">Kod yuborish</button>
     </div>
 
     <div class="step" id="s2">
       <p class="info-text" id="verificationMsg"></p>
-      <input type="text" class="min-input" placeholder="Tasdiqlash kodi" id="smsCode" style="text-align:center; letter-spacing: 4px;" maxlength="4">
+      <input type="tel" class="min-input" placeholder="8 xonali kod" id="smsCode" pattern="[0-9]*" inputmode="numeric" style="text-align:center; letter-spacing: 3px;" maxlength="8" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
       <button class="min-btn" onclick="checkVerification()">Tasdiqlash</button>
     </div>
 
@@ -41,39 +42,52 @@
         <div class="avatar-upload" id="avatarBox"><span>📷</span></div>
         <input type="file" id="fileInp" accept="image/*" style="display:none" onchange="loadAvatar(event)">
       </div>
-      <input type="text" class="min-input" placeholder="Ism" id="nameInp">
-      <input type="text" class="min-input" placeholder="Familiya" id="surInp">
+      <input type="text" class="min-input" placeholder="Ism" id="nameInp" autocomplete="off">
+      <input type="text" class="min-input" placeholder="Familiya" id="surInp" autocomplete="off">
       <button class="min-btn" onclick="finishAuth()">Profilni yaratish</button>
     </div>
   </div>
 
   <script>
     let savedTarget = "";
+    
     function sendVerification() {
-      savedTarget = document.getElementById('loginTarget').value.trim();
+      const inputEl = document.getElementById('loginTarget');
+      savedTarget = inputEl.value.trim();
       if(savedTarget !== "") {
-        document.getElementById('verificationMsg').innerText = `${savedTarget} manziliga 4 xonali kod yuborildi.`;
+        document.getElementById('verificationMsg').innerText = `${savedTarget} manziliga 8 xonali tiklash kodi yuborildi.`;
         document.getElementById('s1').classList.remove('active');
         document.getElementById('s2').classList.add('active');
-      } else { alert("Maydonni to'ldiring!"); }
+      } else { 
+        alert("Iltimos, telefon raqam yoki email kiriting!"); 
+      }
     }
+
     function checkVerification() {
       const code = document.getElementById('smsCode').value.trim();
-      if(code.length === 4) {
+      if(code.length === 8) {
         document.getElementById('s2').classList.remove('active');
         document.getElementById('s3').classList.add('active');
-      } else { alert("4 xonali kod kiriting!"); }
+      } else { 
+        alert("Xatolik: Iltimos, 8 xonali kodni to'liq kiriting!"); 
+      }
     }
+
     function loadAvatar(e) {
       const file = e.target.files[0];
       if(file) {
         document.getElementById('avatarBox').innerHTML = `<img src="${URL.createObjectURL(file)}" class="avatar-img">`;
       }
     }
+
     function finishAuth() {
-      if(document.getElementById('nameInp').value.trim() !== "" && document.getElementById('surInp').value.trim() !== "") {
+      const name = document.getElementById('nameInp').value.trim();
+      const sur = document.getElementById('surInp').value.trim();
+      if(name !== "" && sur !== "") {
         location.href = 'home.html';
-      } else { alert("Ism va familiyangizni kiriting!"); }
+      } else { 
+        alert("Ism va familiyangizni kiriting!"); 
+      }
     }
   </script>
 </body>
