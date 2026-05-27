@@ -1,257 +1,105 @@
-<!DOCTYPE html>
+        <!DOCTYPE html>
 <html lang="uz">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GRWM — Home</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #000; color: #fff; padding-bottom: 80px; overflow-x: hidden; }
+    
+    .header { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .header h1 { font-size: 22px; font-weight: 800; letter-spacing: 3px; }
+    .header-actions { display: flex; gap: 18px; align-items: center; }
+    .top-like-btn { background: none; border: none; color: #fff; font-size: 22px; cursor: pointer; }
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: #000000;
-      color: #ffffff;
-      padding-bottom: 75px;
-      overflow-x: hidden;
-    }
+    .stories-container { display: flex; gap: 14px; overflow-x: auto; padding: 15px 20px; }
+    .stories-container::-webkit-scrollbar { display: none; }
+    .story-ring { width: 64px; height: 64px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.4); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .story-avatar { width: 56px; height: 56px; border-radius: 50%; background: #111; display: flex; align-items: center; justify-content: center; font-size: 11px; color: rgba(255,255,255,0.4); }
 
-    /* PREMIUM TOP NAVIGATION */
-    .header {
-      padding: 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      z-index: 200;
-    }
+    .section-title { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: rgba(255,255,255,0.4); padding: 15px 20px 5px; }
+    .pinterest-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 15px 20px; }
+    .pin-card { background: #080808; border: 1px solid rgba(255,255,255,0.03); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
+    .pin-card:nth-child(odd) .pin-media { height: 210px; }
+    .pin-card:nth-child(even) .pin-media { height: 160px; }
+    .pin-media { width: 100%; background: #111; display: flex; align-items: center; justify-content: center; font-size: 12px; color: rgba(255,255,255,0.3); padding: 10px; }
+    .pin-info { padding: 12px; display: flex; flex-direction: column; gap: 4px; }
+    .pin-title { font-size: 13px; font-weight: 600; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
+    .pin-price { font-size: 12px; color: rgba(255,255,255,0.5); }
 
-    .brand-logo {
-      font-size: 24px;
-      font-weight: 800;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-    }
+    .drawer-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); visibility: hidden; opacity: 0; transition: opacity 0.25s; z-index: 1500; }
+    .drawer-overlay.show { visibility: visible; opacity: 1; }
+    .likes-drawer { position: fixed; bottom: 0; left: 0; width: 100%; max-height: 60vh; background: #0a0a0a; border-top: 1px solid rgba(255,255,255,0.08); border-radius: 16px 16px 0 0; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.1, 0.7, 0.1, 1); z-index: 2000; padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+    .likes-drawer.open { transform: translateY(0); }
+    .drawer-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 12px; }
+    .likes-list { overflow-y: auto; display: flex; flex-direction: column; gap: 16px; max-height: 45vh; }
+    .like-item { display: flex; align-items: center; justify-content: space-between; font-size: 13px; }
+    .like-user-info { display: flex; align-items: center; gap: 12px; }
+    .like-user-avatar { width: 36px; height: 36px; border-radius: 50%; background: #161616; display: flex; align-items: center; justify-content: center; }
+    .like-text span { color: rgba(255,255,255,0.4); font-size: 11px; display: block; margin-top: 2px; }
+    .liked-post-preview { width: 36px; height: 36px; background: #161616; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: rgba(255,255,255,0.4); }
 
-    .noti-trigger {
-      background: none;
-      border: none;
-      color: #ffffff;
-      font-size: 22px;
-      cursor: pointer;
-      transition: opacity 0.2s;
-    }
-
-    .noti-trigger:active { opacity: 0.5; }
-
-    /* INSTAGRAM USLUBIDAGI TEPADAN TUSHUVCHI BILDIRISHNOMA OYNASI */
-    .noti-dropdown {
-      position: fixed;
-      top: 75px;
-      right: 20px;
-      width: calc(100% - 40px);
-      max-width: 340px;
-      background: #111111;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      padding: 16px;
-      display: none;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-      z-index: 300;
-    }
-
-    .noti-dropdown.active {
-      display: block;
-      animation: fadeIn 0.2s ease-out;
-    }
-
-    .noti-header {
-      font-size: 12px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: rgba(255,255,255,0.4);
-      margin-bottom: 12px;
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .noti-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    }
-    .noti-item:last-child { border: none; }
-
-    .user-flex {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .user-avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      object-fit: cover;
-      background: #222;
-    }
-
-    .noti-text {
-      font-size: 12px;
-      line-height: 1.4;
-      color: rgba(255,255,255,0.8);
-    }
-    .noti-text span { font-weight: 600; color: #fff; }
-
-    .post-mini {
-      width: 32px;
-      height: 32px;
-      object-fit: cover;
-      border-radius: 4px;
-    }
-
-    /* PREMIUM AD PLATFORM (SLIDER) */
-    .premium-wrapper {
-      padding: 10px 20px 20px 20px;
-    }
-
-    .premium-label {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      color: rgba(255, 255, 255, 0.3);
-      margin-bottom: 16px;
-    }
-
-    .premium-slider {
-      display: flex;
-      gap: 16px;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-    }
-    .premium-slider::-webkit-scrollbar { display: none; }
-
-    .premium-card {
-      flex: 0 0 100%;
-      scroll-snap-align: start;
-      height: 380px;
-      background: #111111;
-      position: relative;
-      overflow: hidden;
-      border-radius: 8px;
-    }
-
-    .premium-card img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .premium-meta {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      padding: 24px;
-      background: linear-gradient(transparent, rgba(0,0,0,0.9));
-    }
-
-    .badge {
-      font-size: 9px;
-      background: #ffffff;
-      color: #000000;
-      padding: 3px 8px;
-      font-weight: 700;
-      text-transform: uppercase;
-      display: inline-block;
-      margin-bottom: 8px;
-      letter-spacing: 1px;
-    }
-
-    .ad-title {
-      font-size: 16px;
-      font-weight: 400;
-      letter-spacing: 0.5px;
-    }
-
-    /* FIXED BOTTOM NAVIGATION (MINIMAL INSTAGRAM) */
-    .bottom-bar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 65px;
-      background: #000000;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      z-index: 1000;
-    }
-
-    .nav-btn {
-      background: none;
-      border: none;
-      color: rgba(255, 255, 255, 0.4);
-      font-size: 24px;
-      cursor: pointer;
-      transition: color 0.2s;
-    }
-
-    .nav-btn.active {
-      color: #ffffff;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    .bottom-bar { position: fixed; bottom: 0; left: 0; width: 100%; height: 65px; background: #000; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-around; align-items: center; z-index: 3000; }
+    .nav-btn { background: none; border: none; color: rgba(255, 255, 255, 0.4); font-size: 24px; cursor: pointer; }
+    .nav-btn.active { color: #ffffff; }
   </style>
 </head>
 <body>
 
-  <!-- HEADER -->
+  <div class="drawer-overlay" id="likesOverlay" onclick="closeLikesDrawer()"></div>
+
   <div class="header">
-    <div class="brand-logo">GRWM</div>
-    <!-- O'ng tomonda faqat bitta toza yurakcha tugmasi (Bildirishnomalar uchun) -->
-    <button class="noti-trigger" onclick="toggleNotifications()">❤️</button>
-  </div>
-
-  <!-- INSTAGRAM STYLE DROPDOWN (TEPADAN TUSHADIGAN BILDIRISHNOMA) -->
-  <div class="noti-dropdown" id="notiDropdown">
-    <div class="noti-header">
-      <span>Bildirishnomalar</span>
-      <span style="cursor:pointer; color:#fff;" onclick="toggleNotifications()">✕</span>
-    </div>
-    <div id="notiList">
-      <!-- Like va Commentlar shu yerga yig'iladi -->
+    <h1>GRWM</h1>
+    <div class="header-actions">
+      <button class="top-like-btn" onclick="openLikesDrawer()">❤️</button>
+      <span style="font-size:20px; cursor:pointer;" onclick="location.href='chat.html'">✉️</span>
     </div>
   </div>
 
-  <!-- MAIN PREMIUM DISPLAY -->
-  <div class="premium-wrapper">
-    <div class="premium-label">Premium Tavsiyalar</div>
-    <div class="premium-slider" id="premiumSlider">
-      <div class="premium-card">
-        <div class="premium-meta">
-          <span class="badge">Yuklanmoqda</span>
+  <div class="stories-container">
+    <div class="story-ring"><div class="story-avatar">New</div></div>
+    <div class="story-ring"><div class="story-avatar">Drop</div></div>
+    <div class="story-ring"><div class="story-avatar">Oversize</div></div>
+    <div class="story-ring"><div class="story-avatar">Classic</div></div>
+    <div class="story-ring"><div class="story-avatar">Sale</div></div>
+  </div>
+
+  <div class="section-title">Premium Collection</div>
+
+  <div class="pinterest-grid">
+    <div class="pin-card"><div class="pin-media">🧥 Trench Coat</div><div class="pin-info"><div class="pin-title">Oversize Trench</div><div class="pin-price">450,000 UZS</div></div></div>
+    <div class="pin-card"><div class="pin-media">👕 Black Hoodie</div><div class="pin-info"><div class="pin-title">Minimal Hoodie</div><div class="pin-price">329,000 UZS</div></div></div>
+    <div class="pin-card"><div class="pin-media">👖 Cargo Pants</div><div class="pin-info"><div class="pin-title">Tech Cargo</div><div class="pin-price">280,000 UZS</div></div></div>
+    <div class="pin-card"><div class="pin-media">👟 Sneakers</div><div class="pin-info"><div class="pin-title">Chunky Shoes</div><div class="pin-price">590,000 UZS</div></div></div>
+    <div class="pin-card"><div class="pin-media">🕶️ Glasses</div><div class="pin-info"><div class="pin-title">Dark Glass</div><div class="pin-price">120,000 UZS</div></div></div>
+    <div class="pin-card"><div class="pin-media">🧥 Bomber</div><div class="pin-info"><div class="pin-title">Leather Bomber</div><div class="pin-price">680,000 UZS</div></div></div>
+  </div>
+
+  <!-- NOTIFICATION PANEL -->
+  <div class="likes-drawer" id="likesDrawer">
+    <div class="drawer-header">
+      <div style="font-size:14px; font-weight:700;">Bildirishnomalar</div>
+      <button style="background:none; border:none; color:rgba(255,255,255,0.4); font-size:12px;" onclick="closeLikesDrawer()">Yopish</button>
+    </div>
+    <div class="likes-list">
+      <div class="like-item">
+        <div class="like-user-info">
+          <div class="like-user-avatar">👩‍💻</div>
+          <div class="like-text"><strong>muslimaxon</strong> videongizga layk bosdi. <span>2 dqiqa avval</span></div>
         </div>
+        <div class="liked-post-preview">🎬 2</div>
+      </div>
+      <div class="like-item">
+        <div class="like-user-info">
+          <div class="like-user-avatar">🙋‍♀️</div>
+          <div class="like-text"><strong>laylo_grwm</strong> videongizga layk bosdi. <span>15 dqiqa avval</span></div>
+        </div>
+        <div class="liked-post-preview">🎬 1</div>
       </div>
     </div>
   </div>
 
-  <!-- NAVIGATION -->
   <div class="bottom-bar">
     <button class="nav-btn active" onclick="location.href='home.html'">🏠</button>
     <button class="nav-btn" onclick="location.href='reels.html'">🎬</button>
@@ -260,117 +108,15 @@
     <button class="nav-btn" onclick="location.href='profile.html'">👤</button>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    const SUPABASE_URL = 'https://wdoytdiugkhlniysdfri.supabase.co';
-    const SUPABASE_KEY = 'sb_publishable_qZHLHaUhp3dqBrj58ZtZWw_61gzjskd';
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-    // 1. BILDIRISHNOMANI OCHIB-YOPISH
-    function toggleNotifications() {
-      document.getElementById('notiDropdown').classList.toggle('active');
+    function openLikesDrawer() {
+      document.getElementById('likesOverlay').classList.add('show');
+      document.getElementById('likesDrawer').classList.add('open');
     }
-
-    // 2. PREMIUM ADS YUKLASH
-    async function loadAds() {
-      try {
-        const { data, error } = await supabase
-          .from('premium_ads')
-          .select('*')
-          .order('created_at', { ascending: false });
-
-        if (error) throw error;
-        const slider = document.getElementById('premiumSlider');
-        slider.innerHTML = '';
-
-        if (data && data.length > 0) {
-          data.forEach(ad => {
-            slider.innerHTML += `
-              <div class="premium-card">
-                <img src="${ad.image_url}">
-                <div class="premium-meta">
-                  <span class="badge">Premium</span>
-                  <div class="ad-title">${ad.title}</div>
-                </div>
-              </div>
-            `;
-          });
-        } else {
-          // Baza bo'sh bo'lsa minimalist demo reklama
-          slider.innerHTML = `
-            <div class="premium-card">
-              <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600">
-              <div class="premium-meta">
-                <span class="badge">Kolleksiya</span>
-                <div class="ad-title">Minimalist kuzgi kiyimlar to'plami</div>
-              </div>
-            </div>
-          `;
-        }
-      } catch (e) {
-        console.error(e);
-      }
+    function closeLikesDrawer() {
+      document.getElementById('likesOverlay').classList.remove('show');
+      document.getElementById('likesDrawer').classList.remove('open');
     }
-
-    // 3. LIKELAR VA COMMENTLARNI TEPADAGI PANELGA YUKLASH
-    async function loadNotifications() {
-      const notiList = document.getElementById('notiList');
-      try {
-        const { data, error } = await supabase
-          .from('activity_logs')
-          .select('*, profiles(username, avatar_url)')
-          .limit(5);
-
-        if (error) throw error;
-        notiList.innerHTML = '';
-
-        if(data && data.length > 0) {
-          data.forEach(act => {
-            const isLike = act.type === 'like';
-            notiList.innerHTML += `
-              <div class="noti-item">
-                <div class="user-flex">
-                  <img class="user-avatar" src="${act.profiles.avatar_url}">
-                  <div class="noti-text">
-                    <span>${act.profiles.username}</span> ${isLike ? 'videongizga like bosdi.' : 'izoh qoldirdi: "' + act.text + '"'}
-                  </div>
-                </div>
-                <img class="post-mini" src="${act.post_img}">
-              </div>
-            `;
-          });
-        } else {
-          showDemoNotifications();
-        }
-      } catch (e) {
-        showDemoNotifications();
-      }
-    }
-
-    // Demo bildirishnomalar (Instagram formatida)
-    function showDemoNotifications() {
-      const notiList = document.getElementById('notiList');
-      const demos = [
-        { username: 'madina_style', action: 'videongizga like bosdi.', img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80', post: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=80' },
-        { username: 'grwm_uz', action: 'izoh qoldirdi: "Koftani o‘lchami bormi?"', img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80', post: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=80' }
-      ];
-      notiList.innerHTML = '';
-      demos.forEach(d => {
-        notiList.innerHTML += `
-          <div class="noti-item">
-            <div class="user-flex">
-              <img class="user-avatar" src="${d.img}">
-              <div class="noti-text"><span>${d.username}</span> ${d.action}</div>
-            </div>
-            <img class="post-mini" src="${d.post}">
-          </div>
-        `;
-      });
-    }
-
-    // Yuklash
-    loadAds();
-    loadNotifications();
   </script>
 </body>
-  </html>
+</html>
