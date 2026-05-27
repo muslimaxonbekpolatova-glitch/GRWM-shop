@@ -10,50 +10,39 @@
     
     .reels-wrapper { height: calc(100vh - 65px); scroll-snap-type: y mandatory; overflow-y: scroll; }
     .reels-wrapper::-webkit-scrollbar { display: none; }
-    .reel-post { width: 100%; height: calc(100vh - 65px); scroll-snap-align: start; position: relative; background: #050505; display: flex; align-items: center; justify-content: center; }
-    .video-dummy { width: 100%; height: 100%; object-fit: cover; background: linear-gradient(180deg, #111, #1a1a1a); display: flex; align-items: center; justify-content: center; font-size: 13px; color: rgba(255,255,255,0.3); }
+    .reel-post { width: 100%; height: calc(100vh - 65px); scroll-snap-align: start; position: relative; background: #000; display: flex; align-items: center; justify-content: center; }
+    .video-dummy { width: 100%; height: 100%; background: linear-gradient(180deg, #0a0a0a, #121212); display: flex; align-items: center; justify-content: center; font-size: 13px; color: rgba(255,255,255,0.2); }
 
     .side-actions { position: absolute; right: 14px; bottom: 120px; display: flex; flex-direction: column; gap: 22px; z-index: 10; align-items: center; }
     .action-btn { background: none; border: none; color: #fff; font-size: 26px; cursor: pointer; display: flex; flex-direction: column; align-items: center; }
-    .action-btn span { font-size: 11px; margin-top: 4px; color: rgba(255,255,255,0.7); }
-    .action-btn.active { color: #ff3b30; }
+    .action-btn span { font-size: 11px; margin-top: 4px; color: rgba(255,255,255,0.6); }
 
     .bottom-meta { position: absolute; left: 16px; bottom: 25px; z-index: 10; max-width: 75%; display: flex; flex-direction: column; gap: 8px; }
     .profile-row { display: flex; align-items: center; gap: 10px; }
     .user-name { font-size: 14px; font-weight: 700; }
-    .follow-btn { background: rgba(255,255,255,0.2); border: none; padding: 4px 10px; border-radius: 4px; color: #fff; font-size: 11px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
-    .follow-btn.following { background: #fff; color: #000; }
+    .follow-btn { background: rgba(255,255,255,0.15); border: none; padding: 4px 10px; border-radius: 4px; color: #fff; font-size: 11px; font-weight: 600; cursor: pointer; }
     
     .video-desc { font-size: 13px; color: rgba(255,255,255,0.9); }
-    .liked-by { font-size: 12px; color: rgba(255,255,255,0.6); cursor: pointer; font-weight: 500; width: fit-content; }
+    .liked-by { font-size: 12px; color: rgba(255,255,255,0.5); }
     .uzum-buy-trigger { background: #fff; color: #000; padding: 12px 18px; border-radius: 8px; font-size: 12px; font-weight: 700; text-transform: uppercase; border: none; cursor: pointer; width: fit-content; margin-top: 4px; }
 
-    /* PANEL FONINI TO'SADIGAN APARAT (OVERLAY) */
-    .drawer-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); visibility: hidden; opacity: 0; transition: opacity 0.3s ease, visibility 0.3s ease; z-index: 1500; }
+    .drawer-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); visibility: hidden; opacity: 0; transition: opacity 0.3s; z-index: 1500; }
     .drawer-overlay.show { visibility: visible; opacity: 1; }
 
-    /* HALF-SHEET DRAWER */
-    .drawer { position: fixed; bottom: 0; left: 0; width: 100%; background: #0d0d0d; border-top: 1px solid rgba(255,255,255,0.1); border-radius: 16px 16px 0 0; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.1, 0.7, 0.1, 1); z-index: 2000; padding: 24px 20px 40px; }
+    .drawer { position: fixed; bottom: 0; left: 0; width: 100%; background: #0a0a0a; border-top: 1px solid rgba(255,255,255,0.08); border-radius: 16px 16px 0 0; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.1, 0.7, 0.1, 1); z-index: 2000; padding: 24px 20px 95px; }
     .drawer.open { transform: translateY(0); }
     .drawer-step { display: none; flex-direction: column; gap: 16px; }
     .drawer-step.active { display: flex; }
-    .drawer-title { font-size: 13px; font-weight: 700; text-transform: uppercase; color: rgba(255,255,255,0.4); letter-spacing: 0.5px; }
     
     .chip-container { display: flex; gap: 8px; flex-wrap: wrap; }
-    .chip { padding: 12px 16px; background: #1a1a1a; border-radius: 8px; font-size: 13px; cursor: pointer; border: 1px solid transparent; }
-    .chip.selected { background: #fff; color: #000; font-weight: 600; }
+    .chip { padding: 12px 16px; background: #111; border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; font-size: 13px; cursor: pointer; color: #fff; }
+    .chip.selected { background: #fff; color: #000; font-weight: 600; border-color: #fff; }
     .next-step-btn { background: #fff; color: #000; border: none; padding: 16px; font-size: 12px; font-weight: 700; text-transform: uppercase; border-radius: 8px; cursor: pointer; }
-    .confirm-btns { display: flex; gap: 10px; }
-    .c-button { flex: 1; padding: 16px; border-radius: 8px; border: none; font-size: 12px; font-weight: 700; text-transform: uppercase; cursor: pointer; }
-    .c-button.yes { background: #fff; color: #000; }
-    .c-button.no { background: #1a1a1a; color: #fff; }
 
-    .comment-list { max-height: 180px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin: 10px 0; }
-    .comment-item { font-size: 12px; line-height: 1.4; color: rgba(255,255,255,0.8); }
-    .comment-item strong { color: #fff; margin-right: 5px; }
-    .comment-input-row { display: flex; gap: 8px; margin-bottom: 15px; }
-    .comment-inp { flex: 1; background: #1a1a1a; border: none; padding: 12px; color: #fff; border-radius: 6px; font-size: 13px; outline: none; }
-    .comment-send { background: none; border: none; color: #fff; font-weight: 600; font-size: 13px; padding: 0 10px; cursor: pointer; }
+    .comment-list { max-height: 160px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin: 10px 0; }
+    .comment-item { font-size: 12px; line-height: 1.4; }
+    .comment-input-row { display: flex; gap: 8px; }
+    .comment-inp { flex: 1; background: #111; border: 1px solid rgba(255,255,255,0.05); padding: 12px; color: #fff; border-radius: 6px; font-size: 13px; outline: none; }
 
     .bottom-bar { position: fixed; bottom: 0; left: 0; width: 100%; height: 65px; background: #000; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-around; align-items: center; z-index: 3000; }
     .nav-btn { background: none; border: none; color: rgba(255, 255, 255, 0.4); font-size: 24px; cursor: pointer; }
@@ -62,12 +51,11 @@
 </head>
 <body>
 
-  <!-- ORQA FON OVERLAYI -->
   <div class="drawer-overlay" id="overlay" onclick="closeDrawer()"></div>
 
   <div class="reels-wrapper">
     <div class="reel-post">
-      <div class="video-dummy">🎬 [Premium Video Content - Swipe Up]</div>
+      <div class="video-dummy">🎬 [GRWM Premium Video Content]</div>
       
       <div class="side-actions">
         <button class="action-btn" id="likeBtn" onclick="pressLike()">🤍 <span id="likeCount">1200</span></button>
@@ -80,23 +68,17 @@
           <span class="user-name">@grwm_store</span>
           <button class="follow-btn" id="fBtn" onclick="toggleFollow()">Obuna bo'lish</button>
         </div>
-        <p class="video-desc">Minimalist Oversize Black Hoodie — New Style</p>
-        
-        <div class="liked-by" id="likedByText" onclick="alert('Like bosganlar: muslimaxon, laylo va yana 1200 kishi')">
-          muslimaxon va yana 1,200 kishi yoqtirdi
-        </div>
-
+        <p class="video-desc">Minimalist Oversize Black Hoodie</p>
+        <div class="liked-by" id="likedByText">muslimaxon va yana 1,200 kishi yoqtirdi</div>
         <button class="uzum-buy-trigger" onclick="startUzumFlow()">🛍 Sotib olish — 329,000 UZS</button>
       </div>
     </div>
   </div>
 
-  <!-- MULTI-FUNCTIONAL DRAWER -->
+  <!-- MULTI STEP DRAWER -->
   <div class="drawer" id="globalDrawer">
-    
-    <!-- UZUM SIZE -->
     <div class="drawer-step" id="u1">
-      <div class="drawer-title">O'lchamni tanlang</div>
+      <div style="font-size:11px; color:gray; letter-spacing:1px;">O'LCHAM TANLANG</div>
       <div class="chip-container">
         <div class="chip" onclick="selectChip(this)">S</div>
         <div class="chip selected" onclick="selectChip(this)">M</div>
@@ -105,41 +87,35 @@
       <button class="next-step-btn" onclick="switchDrawerStep('u2')">Keyingi</button>
     </div>
 
-    <!-- UZUM COLOR -->
     <div class="drawer-step" id="u2">
-      <div class="drawer-title">Rangni tanlang</div>
+      <div style="font-size:11px; color:gray; letter-spacing:1px;">RANG TANLANG</div>
       <div class="chip-container">
         <div class="chip selected" onclick="selectChip(this)">Matt Black</div>
-        <div class="chip" onclick="selectChip(this)">Graphite Grey</div>
+        <div class="chip" onclick="selectChip(this)">Grey</div>
       </div>
-      <button class="next-step-btn" onclick="switchDrawerStep('u3')">Keyingi</button>
+      <button class="next-step-btn" onclick="switchDrawerStep('u3')">Sotib olishni tasdiqlash</button>
     </div>
 
-    <!-- UZUM CONFIRM -->
     <div class="drawer-step" id="u3">
-      <div class="drawer-title" style="text-align:center; margin-bottom:10px;">Haqiqatan ham sotib olasizmi?</div>
-      <div class="confirm-btns">
-        <button class="c-button yes" onclick="endPurchase(true)">Ha</button>
-        <button class="c-button no" onclick="endPurchase(false)">Yo'q</button>
+      <div style="text-align:center; padding:10px 0; font-size:14px;">Xaridni tasdiqlaysizmi?</div>
+      <div style="display:flex; gap:10px;">
+        <button class="next-step-btn" style="flex:1;" onclick="endPurchase(true)">Ha</button>
+        <button class="next-step-btn" style="flex:1; background:#111; color:#fff; border:1px solid rgba(255,255,255,0.1);" onclick="endPurchase(false)">Yo'q</button>
       </div>
     </div>
 
-    <!-- COMMENTS -->
     <div class="drawer-step" id="commentStep">
-      <div class="drawer-title">Izohlar</div>
+      <div style="font-size:11px; color:gray; margin-bottom:5px; letter-spacing:1px;">IZOHLAR</div>
       <div class="comment-list" id="commentsBox">
         <div class="comment-item"><strong>shaxzod_dev</strong> Juda ajoyib kiyim ekan! 🔥</div>
-        <div class="comment-item"><strong>madina_grwm</strong> Narxi necha pul buni?</div>
       </div>
       <div class="comment-input-row">
         <input type="text" class="comment-inp" placeholder="Izoh qoldiring..." id="newComment">
-        <button class="comment-send" onclick="addComment()">Yuborish</button>
+        <button style="background:none; border:none; color:#fff; font-weight:600; padding:0 10px;" onclick="addComment()">Yuborish</button>
       </div>
     </div>
-
   </div>
 
-  <!-- NAVIGATION BAR -->
   <div class="bottom-bar">
     <button class="nav-btn" onclick="location.href='home.html'">🏠</button>
     <button class="nav-btn active" onclick="location.href='reels.html'">🎬</button>
@@ -149,89 +125,32 @@
   </div>
 
   <script>
-    let isLiked = false;
-    let isFollowing = false;
-
+    let isLiked = false; let isFollowing = false;
     function pressLike() {
       const btn = document.getElementById('likeBtn');
-      const likedText = document.getElementById('likedByText');
       isLiked = !isLiked;
-      if(isLiked) {
-        btn.classList.add('active');
-        btn.innerHTML = "❤️ <span id='likeCount'>1201</span>";
-        likedText.innerText = "Siz, muslimaxon va yana 1,200 kishi yoqtirdi";
-      } else {
-        btn.classList.remove('active');
-        btn.innerHTML = "🤍 <span id='likeCount'>1200</span>";
-        likedText.innerText = "muslimaxon va yana 1,200 kishi yoqtirdi";
-      }
+      btn.innerHTML = isLiked ? "❤️ <span>1201</span>" : "🤍 <span>1200</span>";
+      document.getElementById('likedByText').innerText = isLiked ? "Siz, muslimaxon va yana 1,200 kishi yoqtirdi" : "muslimaxon va yana 1,200 kishi yoqtirdi";
     }
-
     function toggleFollow() {
-      const fBtn = document.getElementById('fBtn');
       isFollowing = !isFollowing;
-      if(isFollowing) {
-        fBtn.innerText = "Obuna bo'lindi";
-        fBtn.classList.add('following');
-      } else {
-        fBtn.innerText = "Obuna bo'lish";
-        fBtn.classList.remove('following');
-      }
+      document.getElementById('fBtn').innerText = isFollowing ? "Obuna bo'lindi" : "Obuna bo'lish";
     }
-
-    function shareVideo() {
-      alert("Havola nusxalandi! Do'stlaringizga ulashishingiz mumkin.");
-    }
-
-    function startUzumFlow() {
-      closeAllSteps();
-      document.getElementById('overlay').classList.add('show');
-      document.getElementById('globalDrawer').classList.add('open');
-      document.getElementById('u1').classList.add('active');
-    }
-
-    function selectChip(el) {
-      el.parentElement.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
-      el.classList.add('selected');
-    }
-
-    function switchDrawerStep(stepId) {
-      closeAllSteps();
-      document.getElementById(stepId).classList.add('active');
-    }
-
-    function endPurchase(status) {
-      closeDrawer();
-      if(status) {
-        alert("Xaridingiz rasmiylashtirildi! Tafsilotlar chatga yuborildi.");
-      }
-    }
-
-    function openComments() {
-      closeAllSteps();
-      document.getElementById('overlay').classList.add('show');
-      document.getElementById('globalDrawer').classList.add('open');
-      document.getElementById('commentStep').classList.add('active');
-    }
-
+    function shareVideo() { alert("Havola nusxalandi!"); }
+    function startUzumFlow() { closeAllSteps(); document.getElementById('overlay').classList.add('show'); document.getElementById('globalDrawer').classList.add('open'); document.getElementById('u1').classList.add('active'); }
+    function selectChip(el) { el.parentElement.querySelectorAll('.chip').forEach(c => c.classList.remove('selected')); el.classList.add('selected'); }
+    function switchDrawerStep(stepId) { closeAllSteps(); document.getElementById(stepId).classList.add('active'); }
+    function endPurchase(status) { closeDrawer(); if(status) alert("Xarid muvaffaqiyatli bajarildi!"); }
+    function openComments() { closeAllSteps(); document.getElementById('overlay').classList.add('show'); document.getElementById('globalDrawer').classList.add('open'); document.getElementById('commentStep').classList.add('active'); }
     function addComment() {
       const inp = document.getElementById('newComment');
       if(inp.value.trim() !== "") {
-        const box = document.getElementById('commentsBox');
-        box.innerHTML += `<div class="comment-item"><strong>Siz</strong> ${inp.value}</div>`;
+        document.getElementById('commentsBox').innerHTML += `<div class="comment-item"><strong>Siz:</strong> ${inp.value}</div>`;
         inp.value = "";
-        box.scrollTop = box.scrollHeight;
       }
     }
-
-    function closeDrawer() {
-      document.getElementById('overlay').classList.remove('show');
-      document.getElementById('globalDrawer').classList.remove('open');
-    }
-
-    function closeAllSteps() {
-      document.querySelectorAll('.drawer-step').forEach(s => s.classList.remove('active'));
-    }
+    function closeDrawer() { document.getElementById('overlay').classList.remove('show'); document.getElementById('globalDrawer').classList.remove('open'); }
+    function closeAllSteps() { document.querySelectorAll('.drawer-step').forEach(s => s.classList.remove('active')); }
   </script>
 </body>
-  </html>
+</html>
