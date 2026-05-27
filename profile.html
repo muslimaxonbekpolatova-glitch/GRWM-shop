@@ -2,58 +2,98 @@
 <html lang="uz">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>GRWM — Profil</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #000; color: #fff; padding-bottom: 80px; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #000; color: #fff; min-height: 100vh; padding-bottom: 80px; }
     
-    .profile-container { padding: 30px 20px; display: flex; flex-direction: column; gap: 24px; }
-    .profile-header { display: flex; align-items: center; gap: 25px; }
-    .profile-pic { width: 76px; height: 76px; border-radius: 50%; background: #111; display: flex; align-items: center; justify-content: center; font-size: 28px; border: 1px solid rgba(255,255,255,0.08); }
+    /* PROFIL ASOSIY BLOCKI */
+    .profile-container { padding: 30px 20px; text-align: center; max-width: 400px; margin: 0 auto; }
+    .avatar-container { width: 95px; height: 95px; margin: 0 auto 15px; position: relative; }
+    .profile-avatar { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 1px solid rgba(255,255,255,0.15); background: #111; }
     
-    .stats-row { display: flex; flex-grow: 1; justify-content: space-around; text-align: center; }
-    .stat-item { display: flex; flex-direction: column; }
-    .stat-num { font-size: 16px; font-weight: 700; }
-    .stat-label { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 2px; }
+    .profile-name { font-size: 20px; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 2px; }
+    .profile-username { font-size: 13px; color: rgba(255,255,255,0.4); margin-bottom: 12px; }
+    
+    /* BIO VA VEB-SAYT STILI */
+    .profile-bio-box { font-size: 14px; color: rgba(255,255,255,0.9); line-height: 1.4; margin-bottom: 8px; padding: 0 10px; text-align: center; white-space: pre-line; }
+    .profile-website { display: inline-block; font-size: 13px; color: #0095f6; text-decoration: none; font-weight: 500; margin-bottom: 22px; }
+    .profile-website:active { opacity: 0.7; }
+    
+    /* TAHRIRLASH TUGMASI */
+    .edit-profile-btn { background: #121212; color: #fff; border: 1px solid rgba(255,255,255,0.15); padding: 10px 24px; font-size: 13px; font-weight: 600; border-radius: 8px; cursor: pointer; transition: background 0.2s; width: 100%; max-width: 220px; margin: 0 auto; display: block; }
+    .edit-profile-btn:active { background: #222; }
 
-    .bio-section { display: flex; flex-direction: column; gap: 4px; }
-    .edit-profile-btn { width: 100%; background: #111; border: 1px solid rgba(255,255,255,0.08); padding: 12px; color: #fff; font-size: 12px; font-weight: 600; border-radius: 6px; cursor: pointer; text-align: center; }
+    /* MODAL OYNA STILI (TAHRIRLASH EKRANI) */
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: flex; justify-content: center; align-items: center; z-index: 2000; opacity: 0; visibility: hidden; transition: all 0.25s ease; padding: 20px; }
+    .modal-overlay.open { opacity: 1; visibility: visible; }
+    .edit-modal { background: #0a0a0a; border: 1px solid rgba(255,255,255,0.1); width: 100%; max-width: 340px; border-radius: 14px; padding: 24px; text-align: center; transform: scale(0.92); transition: transform 0.25s ease; }
+    .modal-overlay.open .edit-modal { transform: scale(1); }
+    
+    .modal-title { font-size: 16px; font-weight: 700; margin-bottom: 18px; letter-spacing: 0.5px; }
+    .modal-input { width: 100%; background: #111; border: 1px solid rgba(255,255,255,0.08); padding: 14px; color: #fff; font-size: 14px; border-radius: 8px; outline: none; margin-bottom: 12px; font-family: inherit; }
+    .modal-input:focus { border-color: rgba(255,255,255,0.25); }
+    
+    /* BIO UCHUN TEXTAREA */
+    textarea.modal-input { resize: none; height: 75px; }
+    
+    .modal-actions { display: flex; gap: 10px; margin-top: 8px; }
+    .save-btn { flex: 1; background: #fff; color: #000; border: none; padding: 14px; font-size: 12px; font-weight: 700; text-transform: uppercase; border-radius: 8px; cursor: pointer; }
+    .cancel-btn { flex: 1; background: #111; color: #fff; border: 1px solid rgba(255,255,255,0.1); padding: 14px; font-size: 12px; font-weight: 700; text-transform: uppercase; border-radius: 8px; cursor: pointer; }
 
-    .posts-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; margin-top: 10px; }
-    .grid-photo { aspect-ratio: 1; background: #111; display: flex; align-items: center; justify-content: center; font-size: 11px; color: rgba(255,255,255,0.3); }
-
-    .bottom-bar { position: fixed; bottom: 0; left: 0; width: 100%; height: 65px; background: #000; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-around; align-items: center; z-index: 3000; }
-    .nav-btn { background: none; border: none; color: rgba(255, 255, 255, 0.4); font-size: 24px; cursor: pointer; }
+    /* PASTKI NAVIGATSIYA BAR */
+    .bottom-bar { position: fixed; bottom: 0; left: 0; width: 100%; height: 65px; background: #000; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
+    .nav-btn { background: none; border: none; color: rgba(255, 255, 255, 0.4); font-size: 24px; cursor: pointer; outline: none; }
     .nav-btn.active { color: #ffffff; }
   </style>
 </head>
 <body>
 
+  <!-- ASOSIY SHAXSIY KABINET -->
   <div class="profile-container">
-    <div class="profile-header">
-      <div class="profile-pic">👤</div>
-      <div class="stats-row">
-        <div class="stat-item"><span class="stat-num">10</span><span class="stat-label">Videolar</span></div>
-        <div class="stat-item"><span class="stat-num">4.8k</span><span class="stat-label">Obunachilar</span></div>
-        <div class="stat-item"><span class="stat-num">184</span><span class="stat-label">Obunalar</span></div>
+    <div class="avatar-container">
+      <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="profile-avatar" id="displayAvatar">
+    </div>
+    
+    <h2 class="profile-name" id="displayName" data-name="Muslimaxon" data-surname="Bekpolatova">Muslimaxon Bekpolatova</h2>
+    <p class="profile-username">@muslima_dev</p>
+    
+    <!-- BIO (TARJIMAI HOL) -->
+    <div class="profile-bio-box" id="displayBio">Digital Creator ✨
+Minimalism & Tech style.</div>
+    
+    <!-- VEB-SAYT LINKI -->
+    <a href="https://grwm.uz" class="profile-website" id="displayWeb" target="_blank" data-rawurl="grwm.uz">grwm.uz</a>
+    
+    <button class="edit-profile-btn" onclick="openEditModal()">Profilni tahrirlash</button>
+  </div>
+
+  <!-- TAHRIRLASH MODAL OYNASI -->
+  <div class="modal-overlay" id="editModalOverlay">
+    <div class="edit-modal">
+      <h3 class="modal-title">Profilni tahrirlash</h3>
+      
+      <!-- Rasm yuklash -->
+      <div style="margin-bottom: 18px;">
+        <button class="edit-profile-btn" style="font-size:11px; padding:8px 12px; background:#161616;" onclick="document.getElementById('modalFileInp').click()">Yangi rasm yuklash</button>
+        <input type="file" id="modalFileInp" accept="image/*" style="display:none" onchange="previewModalAvatar(event)">
       </div>
-    </div>
 
-    <div class="bio-section">
-      <div style="font-size:14px; font-weight:700;">GRWM User</div>
-      <div style="font-size:13px; color:gray;">Premium Minimalist Wardrobe Aesthetics. ✨</div>
-    </div>
-
-    <button class="edit-profile-btn">Profilni tahrirlash</button>
-
-    <div class="posts-grid">
-      <div class="grid-photo">🎬 1</div>
-      <div class="grid-photo">🎬 2</div>
-      <div class="grid-photo">🎬 3</div>
+      <!-- Kiritish maydonlari -->
+      <input type="text" class="modal-input" placeholder="Ism" id="editNameInp" autocomplete="off">
+      <input type="text" class="modal-input" placeholder="Familiya" id="editSurnameInp" autocomplete="off">
+      <textarea class="modal-input" placeholder="Bio (Tarjimai hol)" id="editBioInp" maxlength="150"></textarea>
+      <input type="text" class="modal-input" placeholder="Veb-sayt (Ssilka)" id="editWebInp" autocomplete="off">
+      
+      <div class="modal-actions">
+        <button class="save-btn" onclick="saveProfileChanges()">Saqlash</button>
+        <button class="cancel-btn" onclick="closeEditModal()">Yopish</button>
+      </div>
     </div>
   </div>
 
+  <!-- NAV BAR -->
   <div class="bottom-bar">
     <button class="nav-btn" onclick="location.href='home.html'">🏠</button>
     <button class="nav-btn" onclick="location.href='reels.html'">🎬</button>
@@ -62,5 +102,74 @@
     <button class="nav-btn active" onclick="location.href='profile.html'">👤</button>
   </div>
 
+  <script>
+    let temporaryAvatarUrl = "";
+
+    function openEditModal() {
+      const nameEl = document.getElementById('displayName');
+      const webEl = document.getElementById('displayWeb');
+      
+      document.getElementById('editNameInp').value = nameEl.getAttribute('data-name') || "";
+      document.getElementById('editSurnameInp').value = nameEl.getAttribute('data-surname') || "";
+      document.getElementById('editBioInp').value = document.getElementById('displayBio').innerText || "";
+      document.getElementById('editWebInp').value = webEl.getAttribute('data-rawurl') || "";
+      
+      document.getElementById('editModalOverlay').classList.add('open');
+    }
+
+    function closeEditModal() {
+      document.getElementById('editModalOverlay').classList.remove('open');
+      temporaryAvatarUrl = ""; 
+    }
+
+    function previewModalAvatar(event) {
+      const file = event.target.files[0];
+      if (file) {
+        temporaryAvatarUrl = URL.createObjectURL(file);
+      }
+    }
+
+    function saveProfileChanges() {
+      const newName = document.getElementById('editNameInp').value.trim();
+      const newSurname = document.getElementById('editSurnameInp').value.trim();
+      const newBio = document.getElementById('editBioInp').value.trim();
+      const newWeb = document.getElementById('editWebInp').value.trim();
+
+      if (newName === "") {
+        alert("Iltimos, ismingizni kiriting!");
+        return;
+      }
+
+      // 1. Ism va Familiyani saqlash
+      const nameEl = document.getElementById('displayName');
+      nameEl.setAttribute('data-name', newName);
+      nameEl.setAttribute('data-surname', newSurname);
+      nameEl.innerText = newSurname !== "" ? `${newName} ${newSurname}` : newName;
+
+      // 2. Bioni yangilash
+      document.getElementById('displayBio').innerText = newBio !== "" ? newBio : "Bio kiritilmagan.";
+
+      // 3. Veb-saytni yangilash (Xatosiz va qiymatni saqlagan holda)
+      const webEl = document.getElementById('displayWeb');
+      if (newWeb !== "") {
+        webEl.setAttribute('data-rawurl', newWeb);
+        webEl.innerText = newWeb;
+        webEl.href = newWeb.startsWith('http') ? newWeb : 'https://' + newWeb;
+        webEl.style.display = "inline-block";
+      } else {
+        webEl.setAttribute('data-rawurl', "");
+        webEl.innerText = "";
+        webEl.style.display = "none";
+      }
+
+      // 4. Rasm yangilangan bo'lsa o'rnatish
+      if (temporaryAvatarUrl !== "") {
+        document.getElementById('displayAvatar').src = temporaryAvatarUrl;
+      }
+
+      // Oynani yopish va profilga qaytish
+      closeEditModal();
+    }
+  </script>
 </body>
 </html>
