@@ -3,109 +3,97 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>GRWM — Profil</title>
+  <title>Minimal Profil</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #000; color: #fff; min-height: 100vh; padding-bottom: 90px; }
+    :root { --bg: #000; --text: #fff; --gray: #888; }
+    * { margin: 0; padding: 0; box-sizing: border-box; touch-action: manipulation; }
+    body { background: var(--bg); color: var(--text); font-family: -apple-system, sans-serif; overflow-x: hidden; }
+
+    /* Profil qismi */
+    .profile { padding: 20px; max-width: 500px; margin: 0 auto; }
+    .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .avatar { width: 80px; height: 80px; border-radius: 50%; border: 1px solid #333; object-fit: cover; }
+    .stats { display: flex; gap: 20px; }
+    .stat { text-align: center; }
+    .val { font-weight: 700; display: block; font-size: 16px; }
+    .lbl { font-size: 11px; color: var(--gray); text-transform: uppercase; }
+    .bio { font-size: 14px; margin-bottom: 20px; line-height: 1.4; }
+
+    /* Grid */
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+    .item { aspect-ratio: 1; background: #111; cursor: pointer; position: relative; }
+    .item img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* Reels uslubidagi Viewer */
+    .viewer {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: var(--bg); display: none; z-index: 9999;
+      overflow-y: scroll; scroll-snap-type: y mandatory;
+      scroll-behavior: smooth; overscroll-behavior-y: contain;
+    }
+    .slide {
+      width: 100%; height: 100vh; scroll-snap-align: start;
+      position: relative; flex: none; display: flex; align-items: center; justify-content: center;
+    }
+    .slide img { width: 100%; height: 100%; object-fit: cover; }
     
-    .profile-header { max-width: 450px; margin: 0 auto; padding: 25px 20px 15px; }
-    .profile-top-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; gap: 15px; }
-    .avatar-container { width: 84px; height: 84px; flex-shrink: 0; }
-    .profile-avatar { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 1px solid rgba(255,255,255,0.1); background: #111; }
-    .stats-container { display: flex; flex-grow: 1; justify-content: space-around; text-align: center; gap: 5px; }
-    .stat-item { display: flex; flex-direction: column; min-width: 60px; }
-    .stat-count { font-size: 16px; font-weight: 700; color: #fff; }
-    .stat-label { font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 2px; text-transform: lowercase; }
-
-    .profile-bio-section { text-align: left; margin-bottom: 20px; }
-    .profile-name { font-size: 15px; font-weight: 700; letter-spacing: 0.3px; margin-bottom: 3px; }
-    .profile-username { font-size: 12px; color: rgba(255,255,255,0.4); margin-bottom: 6px; }
-    .profile-bio-box { font-size: 13px; color: rgba(255,255,255,0.85); line-height: 1.4; white-space: pre-line; word-break: break-word; }
-
-    .edit-btn { width: 100%; background: #111; color: #fff; border: 1px solid rgba(255,255,255,0.12); padding: 10px; font-size: 13px; font-weight: 600; border-radius: 6px; cursor: pointer; }
-
-    .profile-posts-grid { max-width: 600px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; padding: 2px; border-top: 1px solid rgba(255,255,255,0.08); }
-    .grid-item { position: relative; width: 100%; padding-top: 100%; background: #111; overflow: hidden; cursor: pointer; }
-    .grid-item img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
-    .video-icon { position: absolute; top: 8px; right: 8px; font-size: 12px; opacity: 0.8; }
-
-    .modal-overlay, .post-viewer-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: flex; justify-content: center; align-items: center; z-index: 2000; opacity: 0; visibility: hidden; transition: all 0.2s ease; }
-    .modal-overlay.open, .post-viewer-overlay.open { opacity: 1; visibility: visible; }
-    .post-viewer-overlay { z-index: 3000; flex-direction: column; }
-    
-    .edit-modal { width: 100%; max-width: 320px; padding: 20px; text-align: center; }
-    .min-input { width: 100%; background: #111; border: 1px solid rgba(255,255,255,0.08); padding: 14px; color: #fff; font-size: 16px; border-radius: 8px; margin-bottom: 12px; }
-    .action-btn { width: 100%; background: #fff; color: #000; border: none; padding: 14px; font-weight: 700; border-radius: 8px; cursor: pointer; margin-top: 10px; }
-    .action-btn-sec { width: 100%; background: #111; color: #fff; border: 1px solid rgba(255,255,255,0.08); padding: 14px; font-weight: 700; border-radius: 8px; cursor: pointer; margin-top: 8px; }
-
-    .viewer-media-box { width: 100%; max-width: 450px; aspect-ratio: 1/1; display: flex; justify-content: center; align-items: center; overflow: hidden; }
-    .viewer-media-box img { width: 100%; height: 100%; object-fit: contain; }
-    .viewer-close { position: absolute; top: 20px; right: 20px; background: none; border: none; color: #fff; font-size: 28px; cursor: pointer; }
-    .like-btn { font-size: 30px; background: none; border: none; color: #fff; cursor: pointer; margin-top: 20px; }
-    .like-btn.liked { color: #ff3040; }
-
-    .bottom-bar { position: fixed; bottom: 0; left: 0; width: 100%; height: 65px; background: #000; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
-    .nav-btn { background: none; border: none; color: rgba(255, 255, 255, 0.4); font-size: 24px; cursor: pointer; }
-    .nav-btn.active { color: #fff; }
+    /* Overlay */
+    .overlay { position: absolute; bottom: 80px; left: 20px; }
+    .close { position: absolute; top: 20px; right: 20px; font-size: 30px; cursor: pointer; z-index: 10000; padding: 10px; }
   </style>
 </head>
 <body>
 
-  <div class="profile-header">
-    <div class="profile-top-row">
-      <div class="avatar-container"><img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="profile-avatar" id="displayAvatar"></div>
-      <div class="stats-container">
-        <div class="stat-item"><span class="stat-count">6</span><span class="stat-label">postlar</span></div>
-        <div class="stat-item"><span class="stat-count">1.2K</span><span class="stat-label">obunachilar</span></div>
-      </div>
-    </div>
-    <div class="profile-bio-section">
-      <h2 class="profile-name" id="displayName" data-name="Muslimaxon" data-surname="Bekpolatova">Muslimaxon Bekpolatova</h2>
-      <p class="profile-username">@muslima_dev</p>
-      <div class="profile-bio-box" id="displayBio">Digital Creator ✨</div>
-    </div>
-    <button class="edit-btn" onclick="openEditModal()">Profilni tahrirlash</button>
-  </div>
-
-  <div class="profile-posts-grid">
-    <div class="grid-item" onclick="openPostViewer('https://images.unsplash.com/photo-1511556532299-8f662fc26c06?w=500')"><img src="https://images.unsplash.com/photo-1511556532299-8f662fc26c06?w=300"></div>
-    <div class="grid-item" onclick="openPostViewer('https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500')"><img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300"><span class="video-icon">🎬</span></div>
-    <div class="grid-item" onclick="openPostViewer('https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500')"><img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300"></div>
-  </div>
-
-  <div class="post-viewer-overlay" id="postViewer">
-    <button class="viewer-close" onclick="closePostViewer()">✕</button>
-    <div class="viewer-media-box"><img src="" id="viewerImg"></div>
-    <button class="like-btn" id="viewerLikeBtn" onclick="toggleLike()">♡</button>
-  </div>
-
-  <div class="modal-overlay" id="editModalOverlay">
-    <div class="edit-modal">
-      <input type="text" class="min-input" id="editNameInp" placeholder="Ism">
-      <input type="text" class="min-input" id="editSurnameInp" placeholder="Familiya">
-      <textarea class="min-input" id="editBioInp" placeholder="Bio"></textarea>
-      <button class="action-btn" onclick="saveProfileChanges()">Saqlash</button>
-      <button class="action-btn-sec" onclick="closeEditModal()">Yopish</button>
+<div class="profile">
+  <div class="header">
+    <img src="https://picsum.photos/80/80" class="avatar">
+    <div class="stats">
+      <div class="stat"><span class="val">3</span><span class="lbl">Post</span></div>
+      <div class="stat"><span class="val">1.2K</span><span class="lbl">Obunachi</span></div>
+      <div class="stat"><span class="val">348</span><span class="lbl">Obuna</span></div>
     </div>
   </div>
+  <div class="bio"><b>Muslimaxon Bekpolatova</b><br>Minimalist lifestyle creator ✨</div>
+  <div class="grid" id="grid"></div>
+</div>
 
-  <div class="bottom-bar">
-    <button class="nav-btn">🏠</button><button class="nav-btn">🎬</button><button class="nav-btn">➕</button><button class="nav-btn active">👤</button>
-  </div>
+<div class="viewer" id="viewer">
+  <div class="close" onclick="closeV()">✕</div>
+  <div id="slides"></div>
+</div>
 
-  <script>
-    function openPostViewer(src) { document.getElementById('viewerImg').src = src; document.getElementById('postViewer').classList.add('open'); }
-    function closePostViewer() { document.getElementById('postViewer').classList.remove('open'); }
-    function toggleLike() { const btn = document.getElementById('viewerLikeBtn'); btn.classList.toggle('liked'); btn.innerText = btn.classList.contains('liked') ? '♥' : '♡'; }
-    function openEditModal() { document.getElementById('editModalOverlay').classList.add('open'); }
-    function closeEditModal() { document.getElementById('editModalOverlay').classList.remove('open'); }
-    function saveProfileChanges() {
-        const name = document.getElementById('editNameInp').value;
-        const surname = document.getElementById('editSurnameInp').value;
-        if(name) document.getElementById('displayName').innerText = name + ' ' + surname;
-        document.getElementById('displayBio').innerText = document.getElementById('editBioInp').value;
-        closeEditModal();
-    }
-  </script>
+<script>
+  const posts = [
+    {img: "https://picsum.photos/500/900?1", likes: "1,200", comm: "45"},
+    {img: "https://picsum.photos/500/900?2", likes: "950", comm: "20"},
+    {img: "https://picsum.photos/500/900?3", likes: "3,100", comm: "120"}
+  ];
+
+  const grid = document.getElementById('grid');
+  posts.forEach((p, i) => {
+    grid.innerHTML += `<div class="item" onclick="openV(${i})"><img src="${p.img}"></div>`;
+  });
+
+  function openV(idx) {
+    const s = document.getElementById('slides');
+    s.innerHTML = '';
+    posts.forEach(p => {
+      s.innerHTML += `
+        <div class="slide">
+          <img src="${p.img}">
+          <div class="overlay">
+            <p style="font-size:18px; font-weight:bold;">♥ ${p.likes}</p>
+            <p>💬 ${p.comm} ta izoh</p>
+          </div>
+        </div>`;
+    });
+    const v = document.getElementById('viewer');
+    v.style.display = 'block';
+    v.scrollTop = idx * window.innerHeight; // Tanlangan postga o'tish
+  }
+
+  function closeV() { document.getElementById('viewer').style.display = 'none'; }
+</script>
+
 </body>
-                                                                        </html>
+</html>
