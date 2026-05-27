@@ -44,7 +44,7 @@
 
     .stats-flex {
       display: flex;
-      gap: 24px;
+      gap: 20px;
       flex: 1;
     }
 
@@ -64,6 +64,24 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
       margin-top: 2px;
+    }
+
+    /* EDIT PROFILE BUTTON */
+    .edit-profile-btn {
+      width: 100%;
+      background: #1c1c1e;
+      color: #ffffff;
+      border: none;
+      padding: 8px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 4px;
+      transition: background 0.2s;
+    }
+    .edit-profile-btn:active {
+      background: #2c2c2e;
     }
 
     /* BIO SECTION */
@@ -174,17 +192,216 @@
     }
     .nav-btn { background: none; border: none; color: rgba(255, 255, 255, 0.4); font-size: 24px; cursor: pointer; }
     .nav-btn.active { color: #ffffff; }
+
+    /* INSTAGRAM REELS MODAL VIEW */
+    .reels-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #000000;
+      z-index: 2000;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 24px;
+      z-index: 2100;
+      cursor: pointer;
+    }
+
+    .reels-viewer {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      max-width: 500px;
+      display: flex;
+      align-items: center;
+      background: #000;
+    }
+
+    .reels-main-img {
+      width: 100%;
+      height: 100vh;
+      object-fit: cover;
+    }
+
+    /* OVERLAY ACTIONS (LIKE, COMMENT, SHARE) */
+    .reels-actions {
+      position: absolute;
+      right: 16px;
+      bottom: 120px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+      z-index: 2050;
+    }
+
+    .action-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 28px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+    }
+
+    .action-btn span {
+      font-size: 11px;
+      margin-top: 4px;
+      color: rgba(255,255,255,0.8);
+    }
+
+    /* COMMENT INPUT FIELD */
+    .comment-box {
+      position: absolute;
+      bottom: 85px;
+      left: 0;
+      width: 100%;
+      padding: 0 16px;
+      display: none;
+      z-index: 2060;
+    }
+
+    .comment-input-wrapper {
+      display: flex;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 24px;
+      padding: 10px 16px;
+      align-items: center;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+
+    .comment-input-wrapper input {
+      flex: 1;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .comment-input-wrapper button {
+      background: none;
+      border: none;
+      color: #00fff0;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    /* EDIT PROFILE MODAL */
+    .edit-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.9);
+      z-index: 3000;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .edit-modal-content {
+      background: #121212;
+      border: 1px solid rgba(255,255,255,0.1);
+      width: 100%;
+      max-width: 400px;
+      border-radius: 14px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .edit-modal-title {
+      font-size: 16px;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .edit-input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .edit-input-group label {
+      font-size: 11px;
+      color: rgba(255,255,255,0.5);
+      text-transform: uppercase;
+    }
+
+    .edit-input-group input, .edit-input-group textarea {
+      background: #1c1c1e;
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 8px;
+      padding: 10px;
+      color: #ffffff;
+      font-size: 13px;
+      outline: none;
+      font-family: inherit;
+    }
+
+    .edit-input-group textarea {
+      resize: none;
+      height: 60px;
+    }
+
+    .edit-modal-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .edit-action-btn {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+    }
+
+    .edit-save {
+      background: #ffffff;
+      color: #000000;
+    }
+
+    .edit-cancel {
+      background: #2c2c2e;
+      color: #ffffff;
+    }
   </style>
 </head>
 <body>
 
-  <!-- PROFIL ASOSIY METASI -->
   <div class="profile-header">
     <div class="top-meta">
-      <img class="profile-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" alt="Avatar">
+      <img class="profile-avatar" id="profileAvatarImg" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" alt="Avatar">
       <div class="stats-flex">
         <div class="stat-box">
-          <!-- ID berildi, dinamik hisoblash uchun -->
           <div class="stat-num" id="videoCount">3</div>
           <div class="stat-label">Videolar</div>
         </div>
@@ -192,17 +409,20 @@
           <div class="stat-num">12.4K</div>
           <div class="stat-label">Obunachilar</div>
         </div>
+        <div class="stat-box">
+          <div class="stat-num">348</div>
+          <div class="stat-label">Obunalar</div>
+        </div>
       </div>
     </div>
     
-    <!-- BIO -->
     <div class="profile-bio">
-      <div class="profile-name">monochrome.uz</div>
-      <div class="profile-desc">Premium minimal kiyimlar brendi.<br>O'zbekiston bo'ylab tezkor yetkazib berish.</div>
+      <div class="profile-name" id="profileNameTxt">monochrome.uz</div>
+      <div class="profile-desc" id="profileDescTxt">Premium minimal kiyimlar brendi.<br>O'zbekiston bo'ylab tezkor yetkazib berish.</div>
+      <button class="edit-profile-btn" onclick="openEditModal()">Profilni tahrirlash</button>
     </div>
   </div>
 
-  <!-- CRM ANALYTICS BLOCK -->
   <div class="analytics-section">
     <div class="analytics-title">Sotuvchi statistikasi</div>
     <div class="analytics-grid">
@@ -217,29 +437,80 @@
     </div>
   </div>
 
-  <!-- VIDEOLAR GRIDI -->
   <div class="reels-grid-title">Yuklangan videolar</div>
   <div class="grid-container" id="reelsGrid">
     
-    <!-- Dastlabki statik ma'lumotlar (Baza ishlamasa ko'rinib turadi) -->
-    <div class="grid-item" onclick="location.href='reels.html'">
+    <div class="grid-item" onclick="openReelsModal('https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600', '18.2K')">
       <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=300" alt="Reels">
       <div class="video-views">▶ 18.2K</div>
     </div>
 
-    <div class="grid-item" onclick="location.href='reels.html'">
+    <div class="grid-item" onclick="openReelsModal('https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=600', '12.1K')">
       <img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=300" alt="Reels">
       <div class="video-views">▶ 12.1K</div>
     </div>
 
-    <div class="grid-item" onclick="location.href='reels.html'">
+    <div class="grid-item" onclick="openReelsModal('https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=600', '17.9K')">
       <img src="https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=300" alt="Reels">
       <div class="video-views">▶ 17.9K</div>
     </div>
 
   </div>
 
-  <!-- BOTTOM BAR -->
+  <div class="reels-modal" id="reelsModal">
+    <button class="modal-close" onclick="closeReelsModal()">✕</button>
+    
+    <div class="reels-viewer">
+      <img class="reels-main-img" id="modalImg" src="" alt="Reels content">
+      
+      <div class="reels-actions">
+        <button class="action-btn" id="likeBtn" onclick="toggleLike()">
+          <span id="likeIcon" style="font-size:28px;">🤍</span>
+          <span id="likeCount">1.2K</span>
+        </button>
+        <button class="action-btn" onclick="toggleCommentBox()">
+          💬 <span>42</span>
+        </button>
+        <button class="action-btn" onclick="shareVideo()">
+          ✈️ <span>Ulashish</span>
+        </button>
+      </div>
+
+      <div class="comment-box" id="commentBox">
+        <div class="comment-input-wrapper">
+          <input type="text" placeholder="Fikr bildiring..." id="commentInput">
+          <button onclick="sendComment()">Yuborish</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="edit-modal" id="editModal">
+    <div class="edit-modal-content">
+      <div class="edit-modal-title">Profilni tahrirlash</div>
+      
+      <div class="edit-input-group">
+        <label>Rasm havolasi (URL)</label>
+        <input type="text" id="editAvatarInput">
+      </div>
+
+      <div class="edit-input-group">
+        <label>Foydalanuvchi nomi / Ism</label>
+        <input type="text" id="editNameInput">
+      </div>
+
+      <div class="edit-input-group">
+        <label>Tarjimai hol (Bio)</label>
+        <textarea id="editDescInput"></textarea>
+      </div>
+
+      <div class="edit-modal-actions">
+        <button class="edit-action-btn edit-cancel" onclick="closeEditModal()">Bekor qilish</button>
+        <button class="edit-action-btn edit-save" onclick="saveProfileChanges()">Saqlash</button>
+      </div>
+    </div>
+  </div>
+
   <div class="bottom-bar">
     <button class="nav-btn" onclick="location.href='home.html'">🏠</button>
     <button class="nav-btn" onclick="location.href='reels.html'">🎬</button>
@@ -248,13 +519,10 @@
     <button class="nav-btn active" onclick="location.href='profile.html'">👤</button>
   </div>
 
-  <!-- Supabase CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     const SUPABASE_URL = 'https://wdoytdiugkhlniysdfri.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_qZHLHaUhp3dqBrj58ZtZWw_61gzjskd';
-    
-    // XATO TUZATILDI: 'supabase.createClient' o'rniga 'supabase.createClient' (Katta harf bilan)
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     async function loadUserReels() {
@@ -262,38 +530,73 @@
         const { data, error } = await supabaseClient
           .from('reels_posts')
           .select('*');
-        
         if (error) throw error;
 
-        // Agar bazadan ma'lumot kelsa va u bo'sh bo'lmasa HTMLni yangilaymiz
         if (data && data.length > 0) {
           const gridContainer = document.getElementById('reelsGrid');
-          gridContainer.innerHTML = ''; // Statik ma'lumotlarni tozalash
+          gridContainer.innerHTML = ''; 
 
           data.forEach(post => {
-            // Faraz qilamiz: bazada 'thumbnail_url' va 'views' ustunlari bor
             const imgUrl = post.thumbnail_url || 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=300';
-            const views = post.views || 0;
+            const views = post.views || '0';
 
             const gridItem = `
-              <div class="grid-item" onclick="location.href='reels.html?id=${post.id}'">
+              <div class="grid-item" onclick="openReelsModal('${imgUrl}', '${views}')">
                 <img src="${imgUrl}" alt="Reels">
                 <div class="video-views">▶ ${views}</div>
               </div>
             `;
             gridContainer.insertAdjacentHTML('beforeend', gridItem);
           });
-
-          // Videolar sonini dinamik yangilash
           document.getElementById('videoCount').innerText = data.length;
         }
       } catch(e) {
-        console.log("Offline yoki fallback rejimida muvaffaqiyatli yuklandi:", e.message);
+        console.log("Offline yoki fallback rejimida muvaffaqiyatli yuklandi.");
       }
     }
-    
-    // Sahifa yuklanganda funksiyani ishga tushirish
     document.addEventListener('DOMContentLoaded', loadUserReels);
-  </script>
-</body>
-  </html>
+
+    /* MODAL TIZIMI LOGIKASI */
+    let isLiked = false;
+
+    function openReelsModal(imgSrc, views) {
+      document.getElementById('modalImg').src = imgSrc;
+      document.getElementById('reelsModal').style.display = 'flex';
+      document.body.style.overflow = 'hidden'; 
+      
+      isLiked = false;
+      document.getElementById('likeIcon').innerText = '🤍';
+      document.getElementById('commentBox').style.display = 'none';
+    }
+
+    function closeReelsModal() {
+      document.getElementById('reelsModal').style.display = 'none';
+      document.body.style.overflow = 'auto'; 
+    }
+
+    function toggleLike() {
+      const likeIcon = document.getElementById('likeIcon');
+      isLiked = !isLiked;
+      if(isLiked) {
+        likeIcon.innerText = '❤️';
+      } else {
+        likeIcon.innerText = '🤍';
+      }
+    }
+
+    function toggleCommentBox() {
+      const commentBox = document.getElementById('commentBox');
+      if(commentBox.style.display === 'none' || commentBox.style.display === '') {
+        commentBox.style.display = 'block';
+        document.getElementById('commentInput').focus();
+      } else {
+        commentBox.style.display = 'none';
+      }
+    }
+
+    function sendComment() {
+      const input = document.getElementById('commentInput');
+      if(input.value.trim() !== "") {
+        alert("Izoh qoldirildi: " + input.value);
+        input.value = "";
+        document.getElementById('commentBox').style.display = 'none
