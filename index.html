@@ -11,13 +11,13 @@
     .logo { font-size: 32px; font-weight: 800; letter-spacing: 5px; margin-bottom: 40px; }
     .step { display: none; flex-direction: column; gap: 14px; }
     .step.active { display: flex; }
-    .min-input { width: 100%; background: #111; border: 1px solid rgba(255,255,255,0.1); padding: 16px; color: #fff; font-size: 14px; border-radius: 8px; outline: none; transition: border-color 0.2s; }
+    .min-input { width: 100%; background: #111; border: 1px solid rgba(255,255,255,0.08); padding: 16px; color: #fff; font-size: 14px; border-radius: 8px; outline: none; transition: border-color 0.2s; }
     .min-input:focus { border-color: rgba(255,255,255,0.3); }
     .min-btn { width: 100%; background: #fff; color: #000; border: none; padding: 16px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; border-radius: 8px; cursor: pointer; margin-top: 10px; }
-    .min-btn:active { background: rgba(255,255,255,0.8); }
-    .avatar-upload { width: 90px; height: 90px; border-radius: 50%; border: 1px dashed rgba(255,255,255,0.3); margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; background: #0a0a0a; position: relative; }
-    .avatar-img { position: absolute; width: 100%; height: 100%; object-fit: cover; top: 0; left: 0; border-radius: 50%; }
-    .info-text { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.5; margin-bottom: 5px; }
+    .avatar-wrapper { position: relative; width: 90px; height: 90px; margin: 0 auto 15px; cursor: pointer; }
+    .avatar-upload { width: 100%; height: 100%; border-radius: 50%; border: 1px dashed rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center; background: #0a0a0a; overflow: hidden; }
+    .avatar-img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+    .info-text { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.5; }
   </style>
 </head>
 <body>
@@ -25,25 +25,21 @@
   <div class="auth-card">
     <div class="logo">GRWM</div>
 
-    <!-- STEP 1 -->
     <div class="step active" id="s1">
       <input type="text" class="min-input" placeholder="Telefon raqam yoki Email" id="loginTarget">
       <button class="min-btn" onclick="sendVerification()">Kod yuborish</button>
     </div>
 
-    <!-- STEP 2 -->
     <div class="step" id="s2">
       <p class="info-text" id="verificationMsg"></p>
-      <input type="text" class="min-input" placeholder="Tasdiqlash kodi (Masalan: 1234)" id="smsCode" style="text-align:center; letter-spacing: 4px;" maxlength="4">
+      <input type="text" class="min-input" placeholder="Tasdiqlash kodi" id="smsCode" style="text-align:center; letter-spacing: 4px;" maxlength="4">
       <button class="min-btn" onclick="checkVerification()">Tasdiqlash</button>
     </div>
 
-    <!-- STEP 3 -->
     <div class="step" id="s3">
-      <div class="avatar-upload" onclick="document.getElementById('fileInp').click()">
-        <span id="prompt" style="font-size: 24px;">📷</span>
+      <div class="avatar-wrapper" onclick="document.getElementById('fileInp').click()">
+        <div class="avatar-upload" id="avatarBox"><span>📷</span></div>
         <input type="file" id="fileInp" accept="image/*" style="display:none" onchange="loadAvatar(event)">
-        <div id="avatarBox" style="width:100%; height:100%; position:absolute; top:0; left:0;"></div>
       </div>
       <input type="text" class="min-input" placeholder="Ism" id="nameInp">
       <input type="text" class="min-input" placeholder="Familiya" id="surInp">
@@ -61,27 +57,21 @@
         document.getElementById('s2').classList.add('active');
       } else { alert("Maydonni to'ldiring!"); }
     }
-
     function checkVerification() {
       const code = document.getElementById('smsCode').value.trim();
-      if(code === "1234" || code.length === 4) {
+      if(code.length === 4) {
         document.getElementById('s2').classList.remove('active');
         document.getElementById('s3').classList.add('active');
-      } else { alert("Noto'g'ri kod! (Ixtiyoriy 4 xonali raqam kiriting)"); }
+      } else { alert("4 xonali kod kiriting!"); }
     }
-
     function loadAvatar(e) {
       const file = e.target.files[0];
       if(file) {
-        document.getElementById('prompt').style.display = 'none';
         document.getElementById('avatarBox').innerHTML = `<img src="${URL.createObjectURL(file)}" class="avatar-img">`;
       }
     }
-
     function finishAuth() {
-      const name = document.getElementById('nameInp').value.trim();
-      const sur = document.getElementById('surInp').value.trim();
-      if(name !== "" && sur !== "") {
+      if(document.getElementById('nameInp').value.trim() !== "" && document.getElementById('surInp').value.trim() !== "") {
         location.href = 'home.html';
       } else { alert("Ism va familiyangizni kiriting!"); }
     }
