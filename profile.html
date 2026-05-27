@@ -22,7 +22,7 @@
     .item { aspect-ratio: 1; background: #111; cursor: pointer; }
     .item img { width: 100%; height: 100%; object-fit: cover; }
 
-    .nav { position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; padding: 15px; background: #000; border-top: 1px solid #333; z-index: 1000; cursor: pointer; }
+    .nav { position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; padding: 15px; background: #000; border-top: 1px solid #333; z-index: 1000; cursor: pointer; font-size: 24px; }
     
     .viewer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: none; z-index: 9999; overflow-y: scroll; scroll-snap-type: y mandatory; }
     .slide { width: 100%; height: 100vh; scroll-snap-align: start; position: relative; display: flex; flex-direction: column; }
@@ -53,8 +53,11 @@
 <div class="grid" id="grid"></div>
 
 <div class="nav">
-  <span onclick="location.reload()">🏠</span><span>🎬</span><span>➕</span>
-  <span onclick="document.getElementById('chatM').style.display='block'">💬</span><span>👤</span>
+  <span onclick="location.reload()">🏠</span>
+  <span onclick="openV(0)">🎬</span>
+  <span onclick="alert('Post qo\'shish')">➕</span>
+  <span onclick="document.getElementById('chatM').style.display='block'">💬</span>
+  <span onclick="location.reload()">👤</span>
 </div>
 
 <div class="modal" id="chatM">
