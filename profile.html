@@ -2,43 +2,39 @@
 <html lang="uz">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GRWM — Profil</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; touch-action: manipulation; }
     body { background: #000; color: #fff; font-family: sans-serif; padding-bottom: 70px; }
     
-    /* Profil Header */
+    /* PROFIL HEADER */
     .profile-header { padding: 20px; }
     .top-info { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
     .avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 1px solid #333; }
-    .stats { display: flex; gap: 20px; }
+    
+    /* STATISTIKA MARKAZDA */
+    .stats { display: flex; gap: 20px; flex-grow: 1; justify-content: center; margin: 0 15px; }
     .stat { text-align: center; }
     .val { font-weight: bold; display: block; }
     .lbl { font-size: 11px; color: #888; text-transform: uppercase; }
-    .bio { margin-bottom: 15px; font-size: 14px; line-height: 1.4; }
+    
+    .bio { margin-bottom: 15px; font-size: 14px; }
     .edit-btn { width: 100%; padding: 8px; background: #222; border: none; color: #fff; border-radius: 5px; cursor: pointer; }
 
-    /* Grid */
+    /* GRID */
     .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
     .item { aspect-ratio: 1; background: #111; cursor: pointer; }
     .item img { width: 100%; height: 100%; object-fit: cover; }
 
-    /* Reels Viewer */
-    .viewer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: none; z-index: 9999; overflow-y: scroll; scroll-snap-type: y mandatory; }
-    .slide { width: 100%; height: 100vh; scroll-snap-align: start; position: relative; display: flex; flex-direction: column; }
-    .slide img { flex: 1; width: 100%; object-fit: cover; }
+    /* VIEWER & MODAL */
+    .viewer, .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: none; z-index: 9999; }
     .viewer-actions { height: 15%; display: flex; padding: 20px; gap: 25px; font-size: 28px; background: #000; align-items: center; }
-    .close-v { position: absolute; top: 20px; right: 20px; font-size: 30px; cursor: pointer; z-index: 10000; }
-    .liked { color: #ff3040; }
+    .modal-content { max-width: 400px; margin: 50px auto; padding: 20px; }
+    input, textarea { width: 100%; padding: 12px; margin-bottom: 10px; background: #222; border: none; color: #fff; border-radius: 5px; }
 
-    /* Nav bar */
-    .nav { position: fixed; bottom: 0; left: 0; width: 100%; display: flex; justify-content: space-around; padding: 15px; background: #000; border-top: 1px solid #333; z-index: 1000; }
-    
-    /* Modal */
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); padding: 20px; z-index: 9999; }
-    .modal-content { max-width: 400px; margin: 40px auto; }
-    input, textarea { width: 100%; padding: 10px; margin-bottom: 10px; background: #222; border: none; color: #fff; border-radius: 5px; }
+    /* NAV BAR */
+    .nav { position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; padding: 15px; background: #000; border-top: 1px solid #333; z-index: 1000; }
   </style>
 </head>
 <body>
@@ -53,53 +49,49 @@
     </div>
   </div>
   <div class="bio" id="bioBox"><b>Muslimaxon Bekpolatova</b><br>Minimalist lifestyle creator ✨</div>
-  <button class="edit-btn" onclick="document.getElementById('m').style.display='block'">Profilni tahrirlash</button>
+  <button class="edit-btn" onclick="document.getElementById('editM').style.display='block'">Tahrirlash</button>
 </div>
 
 <div class="grid" id="grid"></div>
 
-<div class="viewer" id="v">
-  <div class="close-v" onclick="document.getElementById('v').style.display='none'">✕</div>
-  <div id="slides"></div>
-</div>
-
 <div class="nav">
-  <span>🏠</span><span>🎬</span><span>➕</span><span>💬</span><span>👤</span>
+  <span>🏠</span><span>🎬</span><span>➕</span><span onclick="document.getElementById('chatM').style.display='block'">💬</span><span>👤</span>
 </div>
 
-<div class="modal" id="m">
+<div class="modal" id="chatM">
   <div class="modal-content">
-    <input type="file" id="inImg" accept="image/*" onchange="previewImg(event)">
-    <input type="text" id="inName" placeholder="Ism va Familiya">
-    <textarea id="inBio" placeholder="Bio va tarjimai hol"></textarea>
-    <button onclick="save()" style="padding:10px; width:100%; background:#0095f6; color:#fff; border:none; border-radius:5px; cursor:pointer;">Saqlash</button>
-    <button onclick="document.getElementById('m').style.display='none'" style="padding:10px; width:100%; margin-top:5px; background:transparent; border:1px solid #444; color:#fff; cursor:pointer;">Yopish</button>
+    <input type="text" placeholder="Qidirish...">
+    <textarea placeholder="Xabar yozing..."></textarea>
+    <button onclick="document.getElementById('chatM').style.display='none'" style="width:100%; padding:10px; background:#0095f6;">Yuborish</button>
+    <button onclick="document.getElementById('chatM').style.display='none'" style="width:100%; padding:10px; background:transparent;">Yopish</button>
+  </div>
+</div>
+
+<div class="modal" id="editM">
+  <div class="modal-content">
+    <input type="text" id="inName" placeholder="Ism Familiya">
+    <textarea id="inBio" placeholder="Bio"></textarea>
+    <button onclick="save()" style="width:100%; padding:10px; background:#0095f6;">Saqlash</button>
+  </div>
+</div>
+
+<div class="viewer" id="v">
+  <div class="viewer-actions">
+    <span onclick="this.style.color='red'">♡</span>
+    <span onclick="document.getElementById('chatM').style.display='block'">💬</span>
+    <span onclick="document.getElementById('chatM').style.display='block'">✈️</span>
   </div>
 </div>
 
 <script>
-  const posts = [{img:"https://picsum.photos/500/900?1"}, {img:"https://picsum.photos/500/900?2"}];
   const g = document.getElementById('grid');
-  const s = document.getElementById('slides');
-  let newImgUrl = "";
+  [1,2,3].forEach(i => g.innerHTML += `<div class="item" onclick="document.getElementById('v').style.display='block'"><img src="https://picsum.photos/500/500?${i}"></div>`);
 
-  posts.forEach((p,i) => {
-    g.innerHTML += `<div class="item" onclick="openV(${i})"><img src="${p.img}"></div>`;
-    s.innerHTML += `<div class="slide"><img src="${p.img}"><div class="viewer-actions"><span onclick="this.classList.toggle('liked'); this.innerText = this.classList.contains('liked') ? '♥' : '♡'">♡</span><span>💬</span><span>✈️</span></div></div>`;
-  });
-
-  function previewImg(e) { if(e.target.files[0]) newImgUrl = URL.createObjectURL(e.target.files[0]); }
   function save() {
-    if(newImgUrl) document.getElementById('ava').src = newImgUrl;
-    const name = document.getElementById('inName').value;
-    const bio = document.getElementById('inBio').value;
-    if(name || bio) document.getElementById('bioBox').innerHTML = `<b>${name}</b><br>${bio}`;
-    document.getElementById('m').style.display = 'none';
-  }
-  function openV(i) {
-    const v = document.getElementById('v');
-    v.style.display = 'block';
-    v.scrollTop = i * window.innerHeight;
+    const n = document.getElementById('inName').value;
+    const b = document.getElementById('inBio').value;
+    if(n || b) document.getElementById('bioBox').innerHTML = `<b>${n}</b><br>${b}`;
+    document.getElementById('editM').style.display='none';
   }
 </script>
 
