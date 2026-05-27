@@ -5,207 +5,107 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>GRWM — Profil</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #000; color: #fff; min-height: 100vh; padding-bottom: 90px; }
     
-    /* PROFIL SHAPKASI (MINIMAL INSTAGRAM STYLE) */
     .profile-header { max-width: 450px; margin: 0 auto; padding: 25px 20px 15px; }
-    
-    /* Rasm va Statistika qatori */
     .profile-top-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; gap: 15px; }
-    
     .avatar-container { width: 84px; height: 84px; flex-shrink: 0; }
     .profile-avatar { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 1px solid rgba(255,255,255,0.1); background: #111; }
-    
     .stats-container { display: flex; flex-grow: 1; justify-content: space-around; text-align: center; gap: 5px; }
     .stat-item { display: flex; flex-direction: column; min-width: 60px; }
     .stat-count { font-size: 16px; font-weight: 700; color: #fff; }
     .stat-label { font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 2px; text-transform: lowercase; }
 
-    /* Ism va Bio qismi */
     .profile-bio-section { text-align: left; margin-bottom: 20px; }
     .profile-name { font-size: 15px; font-weight: 700; letter-spacing: 0.3px; margin-bottom: 3px; }
     .profile-username { font-size: 12px; color: rgba(255,255,255,0.4); margin-bottom: 6px; }
     .profile-bio-box { font-size: 13px; color: rgba(255,255,255,0.85); line-height: 1.4; white-space: pre-line; word-break: break-word; }
 
-    /* MINIMAL TAHRIRLASH TUGMASI */
-    .edit-btn { width: 100%; background: #111; color: #fff; border: 1px solid rgba(255,255,255,0.12); padding: 10px; font-size: 13px; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background 0.2s; }
-    .edit-btn:active { background: #222; }
+    .edit-btn { width: 100%; background: #111; color: #fff; border: 1px solid rgba(255,255,255,0.12); padding: 10px; font-size: 13px; font-weight: 600; border-radius: 6px; cursor: pointer; }
 
-    /* POSTLAR SETKASI (GRID O'LCHAMI) */
     .profile-posts-grid { max-width: 600px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; padding: 2px; border-top: 1px solid rgba(255,255,255,0.08); }
     .grid-item { position: relative; width: 100%; padding-top: 100%; background: #111; overflow: hidden; cursor: pointer; }
-    .grid-item img, .grid-item video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
-    .grid-item .video-icon { position: absolute; top: 8px; right: 8px; font-size: 12px; opacity: 0.8; }
+    .grid-item img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+    .video-icon { position: absolute; top: 8px; right: 8px; font-size: 12px; opacity: 0.8; }
 
-    /* TAHRIRLASH MODAL OYNASI (MINIMAL) */
-    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: flex; justify-content: center; align-items: center; z-index: 2000; opacity: 0; visibility: hidden; transition: all 0.2s ease; padding: 20px; }
-    .modal-overlay.open { opacity: 1; visibility: visible; }
-    .edit-modal { width: 100%; max-width: 320px; text-align: center; }
-    .modal-title { font-size: 15px; font-weight: 700; margin-bottom: 25px; letter-spacing: 1px; text-transform: uppercase; }
+    .modal-overlay, .post-viewer-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: flex; justify-content: center; align-items: center; z-index: 2000; opacity: 0; visibility: hidden; transition: all 0.2s ease; }
+    .modal-overlay.open, .post-viewer-overlay.open { opacity: 1; visibility: visible; }
+    .post-viewer-overlay { z-index: 3000; flex-direction: column; }
     
-    .min-input { width: 100%; background: #111; border: 1px solid rgba(255,255,255,0.08); padding: 14px; color: #fff; font-size: 16px; border-radius: 8px; outline: none; margin-bottom: 12px; font-family: inherit; }
-    .min-input:focus { border-color: rgba(255,255,255,0.2); }
-    textarea.min-input { resize: none; height: 80px; font-size: 15px; }
+    .edit-modal { width: 100%; max-width: 320px; padding: 20px; text-align: center; }
+    .min-input { width: 100%; background: #111; border: 1px solid rgba(255,255,255,0.08); padding: 14px; color: #fff; font-size: 16px; border-radius: 8px; margin-bottom: 12px; }
+    .action-btn { width: 100%; background: #fff; color: #000; border: none; padding: 14px; font-weight: 700; border-radius: 8px; cursor: pointer; margin-top: 10px; }
+    .action-btn-sec { width: 100%; background: #111; color: #fff; border: 1px solid rgba(255,255,255,0.08); padding: 14px; font-weight: 700; border-radius: 8px; cursor: pointer; margin-top: 8px; }
 
-    .action-btn { width: 100%; background: #fff; color: #000; border: none; padding: 14px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; border-radius: 8px; cursor: pointer; margin-top: 15px; }
-    .action-btn-sec { width: 100%; background: #111; color: #fff; border: 1px solid rgba(255,255,255,0.08); padding: 14px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; border-radius: 8px; cursor: pointer; margin-top: 8px; }
+    .viewer-media-box { width: 100%; max-width: 450px; aspect-ratio: 1/1; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+    .viewer-media-box img { width: 100%; height: 100%; object-fit: contain; }
+    .viewer-close { position: absolute; top: 20px; right: 20px; background: none; border: none; color: #fff; font-size: 28px; cursor: pointer; }
+    .like-btn { font-size: 30px; background: none; border: none; color: #fff; cursor: pointer; margin-top: 20px; }
+    .like-btn.liked { color: #ff3040; }
 
-    /* PASTKI NAVIGATSIYA BAR */
     .bottom-bar { position: fixed; bottom: 0; left: 0; width: 100%; height: 65px; background: #000; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
-    .nav-btn { background: none; border: none; color: rgba(255, 255, 255, 0.4); font-size: 24px; cursor: pointer; outline: none; }
-    .nav-btn.active { color: #ffffff; }
+    .nav-btn { background: none; border: none; color: rgba(255, 255, 255, 0.4); font-size: 24px; cursor: pointer; }
+    .nav-btn.active { color: #fff; }
   </style>
 </head>
 <body>
 
-  <!-- PROFIL INTERFEYSI -->
   <div class="profile-header">
-    
-    <!-- Rasm va Statistika -->
     <div class="profile-top-row">
-      <div class="avatar-container">
-        <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="profile-avatar" id="displayAvatar">
-      </div>
+      <div class="avatar-container"><img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="profile-avatar" id="displayAvatar"></div>
       <div class="stats-container">
-        <div class="stat-item">
-          <span class="stat-count" id="postCount">6</span>
-          <span class="stat-label">postlar</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-count">1.2K</span>
-          <span class="stat-label">obunachilar</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-count">348</span>
-          <span class="stat-label">obunalar</span>
-        </div>
+        <div class="stat-item"><span class="stat-count">6</span><span class="stat-label">postlar</span></div>
+        <div class="stat-item"><span class="stat-count">1.2K</span><span class="stat-label">obunachilar</span></div>
       </div>
     </div>
-    
-    <!-- Ism va Bio -->
     <div class="profile-bio-section">
       <h2 class="profile-name" id="displayName" data-name="Muslimaxon" data-surname="Bekpolatova">Muslimaxon Bekpolatova</h2>
       <p class="profile-username">@muslima_dev</p>
-      <div class="profile-bio-box" id="displayBio">Digital Creator ✨
-Minimalism & Tech style.
-Focusing on clean interfaces.</div>
+      <div class="profile-bio-box" id="displayBio">Digital Creator ✨</div>
     </div>
-    
-    <!-- Tahrirlash tugmasi -->
     <button class="edit-btn" onclick="openEditModal()">Profilni tahrirlash</button>
   </div>
 
-  <!-- POSTLAR GRID -->
   <div class="profile-posts-grid">
-    <div class="grid-item">
-      <img src="https://images.unsplash.com/photo-1511556532299-8f662fc26c06?q=80&w=300&auto=format&fit=crop" alt="post">
-    </div>
-    <div class="grid-item">
-      <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=300&auto=format&fit=crop" alt="post">
-      <span class="video-icon">🎬</span>
-    </div>
-    <div class="grid-item">
-      <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=300&auto=format&fit=crop" alt="post">
-    </div>
-    <div class="grid-item">
-      <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=300&auto=format&fit=crop" alt="post">
-    </div>
-    <div class="grid-item">
-      <img src="https://images.unsplash.com/photo-1491553895911-0055eca6402d?q=80&w=300&auto=format&fit=crop" alt="post">
-      <span class="video-icon">🎬</span>
-    </div>
-    <div class="grid-item">
-      <img src="https://images.unsplash.com/photo-1560343090-f0409e92791a?q=80&w=300&auto=format&fit=crop" alt="post">
-    </div>
+    <div class="grid-item" onclick="openPostViewer('https://images.unsplash.com/photo-1511556532299-8f662fc26c06?w=500')"><img src="https://images.unsplash.com/photo-1511556532299-8f662fc26c06?w=300"></div>
+    <div class="grid-item" onclick="openPostViewer('https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500')"><img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300"><span class="video-icon">🎬</span></div>
+    <div class="grid-item" onclick="openPostViewer('https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500')"><img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300"></div>
   </div>
 
-  <!-- TAHRIRLASH MODAL OYNASI -->
+  <div class="post-viewer-overlay" id="postViewer">
+    <button class="viewer-close" onclick="closePostViewer()">✕</button>
+    <div class="viewer-media-box"><img src="" id="viewerImg"></div>
+    <button class="like-btn" id="viewerLikeBtn" onclick="toggleLike()">♡</button>
+  </div>
+
   <div class="modal-overlay" id="editModalOverlay">
     <div class="edit-modal">
-      <div class="modal-title">Tahrirlash</div>
-      
-      <input type="text" class="min-input" placeholder="Ism" id="editNameInp" autocomplete="off">
-      <input type="text" class="min-input" placeholder="Familiya" id="editSurnameInp" autocomplete="off">
-      <textarea class="min-input" placeholder="Bio (Tarjimai hol)" id="editBioInp" maxlength="150"></textarea>
-      
-      <button class="action-btn-sec" style="font-size:11px;" onclick="document.getElementById('modalFileInp').click()">Profil rasmini o'zgartirish</button>
-      <input type="file" id="modalFileInp" accept="image/*" style="display:none" onchange="previewModalAvatar(event)">
-      
+      <input type="text" class="min-input" id="editNameInp" placeholder="Ism">
+      <input type="text" class="min-input" id="editSurnameInp" placeholder="Familiya">
+      <textarea class="min-input" id="editBioInp" placeholder="Bio"></textarea>
       <button class="action-btn" onclick="saveProfileChanges()">Saqlash</button>
       <button class="action-btn-sec" onclick="closeEditModal()">Yopish</button>
     </div>
   </div>
 
-  <!-- PASTKI NAV BAR -->
   <div class="bottom-bar">
-    <button class="nav-btn" onclick="location.href='home.html'">🏠</button>
-    <button class="nav-btn" onclick="location.href='reels.html'">🎬</button>
-    <button class="nav-btn" onclick="location.href='upload.html'">➕</button>
-    <button class="nav-btn" onclick="location.href='chat.html'">💬</button>
-    <button class="nav-btn active" onclick="location.href='profile.html'">👤</button>
+    <button class="nav-btn">🏠</button><button class="nav-btn">🎬</button><button class="nav-btn">➕</button><button class="nav-btn active">👤</button>
   </div>
 
   <script>
-    let temporaryAvatarUrl = "";
-
-    function openEditModal() {
-      const nameEl = document.getElementById('displayName');
-      
-      document.getElementById('editNameInp').value = nameEl.getAttribute('data-name') || "";
-      document.getElementById('editSurnameInp').value = nameEl.getAttribute('data-surname') || "";
-      document.getElementById('editBioInp').value = document.getElementById('displayBio').innerText || "";
-      
-      document.getElementById('editModalOverlay').classList.add('open');
-    }
-
-    function closeEditModal() {
-      document.getElementById('editModalOverlay').classList.remove('open');
-      // Xotirani tozalash (Memory leak oldini olish)
-      if (temporaryAvatarUrl && temporaryAvatarUrl.startsWith('blob:')) {
-        URL.revokeObjectURL(temporaryAvatarUrl);
-      }
-      temporaryAvatarUrl = ""; 
-    }
-
-    function previewModalAvatar(event) {
-      const file = event.target.files[0];
-      if (file) {
-        if (temporaryAvatarUrl && temporaryAvatarUrl.startsWith('blob:')) {
-          URL.revokeObjectURL(temporaryAvatarUrl);
-        }
-        temporaryAvatarUrl = URL.createObjectURL(file);
-      }
-    }
-
+    function openPostViewer(src) { document.getElementById('viewerImg').src = src; document.getElementById('postViewer').classList.add('open'); }
+    function closePostViewer() { document.getElementById('postViewer').classList.remove('open'); }
+    function toggleLike() { const btn = document.getElementById('viewerLikeBtn'); btn.classList.toggle('liked'); btn.innerText = btn.classList.contains('liked') ? '♥' : '♡'; }
+    function openEditModal() { document.getElementById('editModalOverlay').classList.add('open'); }
+    function closeEditModal() { document.getElementById('editModalOverlay').classList.remove('open'); }
     function saveProfileChanges() {
-      const newName = document.getElementById('editNameInp').value.trim();
-      const newSurname = document.getElementById('editSurnameInp').value.trim();
-      const newBio = document.getElementById('editBioInp').value.trim();
-
-      if (newName === "") {
-        alert("Iltimos, ismingizni kiriting!");
-        return;
-      }
-
-      // Ism va familiyani saqlash
-      const nameEl = document.getElementById('displayName');
-      nameEl.setAttribute('data-name', newName);
-      nameEl.setAttribute('data-surname', newSurname);
-      nameEl.innerText = newSurname !== "" ? `${newName} ${newSurname}` : newName;
-
-      // Bioni saqlash
-      document.getElementById('displayBio').innerText = newBio !== "" ? newBio : "Bio kiritilmagan.";
-
-      // Rasmni o'zgartirish
-      if (temporaryAvatarUrl !== "") {
-        document.getElementById('displayAvatar').src = temporaryAvatarUrl;
-      }
-
-      // Oynani yopish
-      document.getElementById('editModalOverlay').classList.remove('open');
-      temporaryAvatarUrl = "";
+        const name = document.getElementById('editNameInp').value;
+        const surname = document.getElementById('editSurnameInp').value;
+        if(name) document.getElementById('displayName').innerText = name + ' ' + surname;
+        document.getElementById('displayBio').innerText = document.getElementById('editBioInp').value;
+        closeEditModal();
     }
   </script>
 </body>
-        </html>
+                                                                        </html>
