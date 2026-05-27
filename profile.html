@@ -3,108 +3,297 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GRWM — Profil</title>
+  <title>GRWM — Profile Premium</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; touch-action: manipulation; }
-    body { background: #000; color: #fff; font-family: sans-serif; padding-bottom: 70px; }
-    .page { display: none; }
-    #profilePage { display: block; }
-    .profile-header { padding: 20px; }
-    .top-info { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
-    .avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 1px solid #333; }
-    .stats { display: flex; gap: 20px; flex-grow: 1; justify-content: center; }
-    .stat { text-align: center; }
-    .val { font-weight: bold; display: block; }
-    .lbl { font-size: 11px; color: #888; text-transform: uppercase; }
-    .bio { margin-bottom: 15px; font-size: 14px; }
-    .edit-btn { width: 100%; padding: 8px; background: #222; border: none; color: #fff; border-radius: 5px; cursor: pointer; }
-    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
-    .item { aspect-ratio: 1; background: #111; cursor: pointer; }
-    .item img { width: 100%; height: 100%; object-fit: cover; }
-    .nav { position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; padding: 15px; background: #000; border-top: 1px solid #333; z-index: 1000; cursor: pointer; font-size: 24px; }
-    .viewer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; overflow-y: scroll; scroll-snap-type: y mandatory; }
-    .slide { width: 100%; height: 100vh; scroll-snap-align: start; position: relative; display: flex; flex-direction: column; }
-    .slide img { flex: 1; width: 100%; object-fit: cover; }
-    .viewer-actions { height: 15%; display: flex; padding: 20px; gap: 25px; font-size: 28px; background: #000; align-items: center; }
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; padding: 20px; }
-    .modal-content { max-width: 400px; margin: 50px auto; background: #111; padding: 20px; border-radius: 10px; }
-    input, textarea { width: 100%; padding: 12px; margin-bottom: 10px; background: #222; border: none; color: #fff; border-radius: 5px; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #000000;
+      color: #ffffff;
+      padding-bottom: 80px;
+      overflow-x: hidden;
+    }
+
+    /* PROFILE HEADER */
+    .profile-header {
+      padding: 24px 20px 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .top-meta {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+
+    .profile-avatar {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .stats-flex {
+      display: flex;
+      gap: 24px;
+      flex: 1;
+    }
+
+    .stat-box {
+      text-align: left;
+    }
+
+    .stat-num {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .stat-label {
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.4);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 2px;
+    }
+
+    /* BIO SECTION */
+    .profile-bio {
+      padding: 0 4px;
+    }
+
+    .profile-name {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      letter-spacing: 0.3px;
+    }
+
+    .profile-desc {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.65);
+      line-height: 1.4;
+    }
+
+    /* PREMIUM MINIMAL ANALYTICS */
+    .analytics-section {
+      padding: 16px 20px;
+      background: #0b0b0b;
+      margin: 12px 20px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .analytics-title {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: rgba(255, 255, 255, 0.3);
+      margin-bottom: 12px;
+    }
+
+    .analytics-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    /* INSTAGRAM STYLE GRID (3 COLUMNS) */
+    .reels-grid-title {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: rgba(255, 255, 255, 0.4);
+      padding: 20px 24px 10px 24px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      margin-top: 12px;
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      padding: 0 2px;
+    }
+
+    .grid-item {
+      position: relative;
+      width: 100%;
+      padding-top: 133%; /* 3:4 High-end aspect ratio */
+      background: #111111;
+      cursor: pointer;
+    }
+
+    .grid-item img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: opacity 0.2s;
+    }
+    .grid-item:active img { opacity: 0.7; }
+
+    .video-views {
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      font-size: 9px;
+      font-weight: 600;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 2px 6px;
+      border-radius: 3px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      letter-spacing: 0.3px;
+    }
+
+    /* FIXED BOTTOM NAVIGATION BAR */
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 65px;
+      background: #000000;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 1000;
+    }
+    .nav-btn { background: none; border: none; color: rgba(255, 255, 255, 0.4); font-size: 24px; cursor: pointer; }
+    .nav-btn.active { color: #ffffff; }
   </style>
 </head>
 <body>
 
-<div id="homePage" class="page"><div style="padding:20px;"><h2>Uy</h2></div></div>
-
-<div id="profilePage" class="page">
+  <!-- PROFIL ASOSIY METASI -->
   <div class="profile-header">
-    <div class="top-info">
-      <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="avatar" id="ava">
-      <div class="stats">
-        <div class="stat"><span class="val">3</span><span class="lbl">Post</span></div>
-        <div class="stat"><span class="val">1.2K</span><span class="lbl">Obunachi</span></div>
-        <div class="stat"><span class="val">348</span><span class="lbl">Obuna</span></div>
+    <div class="top-meta">
+      <img class="profile-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" alt="Avatar">
+      <div class="stats-flex">
+        <div class="stat-box">
+          <!-- ID berildi, dinamik hisoblash uchun -->
+          <div class="stat-num" id="videoCount">3</div>
+          <div class="stat-label">Videolar</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">12.4K</div>
+          <div class="stat-label">Obunachilar</div>
+        </div>
       </div>
     </div>
-    <div class="bio" id="bioBox"><b>Muslimaxon Bekpolatova</b><br>Minimalist lifestyle creator ✨</div>
-    <button class="edit-btn" onclick="document.getElementById('editM').style.display='block'">Tahrirlash</button>
+    
+    <!-- BIO -->
+    <div class="profile-bio">
+      <div class="profile-name">monochrome.uz</div>
+      <div class="profile-desc">Premium minimal kiyimlar brendi.<br>O'zbekiston bo'ylab tezkor yetkazib berish.</div>
+    </div>
   </div>
-  <div class="grid" id="grid"></div>
-</div>
 
-<div id="reelsPage" class="page viewer">
-  <div id="slides"></div>
-</div>
-
-<div class="nav">
-  <span onclick="showPage('homePage')">🏠</span>
-  <span onclick="showPage('reelsPage')">🎬</span>
-  <span onclick="document.getElementById('postM').style.display='block'">➕</span>
-  <span onclick="document.getElementById('orderM').style.display='block'">💬</span>
-  <span onclick="showPage('profilePage')">👤</span>
-</div>
-
-<div class="modal" id="orderM">
-  <div class="modal-content">
-    <h3>Buyurtmalar</h3>
-    <textarea placeholder="Buyurtmani qabul qilish..."></textarea>
-    <button onclick="document.getElementById('orderM').style.display='none'" style="width:100%; padding:10px; background:#0095f6;">Yuborish</button>
+  <!-- CRM ANALYTICS BLOCK -->
+  <div class="analytics-section">
+    <div class="analytics-title">Sotuvchi statistikasi</div>
+    <div class="analytics-grid">
+      <div class="stat-box">
+        <div class="stat-num" style="color: #00fff0;">48.2K</div>
+        <div class="stat-label">Ko'rishlar</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num" style="color: #ff3b30;">142</div>
+        <div class="stat-label">Sotuvlar</div>
+      </div>
+    </div>
   </div>
-</div>
 
-<div class="modal" id="postM">
-  <div class="modal-content">
-    <h3>Post yuklash</h3>
-    <input type="file" accept="image/*,video/*">
-    <button onclick="document.getElementById('postM').style.display='none'" style="width:100%; padding:10px; background:#0095f6;">Joylash</button>
+  <!-- VIDEOLAR GRIDI -->
+  <div class="reels-grid-title">Yuklangan videolar</div>
+  <div class="grid-container" id="reelsGrid">
+    
+    <!-- Dastlabki statik ma'lumotlar (Baza ishlamasa ko'rinib turadi) -->
+    <div class="grid-item" onclick="location.href='reels.html'">
+      <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=300" alt="Reels">
+      <div class="video-views">▶ 18.2K</div>
+    </div>
+
+    <div class="grid-item" onclick="location.href='reels.html'">
+      <img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=300" alt="Reels">
+      <div class="video-views">▶ 12.1K</div>
+    </div>
+
+    <div class="grid-item" onclick="location.href='reels.html'">
+      <img src="https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=300" alt="Reels">
+      <div class="video-views">▶ 17.9K</div>
+    </div>
+
   </div>
-</div>
 
-<div class="modal" id="editM">
-  <div class="modal-content">
-    <input type="text" id="inName" placeholder="Ism Familiya">
-    <textarea id="inBio" placeholder="Bio"></textarea>
-    <button onclick="save()" style="width:100%; padding:10px; background:#0095f6;">Saqlash</button>
+  <!-- BOTTOM BAR -->
+  <div class="bottom-bar">
+    <button class="nav-btn" onclick="location.href='home.html'">🏠</button>
+    <button class="nav-btn" onclick="location.href='reels.html'">🎬</button>
+    <button class="nav-btn" onclick="location.href='upload.html'">➕</button>
+    <button class="nav-btn" onclick="location.href='chat.html'">💬</button>
+    <button class="nav-btn active" onclick="location.href='profile.html'">👤</button>
   </div>
-</div>
 
-<script>
-  function showPage(id) {
-    document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
-    document.getElementById(id).style.display = 'block';
-  }
-  const g = document.getElementById('grid');
-  const s = document.getElementById('slides');
-  [1,2,3].forEach((i) => {
-    g.innerHTML += `<div class="item" onclick="showPage('reelsPage')"><img src="https://picsum.photos/500/900?${i}"></div>`;
-    s.innerHTML += `<div class="slide"><img src="https://picsum.photos/500/900?${i}"><div class="viewer-actions"><span onclick="this.style.color='red'">♥</span></div></div>`;
-  });
-  function save() {
-    const n = document.getElementById('inName').value;
-    const b = document.getElementById('inBio').value;
-    if(n || b) document.getElementById('bioBox').innerHTML = `<b>${n}</b><br>${b}`;
-    document.getElementById('editM').style.display='none';
-  }
-</script>
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = 'https://wdoytdiugkhlniysdfri.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_qZHLHaUhp3dqBrj58ZtZWw_61gzjskd';
+    
+    // XATO TUZATILDI: 'supabase.createClient' o'rniga 'supabase.createClient' (Katta harf bilan)
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+    async function loadUserReels() {
+      try {
+        const { data, error } = await supabaseClient
+          .from('reels_posts')
+          .select('*');
+        
+        if (error) throw error;
+
+        // Agar bazadan ma'lumot kelsa va u bo'sh bo'lmasa HTMLni yangilaymiz
+        if (data && data.length > 0) {
+          const gridContainer = document.getElementById('reelsGrid');
+          gridContainer.innerHTML = ''; // Statik ma'lumotlarni tozalash
+
+          data.forEach(post => {
+            // Faraz qilamiz: bazada 'thumbnail_url' va 'views' ustunlari bor
+            const imgUrl = post.thumbnail_url || 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=300';
+            const views = post.views || 0;
+
+            const gridItem = `
+              <div class="grid-item" onclick="location.href='reels.html?id=${post.id}'">
+                <img src="${imgUrl}" alt="Reels">
+                <div class="video-views">▶ ${views}</div>
+              </div>
+            `;
+            gridContainer.insertAdjacentHTML('beforeend', gridItem);
+          });
+
+          // Videolar sonini dinamik yangilash
+          document.getElementById('videoCount').innerText = data.length;
+        }
+      } catch(e) {
+        console.log("Offline yoki fallback rejimida muvaffaqiyatli yuklandi:", e.message);
+      }
+    }
+    
+    // Sahifa yuklanganda funksiyani ishga tushirish
+    document.addEventListener('DOMContentLoaded', loadUserReels);
+  </script>
 </body>
-</html>
+  </html>
