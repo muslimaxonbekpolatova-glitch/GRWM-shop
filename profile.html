@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Instagram Profile Premium</title>
+  <title>Instagram Profile Fixed</title>
   <style>
     * {
       margin: 0;
@@ -58,10 +58,6 @@
       margin-bottom: 12px;
     }
 
-    .avatar-wrapper {
-      position: relative;
-    }
-
     .insta-avatar {
       width: 86px;
       height: 86px;
@@ -86,7 +82,6 @@
     .stat-text {
       font-size: 13px;
       color: #a8a8a8;
-      font-weight: 400;
     }
 
     /* BIO SECTION */
@@ -104,7 +99,7 @@
       color: #f5f5f5;
     }
 
-    /* INSTAGRAM BUTTONS (EDIT / SHARE) */
+    /* INSTAGRAM BUTTONS */
     .profile-actions {
       display: flex;
       gap: 8px;
@@ -121,14 +116,11 @@
       font-size: 14px;
       font-weight: 600;
       cursor: pointer;
-      text-align: center;
     }
 
-    .insta-btn:active {
-      background: #2c2c2e;
-    }
+    .insta-btn:active { background: #2c2c2e; }
 
-    /* HIGHLIGHTS (STORIES) */
+    /* STORIES HIGHLIGHTS */
     .highlights-scroll {
       display: flex;
       gap: 16px;
@@ -158,12 +150,9 @@
       font-size: 24px;
     }
 
-    .highlight-text {
-      font-size: 11px;
-      color: #f5f5f5;
-    }
+    .highlight-text { font-size: 11px; color: #f5f5f5; }
 
-    /* TABS (GRID / REELS / TAGGED) */
+    /* TABS BAR */
     .profile-tabs {
       display: flex;
       border-top: 1px solid #262626;
@@ -212,9 +201,9 @@
       position: absolute;
       top: 8px;
       right: 8px;
-      font-size: 14px;
-      background: rgba(0,0,0,0.4);
-      padding: 2px 4px;
+      font-size: 12px;
+      background: rgba(0,0,0,0.5);
+      padding: 2px 6px;
       border-radius: 4px;
     }
 
@@ -246,7 +235,6 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
-      background: #000000;
       touch-action: none;
     }
 
@@ -274,7 +262,6 @@
       justify-content: center;
     }
 
-    /* BLACK OVERLAY FOR LIKES, COMMENTS UNDER VIDEO */
     .reels-bottom-overlay {
       position: absolute;
       bottom: 0;
@@ -289,83 +276,18 @@
       pointer-events: none;
     }
 
-    .reels-user-info, .reels-interaction-row, .comment-box {
-      pointer-events: auto;
-    }
+    .reels-user-info, .reels-interaction-row, .comment-box { pointer-events: auto; }
+    .reels-user-info { display: flex; align-items: center; gap: 10px; }
+    .reels-user-info img { width: 32px; height: 32px; border-radius: 50%; }
+    .reels-user-name { font-size: 14px; font-weight: 600; }
+    .reels-interaction-row { display: flex; align-items: center; gap: 22px; }
+    .action-row-btn { background: none; border: none; color: white; font-size: 24px; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+    .action-row-btn span { font-size: 14px; color: #ffffff; font-weight: 500; }
 
-    .reels-user-info {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .reels-user-info img {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      border: 1px solid rgba(255,255,255,0.2);
-    }
-
-    .reels-user-name {
-      font-size: 14px;
-      font-weight: 600;
-    }
-
-    .reels-interaction-row {
-      display: flex;
-      align-items: center;
-      gap: 22px;
-    }
-
-    .action-row-btn {
-      background: none;
-      border: none;
-      color: white;
-      font-size: 24px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .action-row-btn span {
-      font-size: 14px;
-      color: #ffffff;
-      font-weight: 500;
-    }
-
-    /* COMMENT INPUT FIELD */
-    .comment-box {
-      width: 100%;
-    }
-
-    .comment-input-wrapper {
-      display: flex;
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(15px);
-      -webkit-backdrop-filter: blur(15px);
-      border-radius: 24px;
-      padding: 8px 16px;
-      align-items: center;
-    }
-
-    .comment-input-wrapper input {
-      flex: 1;
-      background: none;
-      border: none;
-      color: white;
-      font-size: 14px;
-      outline: none;
-    }
-
-    .comment-input-wrapper button {
-      background: none;
-      border: none;
-      color: #3897f0;
-      font-weight: 600;
-      font-size: 14px;
-      cursor: pointer;
-    }
+    .comment-box { display: none; width: 100%; }
+    .comment-input-wrapper { display: flex; background: rgba(255, 255, 255, 0.15); border-radius: 24px; padding: 8px 16px; align-items: center; }
+    .comment-input-wrapper input { flex: 1; background: none; border: none; color: white; font-size: 14px; outline: none; }
+    .comment-input-wrapper button { background: none; border: none; color: #3897f0; font-weight: 600; font-size: 14px; cursor: pointer; }
 
     /* EDIT PROFILE MODAL */
     .edit-modal {
@@ -393,42 +315,13 @@
       gap: 14px;
     }
 
-    .edit-input-group {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
+    .edit-input-group { display: flex; flex-direction: column; gap: 4px; }
+    .edit-input-group label { font-size: 12px; color: #a8a8a8; }
+    .edit-input-group input, .edit-input-group textarea { background: #000000; border: 1px solid #262626; border-radius: 6px; padding: 8px; color: #ffffff; outline: none; font-family: inherit; }
+    .edit-modal-actions { display: flex; gap: 10px; }
+    .edit-btn { flex: 1; padding: 8px; border-radius: 6px; font-weight: 600; cursor: pointer; border: none; }
 
-    .edit-input-group label {
-      font-size: 12px;
-      color: #a8a8a8;
-    }
-
-    .edit-input-group input, .edit-input-group textarea {
-      background: #000000;
-      border: 1px solid #262626;
-      border-radius: 6px;
-      padding: 8px;
-      color: #ffffff;
-      outline: none;
-      font-family: inherit;
-    }
-
-    .edit-modal-actions {
-      display: flex;
-      gap: 10px;
-    }
-
-    .edit-btn {
-      flex: 1;
-      padding: 8px;
-      border-radius: 6px;
-      font-weight: 600;
-      cursor: pointer;
-      border: none;
-    }
-
-    /* FIXED INSTAGRAM BOTTOM BAR */
+    /* FOOTER BAR */
     .bottom-bar {
       position: fixed;
       bottom: 0;
@@ -448,103 +341,63 @@
 </head>
 <body>
 
-  <!-- INSTAGRAM NAVBAR -->
   <div class="instagram-navbar">
     <div class="nav-username" id="navUsername">monochrome.uz</div>
-    <div class="nav-right-icons">
-      <span>➕</span>
-      <span>☰</span>
-    </div>
+    <div class="nav-right-icons"><span>➕</span><span>☰</span></div>
   </div>
 
-  <!-- PROFILE INFO BLOCK -->
   <div class="profile-info-container">
     <div class="profile-main-row">
-      <div class="avatar-wrapper">
-        <img class="profile-avatar insta-avatar" id="profileAvatarImg" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200" alt="Avatar">
+      <div>
+        <img class="insta-avatar" id="profileAvatarImg" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200" alt="Avatar">
       </div>
       <div class="stats-container">
-        <div>
-          <div class="stat-number" id="videoCount">3</div>
-          <div class="stat-text">Posts</div>
-        </div>
-        <div>
-          <div class="stat-number">12.4K</div>
-          <div class="stat-text">Followers</div>
-        </div>
-        <div>
-          <div class="stat-number">348</div>
-          <div class="stat-text">Following</div>
-        </div>
+        <div><div class="stat-number" id="videoCount">3</div><div class="stat-text">Posts</div></div>
+        <div><div class="stat-number">12.4K</div><div class="stat-text">Followers</div></div>
+        <div><div class="stat-number">348</div><div class="stat-text">Following</div></div>
       </div>
     </div>
 
-    <!-- BIO -->
     <div class="insta-bio">
       <div class="bio-name" id="profileNameTxt">monochrome.uz</div>
       <div class="bio-text" id="profileDescTxt">Premium minimal kiyimlar brendi.<br>O'zbekiston bo'ylab tezkor yetkazib berish.</div>
     </div>
 
-    <!-- ACTION BUTTONS -->
     <div class="profile-actions">
       <button class="insta-btn" onclick="openEditModal()">Edit Profile</button>
       <button class="insta-btn" onclick="shareProfile()">Share Profile</button>
     </div>
 
-    <!-- STORIES HIGHLIGHTS -->
     <div class="highlights-scroll">
-      <div class="highlight-item">
-        <div class="highlight-circle">✨</div>
-        <div class="highlight-text">New</div>
-      </div>
-      <div class="highlight-item">
-        <div class="highlight-circle">🖤</div>
-        <div class="highlight-text">Style</div>
-      </div>
-      <div class="highlight-item">
-        <div class="highlight-circle">📦</div>
-        <div class="highlight-text">Orders</div>
-      </div>
+      <div class="highlight-item"><div class="highlight-circle">✨</div><div class="highlight-text">New</div></div>
+      <div class="highlight-item"><div class="highlight-circle">🖤</div><div class="highlight-text">Style</div></div>
+      <div class="highlight-item"><div class="highlight-circle">📦</div><div class="highlight-text">Orders</div></div>
     </div>
   </div>
 
-  <!-- TABS BAR -->
   <div class="profile-tabs" id="profileTabs">
     <div class="tab-item active" onclick="switchTab(this, 'grid')">📋</div>
     <div class="tab-item" onclick="switchTab(this, 'reels')">🎬</div>
     <div class="tab-item" onclick="switchTab(this, 'tagged')">👤</div>
   </div>
 
-  <!-- INSTAGRAM GRID POSTS -->
-  <div class="instagram-grid" id="reelsGrid">
-    <!-- Dinamik yuklanadi -->
-  </div>
+  <div class="instagram-grid" id="reelsGrid"></div>
 
-  <!-- INSTAGRAM REELS FULL-SCREEN MODAL -->
   <div class="reels-modal" id="reelsModal">
     <div class="reels-viewer" id="reelsViewer">
       <button class="modal-close" onclick="closeReelsModal()">✕</button>
-      <img class="reels-main-img" id="modalImg" src="" alt="Reels content">
+      <img class="reels-main-img" id="modalImg" src="" alt="Reels">
       
-      <!-- Instagram overlay -->
       <div class="reels-bottom-overlay">
         <div class="reels-user-info">
           <img id="modalUserAvatar" src="" alt="User">
           <span class="reels-user-name" id="modalUserName">username</span>
         </div>
-
         <div class="reels-interaction-row">
-          <button class="action-row-btn" onclick="toggleLike()">
-            <span id="likeIcon">🤍</span> <span id="likeCount">1.2K</span>
-          </button>
-          <button class="action-row-btn" onclick="toggleCommentBox()">
-            💬 <span>42</span>
-          </button>
-          <button class="action-row-btn" onclick="shareVideo()">
-            ✈️
-          </button>
+          <button class="action-row-btn" onclick="toggleLike()"><span id="likeIcon">🤍</span> <span>1.2K</span></button>
+          <button class="action-row-btn" onclick="toggleCommentBox()">💬 <span>42</span></button>
+          <button class="action-row-btn" onclick="shareVideo()">✈️</button>
         </div>
-
         <div class="comment-box" id="commentBox">
           <div class="comment-input-wrapper">
             <input type="text" placeholder="Add a comment..." id="commentInput">
@@ -555,22 +408,12 @@
     </div>
   </div>
 
-  <!-- EDIT PROFILE MODAL -->
   <div class="edit-modal" id="editModal">
     <div class="edit-modal-content">
-      <h3 style="text-align: center; font-size: 16px; margin-bottom: 5px;">Edit Profile</h3>
-      <div class="edit-input-group">
-        <label>Photo URL</label>
-        <input type="text" id="editAvatarInput">
-      </div>
-      <div class="edit-input-group">
-        <label>Username / Name</label>
-        <input type="text" id="editNameInput">
-      </div>
-      <div class="edit-input-group">
-        <label>Bio</label>
-        <textarea id="editDescInput" rows="3"></textarea>
-      </div>
+      <h3 style="text-align: center; font-size: 16px;">Edit Profile</h3>
+      <div class="edit-input-group"><label>Photo URL</label><input type="text" id="editAvatarInput"></div>
+      <div class="edit-input-group"><label>Name</label><input type="text" id="editNameInput"></div>
+      <div class="edit-input-group"><label>Bio</label><textarea id="editDescInput" rows="3"></textarea></div>
       <div class="edit-modal-actions">
         <button class="edit-btn" style="background:#262626; color:white;" onclick="closeEditModal()">Cancel</button>
         <button class="edit-btn" style="background:#3897f0; color:white;" onclick="saveProfileChanges()">Save</button>
@@ -578,7 +421,6 @@
     </div>
   </div>
 
-  <!-- INSTAGRAM FOOTER BAR -->
   <div class="bottom-bar">
     <button class="nav-btn inactive">🏠</button>
     <button class="nav-btn inactive">🔍</button>
@@ -587,9 +429,9 @@
     <button class="nav-btn">👤</button>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    let currentReelsData = [
+    // Baza ulanmay qolsa, mana shu rasmlar avtomatik ochiladi (Test uchun rasmlar)
+    let defaultBackupData = [
       { thumbnail_url: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600', views: '18.2K' },
       { thumbnail_url: 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=600', views: '12.1K' },
       { thumbnail_url: 'https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=600', views: '17.9K' }
@@ -597,60 +439,31 @@
     let activeReelsIndex = 0;
     let selectedType = 'grid';
 
-    const SUPABASE_URL = 'https://wdoytdiugkhlniysdfri.supabase.co';
-    const SUPABASE_KEY = 'sb_publishable_qZHLHaUhp3dqBrj58ZtZWw_61gzjskd';
-    let supabaseClient = null;
-
-    try {
-      supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-    } catch(e) {
-      console.log("Supabase initialization skipped.");
-    }
-
     function renderGridItems() {
       const gridContainer = document.getElementById('reelsGrid');
       gridContainer.innerHTML = ''; 
 
-      if (selectedType !== 'grid' && selectedType !== 'reels') {
-        gridContainer.innerHTML = `<div class="empty-tab-msg">Photos and videos of you<br><span style="font-size:12px; color:#555;">When people tag you in photos or videos, they'll appear here.</span></div>`;
+      if (selectedType === 'tagged') {
+        gridContainer.innerHTML = `<div class="empty-tab-msg">Photos and videos of you<br><span style="font-size:12px; color:#555;">When people tag you, they'll appear here.</span></div>`;
         return;
       }
 
-      currentReelsData.forEach((post, index) => {
+      defaultBackupData.forEach((post, index) => {
         const gridItem = `
           <div class="grid-post" onclick="openReelsModalAtIndex(${index})">
             <img src="${post.thumbnail_url}" alt="Post">
-            <div class="reels-badge">🎬</div>
+            <div class="reels-badge">▶ ${post.views}</div>
           </div>
         `;
         gridContainer.insertAdjacentHTML('beforeend', gridItem);
       });
-      document.getElementById('videoCount').innerText = currentReelsData.length;
+      document.getElementById('videoCount').innerText = defaultBackupData.length;
     }
 
-    async function loadUserReels() {
-      if (!supabaseClient) {
-        renderGridItems();
-        return;
-      }
-      try {
-        const { data, error } = await supabaseClient.from('reels_posts').select('*');
-        if (error) throw error;
-        if (data && data.length > 0) {
-          currentReelsData = data.map(post => ({
-            thumbnail_url: post.thumbnail_url || 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=300',
-            views: post.views || '0'
-          }));
-        }
-      } catch(e) {
-        console.log("Offline or fallback mock data loaded.");
-      } finally {
-        renderGridItems();
-      }
-    }
-    document.addEventListener('DOMContentLoaded', loadUserReels);
+    // Sahifa yuklanishi bilan rasmlarni ekranga chiqarish
+    document.addEventListener('DOMContentLoaded', renderGridItems);
 
-    /* SWIPE & FULL SCREEN REELS LOGIC */
+    /* MODAL REELS SYSTEMS */
     let isLiked = false;
     let touchStartX = 0;
     let touchStartY = 0;
@@ -663,7 +476,7 @@
     }
 
     function renderActiveReel() {
-      const currentReel = currentReelsData[activeReelsIndex];
+      const currentReel = defaultBackupData[activeReelsIndex];
       if (!currentReel) return;
 
       document.getElementById('modalUserAvatar').src = document.getElementById('profileAvatarImg').src;
@@ -676,7 +489,7 @@
     }
 
     function nextReel() {
-      if (activeReelsIndex < currentReelsData.length - 1) {
+      if (activeReelsIndex < defaultBackupData.length - 1) {
         activeReelsIndex++;
         renderActiveReel();
       }
@@ -689,6 +502,7 @@
       }
     }
 
+    /* SWIPE EFFEKTI */
     const viewer = document.getElementById('reelsViewer');
     viewer.addEventListener('touchstart', (e) => {
       touchStartX = e.changedTouches[0].screenX;
@@ -700,23 +514,15 @@
     viewer.addEventListener('touchend', (e) => {
       const diffX = touchStartX - e.changedTouches[0].screenX;
       const diffY = touchStartY - e.changedTouches[0].screenY;
-
       if (Math.abs(diffY) > Math.abs(diffX)) {
         if (diffY > 60) nextReel();
         else if (diffY < -60) prevReel();
       }
     }, { passive: true });
 
-    viewer.addEventListener('wheel', (e) => {
-      e.preventDefault();
-      if (e.deltaY > 0) nextReel();
-      else if (e.deltaY < 0) prevReel();
-    }, { passive: false });
-
     function closeReelsModal() {
       document.getElementById('reelsModal').style.display = 'none';
-      document.body.style.overflow = ''; 
-      document.body.style.overflowX = 'hidden';
+      document.body.style.overflow = '';
     }
 
     function toggleLike() {
@@ -727,34 +533,41 @@
     function toggleCommentBox() {
       const box = document.getElementById('commentBox');
       box.style.display = (box.style.display === 'none' || box.style.display === '') ? 'block' : 'none';
-      if(box.style.display === 'block') document.getElementById('commentInput').focus();
     }
 
     function sendComment() {
-      const input = document.getElementById('commentInput');
-      if(input.value.trim() !== "") {
-        alert("Comment posted: " + input.value);
-        input.value = "";
-        document.getElementById('commentBox').style.display = 'none';
-      }
+      alert("Comment posted!");
+      document.getElementById('commentInput').value = "";
+      document.getElementById('commentBox').style.display = 'none';
     }
-
-    document.getElementById('commentInput').addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') sendComment();
-    });
 
     function shareVideo() { alert("Link copied!"); }
     function shareProfile() { alert("Profile link copied!"); }
 
-    /* TAB SWITCH LOGIC */
     function switchTab(element, type) {
-      const tabs = document.querySelectorAll('.tab-item');
-      tabs.forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.tab-item').forEach(tab => tab.classList.remove('active'));
       element.classList.add('active');
       selectedType = type;
       renderGridItems();
     }
 
-    /* EDIT PROFILE LOGIC */
+    /* EDIT PROFILE */
     function openEditModal() {
-      document.getElementById('editAvatarInput').value = document.getElementById('profileAvat
+      document.getElementById('editAvatarInput').value = document.getElementById('profileAvatarImg').src;
+      document.getElementById('editNameInput').value = document.getElementById('profileNameTxt').innerText;
+      document.getElementById('editDescInput').value = document.getElementById('profileDescTxt').innerHTML.replace(/<br\s*\/?>/g, "\n");
+      document.getElementById('editModal').style.display = 'flex';
+    }
+    function closeEditModal() { document.getElementById('editModal').style.display = 'none'; }
+    function saveProfileChanges() {
+      const name = document.getElementById('editNameInput').value;
+      if(!name) return;
+      document.getElementById('profileAvatarImg').src = document.getElementById('editAvatarInput').value;
+      document.getElementById('profileNameTxt').innerText = name;
+      document.getElementById('navUsername').innerText = name;
+      document.getElementById('profileDescTxt').innerHTML = document.getElementById('editDescInput').value.replace(/\n/g, '<br>');
+      closeEditModal();
+    }
+  </script>
+</body>
+  </html>
