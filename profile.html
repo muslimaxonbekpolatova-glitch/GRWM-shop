@@ -146,7 +146,7 @@
     .grid-item {
       position: relative;
       width: 100%;
-      padding-top: 133%; /* 3:4 High-end aspect ratio */
+      padding-top: 133%;
       background: #111111;
       cursor: pointer;
     }
@@ -193,99 +193,130 @@
     .nav-btn { background: none; border: none; color: rgba(255, 255, 255, 0.4); font-size: 24px; cursor: pointer; }
     .nav-btn.active { color: #ffffff; }
 
-    /* INSTAGRAM REELS MODAL VIEW */
+    /* INSTAGRAM REELS FULL-SCREEN MODAL */
     .reels-modal {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
-      height: 100%;
+      height: 100vh;
       background: #000000;
       z-index: 2000;
       display: none;
       flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .modal-close {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      background: none;
-      border: none;
-      color: white;
-      font-size: 24px;
-      z-index: 2100;
-      cursor: pointer;
     }
 
     .reels-viewer {
       position: relative;
       width: 100%;
       height: 100%;
-      max-width: 500px;
       display: flex;
-      align-items: center;
-      background: #000;
+      flex-direction: column;
+      justify-content: center;
+      background: #000000;
+      touch-action: none;
     }
 
     .reels-main-img {
       width: 100%;
-      height: 100vh;
+      height: 100%;
       object-fit: cover;
     }
 
-    /* OVERLAY ACTIONS (LIKE, COMMENT, SHARE) */
-    .reels-actions {
+    .modal-close {
       position: absolute;
-      right: 16px;
-      bottom: 120px;
+      top: 20px;
+      left: 20px;
+      background: rgba(0, 0, 0, 0.4);
+      border: none;
+      color: white;
+      font-size: 20px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      z-index: 2100;
+      cursor: pointer;
       display: flex;
-      flex-direction: column;
-      gap: 20px;
       align-items: center;
-      z-index: 2050;
+      justify-content: center;
     }
 
-    .action-btn {
+    /* INSTAGRAM REELS BOTTOM BAR ACTION AREA */
+    .reels-bottom-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.5) 70%, transparent 100%);
+      padding: 40px 20px 40px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      z-index: 2050;
+      pointer-events: none; /* Tugmalar ustini to'sib qo'ymasligi uchun */
+    }
+
+    .reels-user-info, .reels-interaction-row, .comment-box {
+      pointer-events: auto; /* Elementlarning o'ziga bosish funksiyasini qaytaramiz */
+    }
+
+    .reels-user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .reels-user-info img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .reels-user-name {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    /* LIKE, COMMENT, SHARE BUTTONS UNDER THE VIDEO */
+    .reels-interaction-row {
+      display: flex;
+      align-items: center;
+      gap: 26px;
+    }
+
+    .action-row-btn {
       background: none;
       border: none;
       color: white;
-      font-size: 28px;
+      font-size: 24px;
       cursor: pointer;
       display: flex;
-      flex-direction: column;
       align-items: center;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+      gap: 8px;
     }
 
-    .action-btn span {
-      font-size: 11px;
-      margin-top: 4px;
-      color: rgba(255,255,255,0.8);
+    .action-row-btn span {
+      font-size: 13px;
+      color: #ffffff;
+      font-weight: 500;
     }
 
     /* COMMENT INPUT FIELD */
     .comment-box {
-      position: absolute;
-      bottom: 85px;
-      left: 0;
       width: 100%;
-      padding: 0 16px;
-      display: none;
-      z-index: 2060;
+      margin-top: 4px;
     }
 
     .comment-input-wrapper {
       display: flex;
-      background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
       border-radius: 24px;
       padding: 10px 16px;
       align-items: center;
-      border: 1px solid rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.1);
     }
 
     .comment-input-wrapper input {
@@ -293,7 +324,7 @@
       background: none;
       border: none;
       color: white;
-      font-size: 14px;
+      font-size: 13px;
       outline: none;
     }
 
@@ -302,7 +333,7 @@
       border: none;
       color: #00fff0;
       font-weight: 600;
-      font-size: 14px;
+      font-size: 13px;
       cursor: pointer;
     }
 
@@ -439,47 +470,36 @@
 
   <div class="reels-grid-title">Yuklangan videolar</div>
   <div class="grid-container" id="reelsGrid">
-    
-    <div class="grid-item" onclick="openReelsModal('https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600', '18.2K')">
-      <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=300" alt="Reels">
-      <div class="video-views">▶ 18.2K</div>
     </div>
-
-    <div class="grid-item" onclick="openReelsModal('https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=600', '12.1K')">
-      <img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=300" alt="Reels">
-      <div class="video-views">▶ 12.1K</div>
-    </div>
-
-    <div class="grid-item" onclick="openReelsModal('https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=600', '17.9K')">
-      <img src="https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=300" alt="Reels">
-      <div class="video-views">▶ 17.9K</div>
-    </div>
-
-  </div>
 
   <div class="reels-modal" id="reelsModal">
-    <button class="modal-close" onclick="closeReelsModal()">✕</button>
-    
-    <div class="reels-viewer">
+    <div class="reels-viewer" id="reelsViewer">
+      <button class="modal-close" onclick="closeReelsModal()">✕</button>
       <img class="reels-main-img" id="modalImg" src="" alt="Reels content">
       
-      <div class="reels-actions">
-        <button class="action-btn" id="likeBtn" onclick="toggleLike()">
-          <span id="likeIcon" style="font-size:28px;">🤍</span>
-          <span id="likeCount">1.2K</span>
-        </button>
-        <button class="action-btn" onclick="toggleCommentBox()">
-          💬 <span>42</span>
-        </button>
-        <button class="action-btn" onclick="shareVideo()">
-          ✈️ <span>Ulashish</span>
-        </button>
-      </div>
+      <div class="reels-bottom-overlay">
+        <div class="reels-user-info">
+          <img id="modalUserAvatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" alt="User">
+          <span class="reels-user-name" id="modalUserName">monochrome.uz</span>
+        </div>
 
-      <div class="comment-box" id="commentBox">
-        <div class="comment-input-wrapper">
-          <input type="text" placeholder="Fikr bildiring..." id="commentInput">
-          <button onclick="sendComment()">Yuborish</button>
+        <div class="reels-interaction-row">
+          <button class="action-row-btn" onclick="toggleLike()">
+            <span id="likeIcon">🤍</span> <span id="likeCount">1.2K</span>
+          </button>
+          <button class="action-row-btn" onclick="toggleCommentBox()">
+            💬 <span>42</span>
+          </button>
+          <button class="action-row-btn" onclick="shareVideo()">
+            ✈️ <span>Ulashish</span>
+          </button>
+        </div>
+
+        <div class="comment-box" id="commentBox">
+          <div class="comment-input-wrapper">
+            <input type="text" placeholder="Fikr bildiring..." id="commentInput">
+            <button onclick="sendComment()">Yuborish</button>
+          </div>
         </div>
       </div>
     </div>
@@ -521,53 +541,141 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
+    let currentReelsData = [
+      { thumbnail_url: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600', views: '18.2K' },
+      { thumbnail_url: 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=600', views: '12.1K' },
+      { thumbnail_url: 'https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=600', views: '17.9K' }
+    ];
+    let activeReelsIndex = 0;
+
     const SUPABASE_URL = 'https://wdoytdiugkhlniysdfri.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_qZHLHaUhp3dqBrj58ZtZWw_61gzjskd';
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    let supabaseClient = null;
+
+    try {
+      supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    } catch(e) {
+      console.log("Supabase kutubxonasi yuklanmagan.");
+    }
+
+    function renderGridItems() {
+      const gridContainer = document.getElementById('reelsGrid');
+      gridContainer.innerHTML = ''; 
+
+      currentReelsData.forEach((post, index) => {
+        const gridItem = `
+          <div class="grid-item" onclick="openReelsModalAtIndex(${index})">
+            <img src="${post.thumbnail_url}" alt="Reels">
+            <div class="video-views">▶ ${post.views}</div>
+          </div>
+        `;
+        gridContainer.insertAdjacentHTML('beforeend', gridItem);
+      });
+      document.getElementById('videoCount').innerText = currentReelsData.length;
+    }
 
     async function loadUserReels() {
+      if (!supabaseClient) {
+        renderGridItems();
+        return;
+      }
       try {
-        const { data, error } = await supabaseClient
-          .from('reels_posts')
-          .select('*');
+        const { data, error } = await supabaseClient.from('reels_posts').select('*');
         if (error) throw error;
 
         if (data && data.length > 0) {
-          const gridContainer = document.getElementById('reelsGrid');
-          gridContainer.innerHTML = ''; 
-
-          data.forEach(post => {
-            const imgUrl = post.thumbnail_url || 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=300';
-            const views = post.views || '0';
-
-            const gridItem = `
-              <div class="grid-item" onclick="openReelsModal('${imgUrl}', '${views}')">
-                <img src="${imgUrl}" alt="Reels">
-                <div class="video-views">▶ ${views}</div>
-              </div>
-            `;
-            gridContainer.insertAdjacentHTML('beforeend', gridItem);
-          });
-          document.getElementById('videoCount').innerText = data.length;
+          currentReelsData = data.map(post => ({
+            thumbnail_url: post.thumbnail_url || 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=300',
+            views: post.views || '0'
+          }));
         }
       } catch(e) {
-        console.log("Offline yoki fallback rejimida muvaffaqiyatli yuklandi.");
+        console.log("Ma'lumot mahalliy yuklandi.");
+      } finally {
+        renderGridItems();
       }
     }
     document.addEventListener('DOMContentLoaded', loadUserReels);
 
-    /* MODAL TIZIMI LOGIKASI */
+    /* MODAL REELS BOSHQARUVI */
     let isLiked = false;
+    let touchStartX = 0;
+    let touchStartY = 0;
 
-    function openReelsModal(imgSrc, views) {
-      document.getElementById('modalImg').src = imgSrc;
+    function openReelsModalAtIndex(index) {
+      activeReelsIndex = index;
+      renderActiveReel();
       document.getElementById('reelsModal').style.display = 'flex';
       document.body.style.overflow = 'hidden'; 
+    }
+
+    function renderActiveReel() {
+      const currentReel = currentReelsData[activeReelsIndex];
+      if (!currentReel) return;
+
+      document.getElementById('modalUserAvatar').src = document.getElementById('profileAvatarImg').src;
+      document.getElementById('modalUserName').innerText = document.getElementById('profileNameTxt').innerText;
+      document.getElementById('modalImg').src = currentReel.thumbnail_url;
       
       isLiked = false;
       document.getElementById('likeIcon').innerText = '🤍';
       document.getElementById('commentBox').style.display = 'none';
+      document.getElementById('commentInput').value = '';
     }
+
+    function nextReel() {
+      if (activeReelsIndex < currentReelsData.length - 1) {
+        activeReelsIndex++;
+        renderActiveReel();
+      }
+    }
+
+    function prevReel() {
+      if (activeReelsIndex > 0) {
+        activeReelsIndex--;
+        renderActiveReel();
+      }
+    }
+
+    // Kuchaytirilgan Touch/Swipe tizimi
+    const viewer = document.getElementById('reelsViewer');
+    
+    viewer.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+      touchStartY = e.changedTouches[0].screenY;
+    }, { passive: true });
+
+    viewer.addEventListener('touchmove', (e) => {
+      // Modal ichida sahifa scroll bo'lib ketishini to'liq bloklaymiz
+      e.preventDefault();
+    }, { passive: false });
+
+    viewer.addEventListener('touchend', (e) => {
+      const touchEndX = e.changedTouches[0].screenX;
+      const touchEndY = e.changedTouches[0].screenY;
+      
+      const diffX = touchStartX - touchEndX;
+      const diffY = touchStartY - touchEndY;
+
+      // Faqat vertikal surish aniq bo'lgandagina videoni o'zgartiradi (X o'qi hisoblanmaydi)
+      if (Math.abs(diffY) > Math.abs(diffX)) {
+        if (diffY > 70) {
+          nextReel(); // Tepaga surildi
+        } else if (diffY < -70) {
+          prevReel(); // Pastga surildi
+        }
+      }
+    }, { passive: true });
+
+    // Kompyuter uchun sichqoncha g'ildiragi
+    viewer.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      if (e.deltaY > 0) {
+        nextReel();
+      } else if (e.deltaY < 0) {
+        prevReel();
+      }
+    }, { passive: false });
 
     function closeReelsModal() {
       document.getElementById('reelsModal').style.display = 'none';
@@ -577,11 +685,7 @@
     function toggleLike() {
       const likeIcon = document.getElementById('likeIcon');
       isLiked = !isLiked;
-      if(isLiked) {
-        likeIcon.innerText = '❤️';
-      } else {
-        likeIcon.innerText = '🤍';
-      }
+      likeIcon.innerText = isLiked ? '❤️' : '🤍';
     }
 
     function toggleCommentBox() {
@@ -599,4 +703,36 @@
       if(input.value.trim() !== "") {
         alert("Izoh qoldirildi: " + input.value);
         input.value = "";
-        document.getElementById('commentBox').style.display = 'none
+        document.getElementById('commentBox').style.display = 'none';
+      }
+    }
+
+    document.getElementById('commentInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        sendComment();
+      }
+    });
+
+    function shareVideo() {
+      alert("Havola nusxalandi! Do'stlaringizga jo'natishingiz mumkin.");
+    }
+
+    /* PROFILNI TAHRIRLASH */
+    function openEditModal() {
+      document.getElementById('editAvatarInput').value = document.getElementById('profileAvatarImg').src;
+      document.getElementById('editNameInput').value = document.getElementById('profileNameTxt').innerText;
+      
+      const rawDesc = document.getElementById('profileDescTxt').innerHTML;
+      document.getElementById('editDescInput').value = rawDesc.replace(/<br\s*\/?>/g, "\n");
+      
+      document.getElementById('editModal').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeEditModal() {
+      document.getElementById('editModal').style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
+
+    function saveProfileChanges() {
+      const newAvatar = document.getElementById('editAvatarInput').
