@@ -5,569 +5,92 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Instagram Profile Fixed</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background: #000000;
-      color: #ffffff;
-      padding-bottom: 65px;
-      overflow-x: hidden;
-    }
-
-    /* INSTAGRAM TOP HEADER */
-    .instagram-navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 16px;
-      position: sticky;
-      top: 0;
-      background: #000000;
-      z-index: 100;
-      border-bottom: 1px solid #121212;
-    }
-
-    .nav-username {
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-    }
-
-    .nav-right-icons {
-      display: flex;
-      gap: 20px;
-      font-size: 22px;
-      cursor: pointer;
-    }
-
-    /* PROFILE INFO SECTION */
-    .profile-info-container {
-      padding: 10px 16px 4px 16px;
-    }
-
-    .profile-main-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 12px;
-    }
-
-    .insta-avatar {
-      width: 86px;
-      height: 86px;
-      border-radius: 50%;
-      object-fit: cover;
-      padding: 3px;
-      border: 2px solid #262626;
-    }
-
-    .stats-container {
-      display: flex;
-      gap: 28px;
-      text-align: center;
-      padding-right: 12px;
-    }
-
-    .stat-number {
-      font-size: 16px;
-      font-weight: 700;
-    }
-
-    .stat-text {
-      font-size: 13px;
-      color: #a8a8a8;
-    }
-
-    /* BIO SECTION */
-    .insta-bio {
-      font-size: 14px;
-      line-height: 1.4;
-      margin-bottom: 16px;
-    }
-
-    .bio-name {
-      font-weight: 600;
-    }
-
-    .bio-text {
-      color: #f5f5f5;
-    }
-
-    /* INSTAGRAM BUTTONS */
-    .profile-actions {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 20px;
-    }
-
-    .insta-btn {
-      flex: 1;
-      background: #1c1c1e;
-      color: #ffffff;
-      border: none;
-      padding: 8px 10px;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .insta-btn:active { background: #2c2c2e; }
-
-    /* STORIES HIGHLIGHTS */
-    .highlights-scroll {
-      display: flex;
-      gap: 16px;
-      overflow-x: auto;
-      padding-bottom: 16px;
-      margin-bottom: 8px;
-    }
-    .highlights-scroll::-webkit-scrollbar { display: none; }
-
-    .highlight-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-      flex-shrink: 0;
-    }
-
-    .highlight-circle {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      background: #1c1c1e;
-      border: 1px solid #262626;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-    }
-
-    .highlight-text { font-size: 11px; color: #f5f5f5; }
-
-    /* TABS BAR */
-    .profile-tabs {
-      display: flex;
-      border-top: 1px solid #262626;
-    }
-
-    .tab-item {
-      flex: 1;
-      text-align: center;
-      padding: 12px 0;
-      font-size: 20px;
-      color: #737373;
-      cursor: pointer;
-      border-bottom: 1px solid transparent;
-    }
-
-    .tab-item.active {
-      color: #ffffff;
-      border-bottom: 1px solid #ffffff;
-    }
-
-    /* INSTAGRAM 3-COLUMN GRID */
-    .instagram-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 2px;
-    }
-
-    .grid-post {
-      position: relative;
-      width: 100%;
-      padding-top: 100%; 
-      background: #121212;
-      cursor: pointer;
-    }
-
-    .grid-post img {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .reels-badge {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      font-size: 12px;
-      background: rgba(0,0,0,0.5);
-      padding: 2px 6px;
-      border-radius: 4px;
-    }
-
-    .empty-tab-msg {
-      grid-column: span 3;
-      text-align: center;
-      padding: 60px 20px;
-      color: #737373;
-      font-size: 14px;
-    }
-
-    /* FULL SCREEN REELS MODAL */
-    .reels-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100vh;
-      background: #000000;
-      z-index: 2000;
-      display: none;
-      flex-direction: column;
-    }
-
-    .reels-viewer {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      touch-action: none;
-    }
-
-    .reels-main-img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
-
-    .modal-close {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      background: rgba(0, 0, 0, 0.5);
-      border: none;
-      color: white;
-      font-size: 18px;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      z-index: 2100;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .reels-bottom-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.6) 70%, transparent 100%);
-      padding: 40px 16px 30px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      z-index: 2050;
-      pointer-events: none;
-    }
-
-    .reels-user-info, .reels-interaction-row, .comment-box { pointer-events: auto; }
-    .reels-user-info { display: flex; align-items: center; gap: 10px; }
-    .reels-user-info img { width: 32px; height: 32px; border-radius: 50%; }
-    .reels-user-name { font-size: 14px; font-weight: 600; }
-    .reels-interaction-row { display: flex; align-items: center; gap: 22px; }
-    .action-row-btn { background: none; border: none; color: white; font-size: 24px; cursor: pointer; display: flex; align-items: center; gap: 6px; }
-    .action-row-btn span { font-size: 14px; color: #ffffff; font-weight: 500; }
-
-    .comment-box { display: none; width: 100%; }
-    .comment-input-wrapper { display: flex; background: rgba(255, 255, 255, 0.15); border-radius: 24px; padding: 8px 16px; align-items: center; }
-    .comment-input-wrapper input { flex: 1; background: none; border: none; color: white; font-size: 14px; outline: none; }
-    .comment-input-wrapper button { background: none; border: none; color: #3897f0; font-weight: 600; font-size: 14px; cursor: pointer; }
-
-    /* EDIT PROFILE MODAL */
-    .edit-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.85);
-      z-index: 3000;
-      display: none;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-    }
-
-    .edit-modal-content {
-      background: #1c1c1e;
-      width: 100%;
-      max-width: 360px;
-      border-radius: 12px;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .edit-input-group { display: flex; flex-direction: column; gap: 4px; }
-    .edit-input-group label { font-size: 12px; color: #a8a8a8; }
-    .edit-input-group input, .edit-input-group textarea { background: #000000; border: 1px solid #262626; border-radius: 6px; padding: 8px; color: #ffffff; outline: none; font-family: inherit; }
-    .edit-modal-actions { display: flex; gap: 10px; }
-    .edit-btn { flex: 1; padding: 8px; border-radius: 6px; font-weight: 600; cursor: pointer; border: none; }
-
-    /* FOOTER BAR */
-    .bottom-bar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 55px;
-      background: #000000;
-      border-top: 1px solid #262626;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      z-index: 1000;
-    }
-    .nav-btn { background: none; border: none; color: #ffffff; font-size: 22px; cursor: pointer; }
-    .nav-btn.inactive { opacity: 0.5; }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #000000; color: #ffffff; padding-bottom: 65px; overflow-x: hidden; }
+    .instagram-navbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; position: sticky; top: 0; background: #000000; z-index: 100; border-bottom: 1px solid #121212; }
+    .nav-username { font-size: 22px; font-weight: 700; }
+    .profile-info-container { padding: 10px 16px 4px 16px; }
+    .insta-avatar { width: 86px; height: 86px; border-radius: 50%; object-fit: cover; border: 2px solid #262626; }
+    .insta-btn { flex: 1; background: #1c1c1e; color: #ffffff; border: none; padding: 8px 10px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; }
+    .instagram-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+    .grid-post { position: relative; width: 100%; padding-top: 100%; background: #121212; cursor: pointer; }
+    .grid-post img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+    .reels-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: #000; z-index: 5000; display: none; flex-direction: column; }
+    .modal-close { position: absolute; top: 20px; left: 20px; color: #fff; font-size: 30px; z-index: 5001; cursor: pointer; }
+    .reels-img { width: 100%; height: 100%; object-fit: cover; }
   </style>
 </head>
 <body>
 
   <div class="instagram-navbar">
     <div class="nav-username" id="navUsername">monochrome.uz</div>
-    <div class="nav-right-icons"><span>➕</span><span>☰</span></div>
   </div>
 
   <div class="profile-info-container">
-    <div class="profile-main-row">
-      <div>
-        <img class="insta-avatar" id="profileAvatarImg" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200" alt="Avatar">
-      </div>
-      <div class="stats-container">
-        <div><div class="stat-number" id="videoCount">3</div><div class="stat-text">Posts</div></div>
-        <div><div class="stat-number">12.4K</div><div class="stat-text">Followers</div></div>
-        <div><div class="stat-number">348</div><div class="stat-text">Following</div></div>
-      </div>
+    <div style="display: flex; align-items: center; justify-content: space-between;">
+      <img class="insta-avatar" id="profileAvatarImg" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200">
+      <div style="text-align: center;"><b>3</b><br>Posts</div>
     </div>
-
-    <div class="insta-bio">
-      <div class="bio-name" id="profileNameTxt">monochrome.uz</div>
-      <div class="bio-text" id="profileDescTxt">Premium minimal kiyimlar brendi.<br>O'zbekiston bo'ylab tezkor yetkazib berish.</div>
+    <div style="margin-top:10px;">
+      <b id="profileNameTxt">monochrome.uz</b>
+      <div id="profileDescTxt">Minimalist kiyimlar brendi.</div>
     </div>
-
-    <div class="profile-actions">
+    <div style="display: flex; gap: 8px; margin-top: 15px;">
       <button class="insta-btn" onclick="openEditModal()">Edit Profile</button>
-      <button class="insta-btn" onclick="shareProfile()">Share Profile</button>
     </div>
-
-    <div class="highlights-scroll">
-      <div class="highlight-item"><div class="highlight-circle">✨</div><div class="highlight-text">New</div></div>
-      <div class="highlight-item"><div class="highlight-circle">🖤</div><div class="highlight-text">Style</div></div>
-      <div class="highlight-item"><div class="highlight-circle">📦</div><div class="highlight-text">Orders</div></div>
-    </div>
-  </div>
-
-  <div class="profile-tabs" id="profileTabs">
-    <div class="tab-item active" onclick="switchTab(this, 'grid')">📋</div>
-    <div class="tab-item" onclick="switchTab(this, 'reels')">🎬</div>
-    <div class="tab-item" onclick="switchTab(this, 'tagged')">👤</div>
   </div>
 
   <div class="instagram-grid" id="reelsGrid"></div>
 
   <div class="reels-modal" id="reelsModal">
-    <div class="reels-viewer" id="reelsViewer">
-      <button class="modal-close" onclick="closeReelsModal()">✕</button>
-      <img class="reels-main-img" id="modalImg" src="" alt="Reels">
-      
-      <div class="reels-bottom-overlay">
-        <div class="reels-user-info">
-          <img id="modalUserAvatar" src="" alt="User">
-          <span class="reels-user-name" id="modalUserName">username</span>
-        </div>
-        <div class="reels-interaction-row">
-          <button class="action-row-btn" onclick="toggleLike()"><span id="likeIcon">🤍</span> <span>1.2K</span></button>
-          <button class="action-row-btn" onclick="toggleCommentBox()">💬 <span>42</span></button>
-          <button class="action-row-btn" onclick="shareVideo()">✈️</button>
-        </div>
-        <div class="comment-box" id="commentBox">
-          <div class="comment-input-wrapper">
-            <input type="text" placeholder="Add a comment..." id="commentInput">
-            <button onclick="sendComment()">Post</button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <div class="modal-close" onclick="closeReels()">✕</div>
+    <img class="reels-img" id="modalImg" src="">
   </div>
 
-  <div class="edit-modal" id="editModal">
-    <div class="edit-modal-content">
-      <h3 style="text-align: center; font-size: 16px;">Edit Profile</h3>
-      <div class="edit-input-group"><label>Photo URL</label><input type="text" id="editAvatarInput"></div>
-      <div class="edit-input-group"><label>Name</label><input type="text" id="editNameInput"></div>
-      <div class="edit-input-group"><label>Bio</label><textarea id="editDescInput" rows="3"></textarea></div>
-      <div class="edit-modal-actions">
-        <button class="edit-btn" style="background:#262626; color:white;" onclick="closeEditModal()">Cancel</button>
-        <button class="edit-btn" style="background:#3897f0; color:white;" onclick="saveProfileChanges()">Save</button>
-      </div>
+  <div id="editModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9000; padding:20px;">
+    <div style="background:#1c1c1e; padding:20px; border-radius:12px; margin-top:50px;">
+      <input type="text" id="editNameInput" style="width:100%; padding:10px; margin-bottom:10px; background:#000; color:#fff; border:1px solid #333;">
+      <button class="insta-btn" onclick="saveProfileChanges()">Save</button>
+      <button class="insta-btn" style="background:#444;" onclick="document.getElementById('editModal').style.display='none'">Cancel</button>
     </div>
-  </div>
-
-  <div class="bottom-bar">
-    <button class="nav-btn inactive">🏠</button>
-    <button class="nav-btn inactive">🔍</button>
-    <button class="nav-btn inactive">🎬</button>
-    <button class="nav-btn inactive">🛒</button>
-    <button class="nav-btn">👤</button>
   </div>
 
   <script>
-    // Baza ulanmay qolsa, mana shu rasmlar avtomatik ochiladi (Test uchun rasmlar)
-    let defaultBackupData = [
-      { thumbnail_url: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600', views: '18.2K' },
-      { thumbnail_url: 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=600', views: '12.1K' },
-      { thumbnail_url: 'https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=600', views: '17.9K' }
+    const data = [
+      { url: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600' },
+      { url: 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=600' },
+      { url: 'https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=600' }
     ];
-    let activeReelsIndex = 0;
-    let selectedType = 'grid';
 
-    function renderGridItems() {
-      const gridContainer = document.getElementById('reelsGrid');
-      gridContainer.innerHTML = ''; 
-
-      if (selectedType === 'tagged') {
-        gridContainer.innerHTML = `<div class="empty-tab-msg">Photos and videos of you<br><span style="font-size:12px; color:#555;">When people tag you, they'll appear here.</span></div>`;
-        return;
-      }
-
-      defaultBackupData.forEach((post, index) => {
-        const gridItem = `
-          <div class="grid-post" onclick="openReelsModalAtIndex(${index})">
-            <img src="${post.thumbnail_url}" alt="Post">
-            <div class="reels-badge">▶ ${post.views}</div>
-          </div>
-        `;
-        gridContainer.insertAdjacentHTML('beforeend', gridItem);
-      });
-      document.getElementById('videoCount').innerText = defaultBackupData.length;
+    function renderGrid() {
+      const g = document.getElementById('reelsGrid');
+      g.innerHTML = data.map((post, i) => `
+        <div class="grid-post" onclick="openReels(${i})"><img src="${post.url}"></div>
+      `).join('');
     }
 
-    // Sahifa yuklanishi bilan rasmlarni ekranga chiqarish
-    document.addEventListener('DOMContentLoaded', renderGridItems);
-
-    /* MODAL REELS SYSTEMS */
-    let isLiked = false;
-    let touchStartX = 0;
-    let touchStartY = 0;
-
-    function openReelsModalAtIndex(index) {
-      activeReelsIndex = index;
-      renderActiveReel();
+    function openReels(i) {
+      document.getElementById('modalImg').src = data[i].url;
       document.getElementById('reelsModal').style.display = 'flex';
-      document.body.style.overflow = 'hidden'; 
     }
 
-    function renderActiveReel() {
-      const currentReel = defaultBackupData[activeReelsIndex];
-      if (!currentReel) return;
+    function closeReels() { document.getElementById('reelsModal').style.display = 'none'; }
 
-      document.getElementById('modalUserAvatar').src = document.getElementById('profileAvatarImg').src;
-      document.getElementById('modalUserName').innerText = document.getElementById('navUsername').innerText;
-      document.getElementById('modalImg').src = currentReel.thumbnail_url;
-      
-      isLiked = false;
-      document.getElementById('likeIcon').innerText = '🤍';
-      document.getElementById('commentBox').style.display = 'none';
-    }
-
-    function nextReel() {
-      if (activeReelsIndex < defaultBackupData.length - 1) {
-        activeReelsIndex++;
-        renderActiveReel();
-      }
-    }
-
-    function prevReel() {
-      if (activeReelsIndex > 0) {
-        activeReelsIndex--;
-        renderActiveReel();
-      }
-    }
-
-    /* SWIPE EFFEKTI */
-    const viewer = document.getElementById('reelsViewer');
-    viewer.addEventListener('touchstart', (e) => {
-      touchStartX = e.changedTouches[0].screenX;
-      touchStartY = e.changedTouches[0].screenY;
-    }, { passive: true });
-
-    viewer.addEventListener('touchmove', (e) => { e.preventDefault(); }, { passive: false });
-
-    viewer.addEventListener('touchend', (e) => {
-      const diffX = touchStartX - e.changedTouches[0].screenX;
-      const diffY = touchStartY - e.changedTouches[0].screenY;
-      if (Math.abs(diffY) > Math.abs(diffX)) {
-        if (diffY > 60) nextReel();
-        else if (diffY < -60) prevReel();
-      }
-    }, { passive: true });
-
-    function closeReelsModal() {
-      document.getElementById('reelsModal').style.display = 'none';
-      document.body.style.overflow = '';
-    }
-
-    function toggleLike() {
-      isLiked = !isLiked;
-      document.getElementById('likeIcon').innerText = isLiked ? '❤️' : '🤍';
-    }
-
-    function toggleCommentBox() {
-      const box = document.getElementById('commentBox');
-      box.style.display = (box.style.display === 'none' || box.style.display === '') ? 'block' : 'none';
-    }
-
-    function sendComment() {
-      alert("Comment posted!");
-      document.getElementById('commentInput').value = "";
-      document.getElementById('commentBox').style.display = 'none';
-    }
-
-    function shareVideo() { alert("Link copied!"); }
-    function shareProfile() { alert("Profile link copied!"); }
-
-    function switchTab(element, type) {
-      document.querySelectorAll('.tab-item').forEach(tab => tab.classList.remove('active'));
-      element.classList.add('active');
-      selectedType = type;
-      renderGridItems();
-    }
-
-    /* EDIT PROFILE */
-    function openEditModal() {
-      document.getElementById('editAvatarInput').value = document.getElementById('profileAvatarImg').src;
+    function openEditModal() { 
       document.getElementById('editNameInput').value = document.getElementById('profileNameTxt').innerText;
-      document.getElementById('editDescInput').value = document.getElementById('profileDescTxt').innerHTML.replace(/<br\s*\/?>/g, "\n");
-      document.getElementById('editModal').style.display = 'flex';
+      document.getElementById('editModal').style.display = 'block'; 
     }
-    function closeEditModal() { document.getElementById('editModal').style.display = 'none'; }
+
     function saveProfileChanges() {
       const name = document.getElementById('editNameInput').value;
-      if(!name) return;
-      document.getElementById('profileAvatarImg').src = document.getElementById('editAvatarInput').value;
-      document.getElementById('profileNameTxt').innerText = name;
-      document.getElementById('navUsername').innerText = name;
-      document.getElementById('profileDescTxt').innerHTML = document.getElementById('editDescInput').value.replace(/\n/g, '<br>');
-      closeEditModal();
+      if(name) {
+        document.getElementById('profileNameTxt').innerText = name;
+        document.getElementById('navUsername').innerText = name;
+      }
+      document.getElementById('editModal').style.display = 'none';
     }
+
+    renderGrid();
   </script>
 </body>
-  </html>
+</html>
