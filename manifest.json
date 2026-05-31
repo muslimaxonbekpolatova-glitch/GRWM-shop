@@ -1,0 +1,16 @@
+{
+  "name": "GRWM Premium App",
+  "short_name": "GRWM",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme-color": "#000000",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=192",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ]
+}
