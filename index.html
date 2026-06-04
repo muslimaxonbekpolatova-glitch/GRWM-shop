@@ -62,11 +62,22 @@
     .edit-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 3000; display: none; justify-content: center; align-items: center; padding: 20px; }
     .edit-modal-content { background: #1c1c1e; width: 100%; max-width: 360px; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
 
-    /* BOTTOM BAR */
-    .bottom-bar { position: fixed; bottom: 0; left: 0; width: 100%; height: 55px; background: #000; border-top: 1px solid #262626; display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
-    .nav-btn { background: none; border: none; color: #fff; font-size: 24px; cursor: pointer; }
-    .nav-btn.active { color: #7000ff; }
-    .hidden { display: none !important; }
+   /*Bottom-bar*/
+    .bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  /* Telefonning pastki xavfsiz hududini avtomatik hisoblab, balandlik qo'shadi */
+  height: calc(55px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: #000000;
+  border-top: 1px solid #262626;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 3000;
+    }
   </style>
 </head>
 <body>
