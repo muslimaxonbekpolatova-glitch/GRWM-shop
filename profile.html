@@ -433,7 +433,7 @@
   </div>
 
   <script>
-    let defaultBackupData = [
+let defaultBackupData = [
       { thumbnail_url: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600', views: '18.2K' },
       { thumbnail_url: 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=600', views: '12.1K' },
       { thumbnail_url: 'https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=600', views: '17.9K' }
@@ -443,6 +443,7 @@
 
     function renderGridItems() {
       const gridContainer = document.getElementById('reelsGrid');
+      if(!gridContainer) return;
       gridContainer.innerHTML = ''; 
 
       if (selectedType === 'tagged') {
@@ -464,11 +465,6 @@
 
     document.addEventListener('DOMContentLoaded', renderGridItems);
 
-    /* REELS MODAL CONTROL */
-    let isLiked = false;
-    let touchStartX = 0;
-    let touchStartY = 0;
-
     function openReelsModalAtIndex(index) {
       activeReelsIndex = index;
       renderActiveReel();
@@ -479,82 +475,15 @@
     function renderActiveReel() {
       const currentReel = defaultBackupData[activeReelsIndex];
       if (!currentReel) return;
-
       document.getElementById('modalUserAvatar').src = document.getElementById('profileAvatarImg').src;
       document.getElementById('modalUserName').innerText = document.getElementById('navUsername').innerText;
       document.getElementById('modalImg').src = currentReel.thumbnail_url;
-      
-      isLiked = false;
-      document.getElementById('likeIcon').innerText = '🤍';
-      document.getElementById('commentBox').style.display = 'none';
     }
-
-    function nextReel() {
-      if (activeReelsIndex < defaultBackupData.length - 1) {
-        activeReelsIndex++;
-        renderActiveReel();
-      }
-    }
-
-    function prevReel() {
-      if (activeReelsIndex > 0) {
-        activeReelsIndex--;
-        renderActiveReel();
-      }
-    }
-
-    /* MOBILDA SWIPE */
-    const viewer = document.getElementById('reelsViewer');
-    viewer.addEventListener('touchstart', (e) => {
-      touchStartX = e.changedTouches[0].screenX;
-      touchStartY = e.changedTouches[0].screenY;
-    }, { passive: true });
-
-    viewer.addEventListener('touchmove', (e) => { e.preventDefault(); }, { passive: false });
-
-    viewer.addEventListener('touchend', (e) => {
-      const diffX = touchStartX - e.changedTouches[0].screenX;
-      const diffY = touchStartY - e.changedTouches[0].screenY;
-      if (Math.abs(diffY) > Math.abs(diffX)) {
-        if (diffY > 60) nextReel();
-        else if (diffY < -60) prevReel();
-      }
-    }, { passive: true });
 
     function closeReelsModal() {
       document.getElementById('reelsModal').style.display = 'none';
       document.body.style.overflow = '';
     }
-
-    function toggleLike() {
-      isLiked = !isLiked;
-      document.getElementById('likeIcon').innerText = isLiked ? '❤️' : '🤍';
-    }
-
-    function toggleCommentBox() {
-      const box = document.getElementById('commentBox');
-      box.style.display = (box.style.display === 'none' || box.style.display === '') ? 'block' : 'none';
-      if(box.style.display === 'block') document.getElementById('commentInput').focus();
-    }
-
-    function sendComment() {
-      const txt = document.getElementById('commentInput').value;
-      if(txt.trim() !== "") {
-        alert("Comment qo'shildi: " + txt);
-        document.getElementById('commentInput').value = "";
-        document.getElementById('commentBox').style.display = 'none';
-      }
-    }
-
-    // ENTER BOSILGANDA HAM IZOH QO'SHISH TIZIMI
-    document.getElementById('commentInput').addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        sendComment();
-      }
-    });
-
-    function shareVideo() { alert("Video havolasi nusxalandi!"); }
-    function shareProfile() { alert("Profil havolasi nusxalandi!"); }
 
     function switchTab(element, type) {
       document.querySelectorAll('.tab-item').forEach(tab => tab.classList.remove('active'));
@@ -563,7 +492,6 @@
       renderGridItems();
     }
 
-    /* EDIT PROFILE */
     function openEditModal() {
       document.getElementById('editAvatarInput').value = document.getElementById('profileAvatarImg').src;
       document.getElementById('editNameInput').value = document.getElementById('profileNameTxt').innerText;
@@ -571,18 +499,20 @@
       document.getElementById('editModal').style.display = 'flex';
     }
 
-    function closeEditModal() { document.getElementById('editModal').style.display = 'none'; }
+    function closeEditModal() { 
+      document.getElementById('editModal').style.display = 'none'; 
+    }
 
     function saveProfileChanges() {
       const name = document.getElementById('editNameInput').value;
       if(name.trim() === "") return;
-      
       document.getElementById('profileAvatarImg').src = document.getElementById('editAvatarInput').value;
       document.getElementById('profileNameTxt').innerText = name;
       document.getElementById('navUsername').innerText = name; 
       document.getElementById('profileDescTxt').innerHTML = document.getElementById('editDescInput').value.replace(/\n/g, '<br>');
       closeEditModal();
     }
+    
   </script>
 </body>
       </html>
