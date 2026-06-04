@@ -3,339 +3,104 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>GRWM — Instagram & Uzum Platform</title>
+  <title>GRWM — Kirish</title>
   
-  <meta name="theme-color" content="#000000">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  
+  <!-- EMAILJS KUTUBXONASI -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script type="text/javascript">
+     emailjs.init("PX4uGfcrd7goNCqlQ"); 
+  </script>
+
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background: #000; color: #fff; overflow-x: hidden; padding-bottom: 60px; }
-    
-    /* Sahifalar boshqaruvi */
-    .page { display: none; min-height: 100vh; }
-    .page.active { display: block; }
-
-    /* AUTH SAHIFA (LOGIN) */
-    .auth-container { max-width: 360px; margin: 80px auto; padding: 20px; text-align: center; }
-    .logo { font-size: 42px; font-weight: 900; letter-spacing: 2px; margin-bottom: 20px; }
-    .auth-box { background: #121212; border: 1px solid #262626; border-radius: 12px; padding: 30px 24px; display: flex; flex-direction: column; gap: 16px; }
-    .auth-input { width: 100%; background: #1c1c1e; border: 1px solid #262626; border-radius: 8px; padding: 12px 16px; color: #fff; font-size: 14px; outline: none; }
-
-    /* NAVBAR */
-    .instagram-navbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; position: sticky; top: 0; background: #000; z-index: 100; border-bottom: 1px solid #121212; }
-    .nav-username { font-size: 22px; font-weight: 700; }
-
-    /* PROFIL QISMI */
-    .profile-info-container { padding: 12px 16px; }
-    .profile-main-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-    .insta-avatar { width: 86px; height: 86px; border-radius: 50%; object-fit: cover; border: 2px solid #262626; }
-    .stats-container { display: flex; gap: 24px; text-align: center; }
-    .stat-number { font-size: 16px; font-weight: 700; }
-    .stat-text { font-size: 12px; color: #a8a8a8; }
-    .profile-actions { display: flex; gap: 8px; margin: 15px 0; }
-    .insta-btn { flex: 1; background: #1c1c1e; color: #fff; border: none; padding: 10px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; text-align: center; }
-
-    /* GRID TIZIMI */
-    .instagram-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
-    .grid-post { position: relative; width: 100%; padding-top: 100%; background: #121212; }
-    .grid-post img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
-    .reels-badge { position: absolute; top: 6px; right: 6px; font-size: 11px; background: rgba(0,0,0,0.6); padding: 2px 6px; border-radius: 4px; }
-
-    /* REELS MODAL PLAY SCREEN */
-    .reels-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: #000; z-index: 2000; display: none; }
-    .reels-viewer { position: relative; width: 100%; height: 100%; display: flex; align-items: center; }
-    .reels-main-img { width: 100%; height: 100%; object-fit: contain; }
-    .modal-close { position: absolute; top: 20px; left: 20px; background: rgba(0,0,0,0.5); border: none; color: #fff; width: 36px; height: 36px; border-radius: 50%; z-index: 2100; }
-    
-    /* UZUM MARKET SHOPPING SELECTION */
-    .reels-bottom-overlay { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.5) 80%, transparent 100%); padding: 40px 16px 20px 16px; display: flex; flex-direction: column; gap: 12px; }
-    .product-shop-box { background: rgba(28,28,30,0.9); border: 1px solid #262626; padding: 12px; border-radius: 12px; }
-    .prod-title { font-size: 15px; font-weight: 600; margin-bottom: 2px; }
-    .prod-price { font-size: 18px; font-weight: 700; color: #7000ff; margin-bottom: 10px; }
-    .selector-btn { padding: 6px 12px; background: #000; border: 1px solid #333; border-radius: 6px; color: #fff; font-size: 12px; cursor: pointer; }
-    .selector-btn.active { border-color: #7000ff; background: rgba(112,0,255,0.1); }
-    .buy-now-btn { width: 100%; background: #7000ff; color: #fff; border: none; padding: 12px; border-radius: 8px; font-weight: 700; font-size: 14px; margin-top: 10px; }
-
-    /* EDIT MODAL */
-    .edit-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 3000; display: none; justify-content: center; align-items: center; padding: 20px; }
-    .edit-modal-content { background: #1c1c1e; width: 100%; max-width: 360px; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
-
-   /*Bottom-bar*/
-    .bottom-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  /* Telefonning pastki xavfsiz hududini avtomatik hisoblab, balandlik qo'shadi */
-  height: calc(55px + env(safe-area-inset-bottom, 0px));
-  padding-bottom: env(safe-area-inset-bottom, 0px);
-  background: #000000;
-  border-top: 1px solid #262626;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  z-index: 3000;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #000; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+    .auth-card { width: 100%; max-width: 320px; text-align: center; }
+    .logo { font-size: 32px; font-weight: 800; letter-spacing: 5px; margin-bottom: 40px; }
+    .step { display: none; flex-direction: column; gap: 14px; }
+    .step.active { display: flex; }
+    .min-input { width: 100%; background: #111; border: 1px solid rgba(255,255,255,0.08); padding: 16px; color: #fff; font-size: 14px; border-radius: 8px; outline: none; transition: border-color 0.2s; }
+    .min-input:focus { border-color: rgba(255,255,255,0.3); }
+    .min-btn { width: 100%; background: #fff; color: #000; border: none; padding: 16px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; border-radius: 8px; cursor: pointer; margin-top: 10px; transition: background 0.2s; }
+    .min-btn:disabled { background: #555; color: #aaa; cursor: not-allowed; }
+    .info-text { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.5; margin-bottom: 5px; }
   </style>
 </head>
 <body>
 
-  <div id="authPage" class="page active">
-    <div class="auth-container">
-      <div class="logo">GRWM</div>
-      <div class="auth-box">
-        <h3 style="font-size:16px;">Xush kelibsiz!</h3>
-        <input type="text" class="auth-input" id="authUsername" placeholder="Foydalanuvchi nomi (Masalan: Shohruh)">
-        <input type="text" class="auth-input" id="authFullName" placeholder="Ism Familiyangiz">
-        <button class="insta-btn" style="background:#fff; color:#000;" onclick="handleLogin()">Ilovaga kirish</button>
-      </div>
+  <div class="auth-card">
+    <div class="logo">GRWM</div>
+
+    <div class="step active" id="s1">
+      <input type="email" class="min-input" placeholder="Email manzilingizni kiriting" id="loginTarget" autocomplete="off">
+      <button class="min-btn" id="sendBtn" onclick="sendVerificationReal()">Kod yuborish</button>
+    </div>
+
+    <div class="step" id="s2">
+      <p class="info-text" id="verificationMsg"></p>
+      <input type="tel" class="min-input" placeholder="8 xonali kod" id="smsCode" style="text-align:center; letter-spacing: 3px;" maxlength="8" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+      <button class="min-btn" onclick="checkVerificationReal()">Tasdiqlash</button>
+    </div>
+
+    <div class="step" id="s3">
+      <input type="text" class="min-input" placeholder="Ism" id="nameInp" autocomplete="off">
+      <input type="text" class="min-input" placeholder="Familiya" id="surInp" autocomplete="off">
+      <button class="min-btn" onclick="finishAuth()">Profilni yaratish</button>
     </div>
   </div>
 
-  <div id="homePage" class="page">
-    <div class="instagram-navbar"><div class="nav-username">GRWM Feed</div></div>
-    <div style="padding: 20px; text-align: center; color: #555;">Bu yerda umumiy trenddagi kiyimlar lentasi chiqadi ✨</div>
-  </div>
-
-  <div id="reelsPage" class="page">
-    <div class="instagram-navbar"><div class="nav-username">Reels</div></div>
-    <div class="instagram-grid" id="mainReelsGrid"></div>
-  </div>
-
-  <div id="profilePage" class="page">
-    <div class="instagram-navbar">
-      <div class="nav-username" id="navUsername">username</div>
-    </div>
-    <div class="profile-info-container">
-      <div class="profile-main-row">
-        <img class="insta-avatar" id="profileAvatarImg" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200">
-        <div class="stats-container">
-          <div><div class="stat-number">3</div><div class="stat-text">Posts</div></div>
-          <div><div class="stat-number">14.2K</div><div class="stat-text">Followers</div></div>
-        </div>
-      </div>
-      <div>
-        <b id="profileNameTxt">Yuklanmoqda...</b>
-        <div id="profileDescTxt" style="color:#aaa; font-size:13px; margin-top:4px;">Bio ma'lumotlari...</div>
-      </div>
-      <div class="profile-actions">
-        <button class="insta-btn" onclick="openEditModal()">Edit Profile</button>
-        <button class="insta-btn" onclick="logOut()">Chiqish</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="bottom-bar hidden" id="bottomBar">
-    <button class="nav-btn" id="btn-home" onclick="navigationTo('homePage')">🏠</button>
-    <button class="nav-btn" id="btn-reels" onclick="navigationTo('reelsPage')">🎬</button>
-    <button class="nav-btn" id="btn-profile" onclick="navigationTo('profilePage')">👤</button>
-  </div>
-
-  <div class="reels-modal" id="reelsModal">
-    <div class="reels-viewer" id="reelsViewer">
-      <button class="modal-close" onclick="closeReelsModal()">✕</button>
-      <img class="reels-main-img" id="modalImg" src="">
-      
-      <div class="reels-bottom-overlay">
-        <div class="product-shop-box">
-          <div class="prod-title" id="mProdTitle">Premium Oversize Hoodie</div>
-          <div class="prod-price" id="mProdPrice">289 000 so'm</div>
-          
-          <div style="font-size:11px; color:#aaa; margin-bottom:4px;">Rang tanlang:</div>
-          <div style="display:flex; gap:6px; margin-bottom:8px;" id="colorContainer"></div>
-
-          <div style="font-size:11px; color:#aaa; margin-bottom:4px;">O'lcham (Razmer):</div>
-          <div style="display:flex; gap:6px; margin-bottom:10px;" id="sizeContainer"></div>
-
-          <button class="buy-now-btn" onclick="sendOrderToSupabase()">Sotib olish (Uzum Market)</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="edit-modal" id="editModal">
-    <div class="edit-modal-content">
-      <h3 style="text-align:center;">Profilni tahrirlash</h3>
-      <input type="text" id="editNameInput" class="auth-input" placeholder="Ism Familiya">
-      <textarea id="editDescInput" class="auth-input" placeholder="Bio yaratish..." rows="3"></textarea>
-      <div style="display:flex; gap:8px;">
-        <button class="insta-btn" style="background:#222;" onclick="closeEditModal()">Yopish</button>
-        <button class="insta-btn" style="background:#7000ff;" onclick="saveProfileChanges()">Saqlash</button>
-      </div>
-    </div>
-  </div>
-
-  <script type="module">
-    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-
-    const SUPABASE_URL = 'https://wdoytdiugkhlniysdfri.supabase.co'
-    const SUPABASE_KEY = 'sb_publishable_qZHLHaUhp3dqBrj58ZtZWw_61gzjskd'
-    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
-
-    // Maxsulotlar ro'yxati (Narxlari va parametrlari bilan)
-    let clothesData = [
-      { url: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600', name: 'ZARA Classic Trenchcoat', price: '459 000 so\'m', colors: ['Jigarrang', 'Qora'], sizes: ['S', 'M', 'L'] },
-      { url: 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=600', name: 'Monochrome Oversize Blazer', price: '620 000 so\'m', colors: ['Qora', 'Kulrang', 'Oq'], sizes: ['M', 'L', 'XL'] },
-      { url: 'https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=600', name: 'Summer Minimalist Dress', price: '345 000 so\'m', colors: ['Sariq', 'Oq'], sizes: ['XS', 'S', 'M'] }
-    ];
-
-    let currentActiveIndex = 0;
-    let selectedColor = "";
-    let selectedSize = "";
-
-    // 1. TIZIMGA KIRISHNI TEKSHIRISH (Eslab qolganligini aniqlash)
-    async function checkUserSession() {
-      const savedUser = localStorage.getItem('grwm_username');
-      if (savedUser) {
-        window.navigationTo('reelsPage');
-        document.getElementById('bottomBar').classList.remove('hidden');
-        loadProfileData(savedUser);
-      }
-    }
-
-    // KIRISH TUGMASI BOSILGANDA
-    window.handleLogin = async function() {
-      const user = document.getElementById('authUsername').value.trim().toLowerCase();
-      const name = document.getElementById('authFullName').value.trim();
-
-      if(!user || !name) return alert("Iltimos, hamma qatorni to'ldiring!");
-
-      localStorage.setItem('grwm_username', user);
-      
-      // Supabase'da foydalanuvchini saqlash/yangilash
-      await supabase.from('profiles').upsert({ id: '00000000-0000-0000-0000-000000000000', username: user, full_name: name, bio: 'Minimalist Fashion Lover 🖤' });
-
-      document.getElementById('bottomBar').classList.remove('hidden');
-      window.navigationTo('reelsPage');
-      loadProfileData(user);
-    }
-
-    // BAZADAN PROFIL MA'LUMOTLARINI TORTISH
-    async function loadProfileData(username) {
-      document.getElementById('navUsername').innerText = username;
-      document.getElementById('profileNameTxt').innerText = username.toUpperCase();
-      
-      const { data } = await supabase.from('profiles').select('*').eq('username', username).maybeSingle();
-      if(data) {
-        document.getElementById('profileNameTxt').innerText = data.full_name || username;
-        document.getElementById('profileDescTxt').innerText = data.bio || '';
-      }
-      renderReelsGrid();
-    }
-
-    // PROFIL TAHRIRLASH SAQLASH
-    window.saveProfileChanges = async function() {
-      const u = localStorage.getItem('grwm_username');
-      const n = document.getElementById('editNameInput').value;
-      const b = document.getElementById('editDescInput').value;
-
-      document.getElementById('profileNameTxt').innerText = n;
-      document.getElementById('profileDescTxt').innerText = b;
-
-      await supabase.from('profiles').upsert({ id: '00000000-0000-0000-0000-000000000000', username: u, full_name: n, bio: b });
-      window.closeEditModal();
-    }
-
-    // REELS GRIDNI EKRAHGA CHIQARISH
-    function renderReelsGrid() {
-      const grid = document.getElementById('mainReelsGrid');
-      grid.innerHTML = clothesData.map((item, index) => `
-        <div class="grid-post" onclick="openReels(${index})">
-          <img src="${item.url}">
-          <div class="reels-badge">▶ 15K</div>
-        </div>
-      `).join('');
-    }
-
-    // REELS MODAL OCHILGANDA (UZUM INTEGRATSIYASI BILAN)
-    window.openReels = function(index) {
-      currentActiveIndex = index;
-      const item = clothesData[index];
-
-      document.getElementById('modalImg').src = item.url;
-      document.getElementById('mProdTitle').innerText = item.name;
-      document.getElementById('mProdPrice').innerText = item.price;
-
-      // Ranglarni generatsiya qilish
-      selectedColor = ""; selectedSize = "";
-      const cc = document.getElementById('colorContainer');
-      cc.innerHTML = item.colors.map(c => `<button class="selector-btn color-select-btn" onclick="pickColor(this, '${c}')">${c}</button>`).join('');
-
-      // Razmerlarni generatsiya qilish
-      const sc = document.getElementById('sizeContainer');
-      sc.innerHTML = item.sizes.map(s => `<button class="selector-btn size-select-btn" onclick="pickSize(this, '${s}')">${s}</button>`).join('');
-
-      document.getElementById('reelsModal').style.display = 'block';
-    }
-
-    window.pickColor = function(btn, color) {
-      document.querySelectorAll('.color-select-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      selectedColor = color;
-    }
-
-    window.pickSize = function(btn, size) {
-      document.querySelectorAll('.size-select-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      selectedSize = size;
-    }
-
-    // SUPABASE'GA HAQIQIY BUYURTMA YUBORISH TIZIMI
-    window.sendOrderToSupabase = async function() {
-      if(!selectedColor || !selectedSize) return alert("Iltimos, kiyim rangi va razmerini tanlang!");
-
-      const activeItem = clothesData[currentActiveIndex];
-      const user = localStorage.getItem('grwm_username') || 'Abonent';
-
-      alert(`Buyurtma qabul qilindi! 🎉\n\nMaxsulot: ${activeItem.name}\nRang: ${selectedColor}\nRazmer: ${selectedSize}\n\nBu ma'lumot hozir Supabase bazangizga yuborildi.`);
-      window.closeReelsModal();
-    }
-
-    // NAVIGATION TIYIMI
-    window.navigationTo = function(pageId) {
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      document.getElementById(pageId).classList.add('active');
-      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-      
-      if(pageId === 'homePage') document.getElementById('btn-home').classList.add('active');
-      if(pageId === 'reelsPage') document.getElementById('btn-reels').classList.add('active');
-      if(pageId === 'profilePage') document.getElementById('btn-profile').classList.add('active');
-    }
-
-    window.closeReelsModal = function() { document.getElementById('reelsModal').style.display = 'none'; }
-    window.openEditModal = function() { 
-      document.getElementById('editNameInput').value = document.getElementById('profileNameTxt').innerText;
-      document.getElementById('editDescInput').value = document.getElementById('profileDescTxt').innerText;
-      document.getElementById('editModal').style.display = 'flex'; 
-    }
-    window.closeEditModal = function() { document.getElementById('editModal').style.display = 'none'; }
-    window.logOut = function() { localStorage.clear(); location.reload(); }
-
-    // Service Worker-ni ro'yxatga olish (PWA oflayn va kesh rejimi uchun)
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').then(reg => {
-      console.log('SW ulandi!');
-    }).catch(err => console.log('SW xatosi:', err));
-  });
-}
-
-// Modul ichidagi yopiq funksiyalarni global oynaga (window) ochish
-window.handleLogin = handleLogin;
-window.saveProfileChanges = saveProfileChanges;
-window.openReels = openReels;
-window.pickColor = pickColor;
-window.pickSize = pickSize;
-window.sendOrderToSupabase = sendOrderToSupabase;
-window.navigationTo = navigationTo;
-window.closeReelsModal = closeReelsModal;
-window.openEditModal = openEditModal;
-window.closeEditModal = closeEditModal;
-window.logOut = logOut;
+  <script>
+    let generatedCode = ""; 
+    let savedEmail = "";
     
-    checkUserSession();
+    function sendVerificationReal() {
+      savedEmail = document.getElementById('loginTarget').value.trim();
+      
+      if(savedEmail === "" || !savedEmail.includes("@")) { 
+        alert("Iltimos, to'g'ri email manzil kiriting!"); 
+        return; 
+      }
+
+      const sendBtn = document.getElementById('sendBtn');
+      sendBtn.innerText = "Yuborilmoqda...";
+      sendBtn.disabled = true;
+
+      // 8 xonali tasodifiy kod
+      generatedCode = Math.floor(10000000 + Math.random() * 90000000).toString();
+
+      // Paneldagi {{to_email}} va {{verification_code}} o'zgaruvchilari bilan bog'lanadi
+      const templateParams = {
+        to_email: savedEmail,
+        verification_code: generatedCode
+      };
+
+      emailjs.send('service_hzhukxc', 'template_kihvl3h', templateParams)
+        .then(function(response) {
+           alert("Kod emailingizga muvaffaqiyatli yuborildi!");
+           document.getElementById('verificationMsg').innerText = `${savedEmail} manziliga yuborilgan kodni kiriting.`;
+           document.getElementById('s1').classList.remove('active');
+           document.getElementById('s2').classList.add('active');
+        }, function(error) {
+           alert("Xatolik yuz berdi: " + error.text);
+           sendBtn.innerText = "Kod yuborish";
+           sendBtn.disabled = false;
+        });
+    }
+
+    function checkVerificationReal() {
+      const userCode = document.getElementById('smsCode').value.trim();
+      if(userCode === generatedCode) {
+        document.getElementById('s2').classList.remove('active');
+        document.getElementById('s3').classList.add('active');
+      } else { 
+        alert("Xato kod! Qayta tekshirib kiriting."); 
+      }
+    }
+
+    function finishAuth() {
+      if(document.getElementById('nameInp').value.trim() !== "" && document.getElementById('surInp').value.trim() !== "") {
+        location.href = 'home.html';
+      } else { alert("Ism va familiyangizni kiriting!"); }
+    }
   </script>
 </body>
-  </html>
+</html>
