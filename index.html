@@ -313,6 +313,28 @@
     window.closeEditModal = function() { document.getElementById('editModal').style.display = 'none'; }
     window.logOut = function() { localStorage.clear(); location.reload(); }
 
+    // Service Worker-ni ro'yxatga olish (PWA oflayn va kesh rejimi uchun)
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').then(reg => {
+      console.log('SW ulandi!');
+    }).catch(err => console.log('SW xatosi:', err));
+  });
+}
+
+// Modul ichidagi yopiq funksiyalarni global oynaga (window) ochish
+window.handleLogin = handleLogin;
+window.saveProfileChanges = saveProfileChanges;
+window.openReels = openReels;
+window.pickColor = pickColor;
+window.pickSize = pickSize;
+window.sendOrderToSupabase = sendOrderToSupabase;
+window.navigationTo = navigationTo;
+window.closeReelsModal = closeReelsModal;
+window.openEditModal = openEditModal;
+window.closeEditModal = closeEditModal;
+window.logOut = logOut;
+    
     checkUserSession();
   </script>
 </body>
