@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>GRWM — Kirish</title>
   
+  <!-- PWA ulash qismi -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#000000">
+  
   <!-- EMAILJS KUTUBXONASI -->
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
   <script type="text/javascript">
@@ -30,17 +34,20 @@
   <div class="auth-card">
     <div class="logo">GRWM</div>
 
+    <!-- 1-QADAM: EMAIL KIRITISH -->
     <div class="step active" id="s1">
       <input type="email" class="min-input" placeholder="Email manzilingizni kiriting" id="loginTarget" autocomplete="off">
       <button class="min-btn" id="sendBtn" onclick="sendVerificationReal()">Kod yuborish</button>
     </div>
 
+    <!-- 2-QADAM: KODNI TASDIQLASH -->
     <div class="step" id="s2">
       <p class="info-text" id="verificationMsg"></p>
       <input type="tel" class="min-input" placeholder="8 xonali kod" id="smsCode" style="text-align:center; letter-spacing: 3px;" maxlength="8" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
       <button class="min-btn" onclick="checkVerificationReal()">Tasdiqlash</button>
     </div>
 
+    <!-- 3-QADAM: ISM FAMILIYA -->
     <div class="step" id="s3">
       <input type="text" class="min-input" placeholder="Ism" id="nameInp" autocomplete="off">
       <input type="text" class="min-input" placeholder="Familiya" id="surInp" autocomplete="off">
@@ -48,7 +55,16 @@
     </div>
   </div>
 
-  <script>
+  <script type="module">
+    // PWA Service Worker-ni ro'yxatdan o'tkazish
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').then(reg => {
+          console.log('SW ulandi!');
+        }).catch(err => console.log('SW xatosi:', err));
+      });
+    }
+
     let generatedCode = ""; 
     let savedEmail = "";
     
@@ -64,10 +80,9 @@
       sendBtn.innerText = "Yuborilmoqda...";
       sendBtn.disabled = true;
 
-      // 8 xonali tasodifiy kod
+      // 8 xonali tasodifiy kod yaratish
       generatedCode = Math.floor(10000000 + Math.random() * 90000000).toString();
 
-      // Paneldagi {{to_email}} va {{verification_code}} o'zgaruvchilari bilan bog'lanadi
       const templateParams = {
         to_email: savedEmail,
         verification_code: generatedCode
@@ -97,10 +112,25 @@
     }
 
     function finishAuth() {
-      if(document.getElementById('nameInp').value.trim() !== "" && document.getElementById('surInp').value.trim() !== "") {
+      const name = document.getElementById('nameInp').value.trim();
+      const surname = document.getElementById('surInp').value.trim();
+
+      if(name !== "" && surname !== "") {
+        // Mahalliy xotiraga saqlab qo'yamiz (tizimga kirdi deb hisoblash uchun)
+        localStorage.setItem('grwm_user_logged', 'true');
+        localStorage.setItem('grwm_user_name', name + ' ' + surname);
+        
+        // Asosiy sahifaga yo'naltirish
         location.href = 'home.html';
-      } else { alert("Ism va familiyangizni kiriting!"); }
+      } else { 
+        alert("Ism va familiyangizni kiriting!"); 
+      }
     }
+
+    // Funksiyalarni global HTML elementlaridan (onclick) chaqirish uchun oyna (window) obyektiga bog'laymiz
+    window.sendVerificationReal = sendVerificationReal;
+    window.checkVerificationReal = checkVerificationReal;
+    window.finishAuth = finishAuth;
   </script>
 </body>
 </html>
