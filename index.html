@@ -54,8 +54,8 @@
       <button class="min-btn" onclick="finishAuth()">Profilni yaratish</button>
     </div>
   </div>
-
-  <script type="module">
+  
+    <script type="module">
     // PWA Service Worker-ni ro'yxatdan o'tkazish
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
@@ -64,6 +64,14 @@
         }).catch(err => console.log('SW xatosi:', err));
       });
     }
+
+    // 💥 [YANGI] INSTAGRAM & UZUM MARKET USLUBIDA AVTO-KIRISH (ESLAB QOLISH)
+    document.addEventListener('DOMContentLoaded', () => {
+      const isLogged = localStorage.getItem('grwm_user_logged');
+      if (isLogged === 'true') {
+        location.href = 'home.html'; // Agar avval kirgan bo'lsa, kod so'ramasdan srazu o'tadi
+      }
+    });
 
     let generatedCode = ""; 
     let savedEmail = "";
@@ -80,7 +88,6 @@
       sendBtn.innerText = "Yuborilmoqda...";
       sendBtn.disabled = true;
 
-      // 8 xonali tasodifiy kod yaratish
       generatedCode = Math.floor(10000000 + Math.random() * 90000000).toString();
 
       const templateParams = {
@@ -116,18 +123,31 @@
       const surname = document.getElementById('surInp').value.trim();
 
       if(name !== "" && surname !== "") {
-        // Mahalliy xotiraga saqlab qo'yamiz (tizimga kirdi deb hisoblash uchun)
+        // Mahalliy xotiraga umrbod saqlab qo'yamiz
         localStorage.setItem('grwm_user_logged', 'true');
-        localStorage.setItem('grwm_user_name', name + ' ' + surname);
         
-        // Asosiy sahifaga yo'naltirish
+        // 🛠 profile.html o'qiy olishi uchun siz ishlatgan kalit so'zlarni ham to'g'irlab qo'yamiz
+        localStorage.setItem('profile_name', name);
+        localStorage.setItem('grwm_user_name', name + ' ' + surname);
+        localStorage.setItem('profile_email', savedEmail);
+        localStorage.setItem('profile_desc', "Minimalist style lover ✨"); // Standart bio
+        localStorage.setItem('profile_avatar', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=256&auto=format&fit=crop'); // Standart rasm
+
+        // 👑 [YANGI] ADMIN ROLINI ANIQLASH SYSTEMASI
+        // O'zingizning shaxsiy emailingizni quyidagi joyga yozib qo'ying (Hozircha namuna sifatida yozildi)
+        if(savedEmail.toLowerCase() === "admin@grwm.uz" || savedEmail.toLowerCase() === "sizning_emailingiz@gmail.com") {
+          localStorage.setItem('user_role', 'admin'); // Sizga ADMIN huquqi beriladi
+        } else {
+          localStorage.setItem('user_role', 'user');  // Qolgan hammaga oddiy foydalanuvchi roli
+        }
+        
+        // Kirish tugagach asosiy sahifaga yo'naltirish
         location.href = 'home.html';
       } else { 
         alert("Ism va familiyangizni kiriting!"); 
       }
     }
 
-    // Funksiyalarni global HTML elementlaridan (onclick) chaqirish uchun oyna (window) obyektiga bog'laymiz
     window.sendVerificationReal = sendVerificationReal;
     window.checkVerificationReal = checkVerificationReal;
     window.finishAuth = finishAuth;
