@@ -6,6 +6,7 @@ const ASSETS = [
   '/reels.html',
   '/upload.html',
   '/profile.html',
+  '/chat.html', // <-- Shunchaki shu qator qo'shiladi
   '/manifest.json'
 ];
 
