@@ -1,4 +1,14 @@
 const CACHE_NAME = 'grwm-v1';
+// Supabase va Firebase ulanishlarini tekshirish uchun maxsus funksiya
+function isApiRequest(requestUrl) {
+  const url = new URL(requestUrl);
+  return (
+    url.origin.includes('supabase.co') || 
+    url.origin.includes('firebaseio.com') || 
+    url.origin.includes('googleapis.com') ||
+    url.origin.includes('emailjs.com')
+  );
+}
 const ASSETS = [
   '/',
   '/index.html',
@@ -6,7 +16,7 @@ const ASSETS = [
   '/reels.html',
   '/upload.html',
   '/profile.html',
-  '/chat.html', // <-- Shunchaki shu qator qo'shiladi
+  '/chat.html', 
   '/manifest.json'
 ];
 
@@ -17,6 +27,9 @@ self.addEventListener('install', (e) => {
 });
 
 self.addEventListener('fetch', (e) => {
+  if (isApiRequest(e.request.url)) {
+    return e.respondWith(fetch(e.request));
+  }
   e.respondWith(
     caches.match(e.request).then((res) => res || fetch(e.request))
   );
