@@ -10,13 +10,13 @@
   "description": "Get Ready With Me Premium Application",
   "icons": [
     {
-      "src": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=192",
+      "src": "IMG_20260705_175201.png",
       "type": "image/png",
       "sizes": "192x192",
       "purpose": "any maskable"
     },
     {
-      "src": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=512",
+      "src": "IMG_20260705_175201.png",
       "type": "image/png",
       "sizes": "512x512",
       "purpose": "any maskable"
