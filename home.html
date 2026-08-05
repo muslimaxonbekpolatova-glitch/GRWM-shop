@@ -1,22 +1,16 @@
-        <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="uz">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
   <title>GRWM — Home</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #000; color: #fff; padding-bottom: 80px; overflow-x: hidden; }
     
-    .header { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-    .header h1 { font-size: 22px; font-weight: 800; letter-spacing: 3px; }
-    .header-actions { display: flex; gap: 18px; align-items: center; }
     .top-like-btn { background: none; border: none; color: #fff; font-size: 22px; cursor: pointer; }
-
-    .stories-container { display: flex; gap: 14px; overflow-x: auto; padding: 15px 20px; }
-    .stories-container::-webkit-scrollbar { display: none; }
-    .story-ring { width: 64px; height: 64px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.4); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .story-avatar { width: 56px; height: 56px; border-radius: 50%; background: #111; display: flex; align-items: center; justify-content: center; font-size: 11px; color: rgba(255,255,255,0.4); }
 
     .section-title { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: rgba(255,255,255,0.4); padding: 15px 20px 5px; }
     .pinterest-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 15px 20px; }
@@ -27,18 +21,6 @@
     .pin-info { padding: 12px; display: flex; flex-direction: column; gap: 4px; }
     .pin-title { font-size: 13px; font-weight: 600; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
     .pin-price { font-size: 12px; color: rgba(255,255,255,0.5); }
-
-    .drawer-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); visibility: hidden; opacity: 0; transition: opacity 0.25s; z-index: 1500; }
-    .drawer-overlay.show { visibility: visible; opacity: 1; }
-    .likes-drawer { position: fixed; bottom: 0; left: 0; width: 100%; max-height: 60vh; background: #0a0a0a; border-top: 1px solid rgba(255,255,255,0.08); border-radius: 16px 16px 0 0; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.1, 0.7, 0.1, 1); z-index: 2000; padding: 20px; display: flex; flex-direction: column; gap: 16px; }
-    .likes-drawer.open { transform: translateY(0); }
-    .drawer-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 12px; }
-    .likes-list { overflow-y: auto; display: flex; flex-direction: column; gap: 16px; max-height: 45vh; }
-    .like-item { display: flex; align-items: center; justify-content: space-between; font-size: 13px; }
-    .like-user-info { display: flex; align-items: center; gap: 12px; }
-    .like-user-avatar { width: 36px; height: 36px; border-radius: 50%; background: #161616; display: flex; align-items: center; justify-content: center; }
-    .like-text span { color: rgba(255,255,255,0.4); font-size: 11px; display: block; margin-top: 2px; }
-    .liked-post-preview { width: 36px; height: 36px; background: #161616; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: rgba(255,255,255,0.4); }
 
 .bottom-bar {
   position: fixed;
@@ -57,31 +39,277 @@
 }
     .nav-btn { background: none; border: none; color: rgba(255, 255, 255, 0.4); font-size: 24px; cursor: pointer; }
     .nav-btn.active { color: #ffffff; }
+    .nav-avatar-box {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 1.5px solid rgba(255, 255, 255, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #111;
+    }
+    .nav-avatar-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .header { 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  padding: 12px 16px; 
+  gap: 12px; 
+  background: #000;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08); 
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.header h1 { 
+  font-size: 20px; 
+  font-weight: 800; 
+  letter-spacing: 2px;
+  flex-shrink: 0;
+}
+.search-bar-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  background: #121212;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px; /* Yumaloq chiroyli kapsula shakli */
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.search-bar-wrapper:active {
+  background: #1a1a1a;
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.search-bar-wrapper .search-icon {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.4);
+  margin-right: 8px;
+  display: flex;
+  align-items: center;
+}
+.search-bar-wrapper input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-size: 13px;
+  pointer-events: none;
+}
+
+.header-actions { 
+  display: flex; 
+  gap: 14px; 
+  align-items: center; 
+  flex-shrink: 0;
+}
+
+   /* MODAL POPUP STYLES */
+.modal-overlay { 
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+  background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); 
+  z-index: 4000; display: none; align-items: center; justify-content: center; padding: 20px; 
+}
+.modal-card { 
+  background: #121212; border: 1px solid rgba(255,255,255,0.15); 
+  width: 100%; max-width: 400px; border-radius: 16px; padding: 20px; 
+  max-height: 90vh; overflow-y: auto; position: relative; color: #fff;
+}
+.modal-close { position: absolute; top: 15px; right: 15px; font-size: 20px; color: #888; cursor: pointer; border: none; background: none; }
+.tariff-btn { width: 100%; padding: 12px; background: #1a1a1a; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: #fff; text-align: left; margin-bottom: 8px; cursor: pointer; display: flex; justify-content: space-between; }
+.tariff-btn:hover { border-color: #ffd700; }
+.form-group { margin-bottom: 12px; }
+.form-group label { display: block; font-size: 12px; color: #aaa; margin-bottom: 4px; }
+.form-group input { width: 100%; padding: 10px; background: #1a1a1a; border: 1px solid #333; border-radius: 8px; color: #fff; outline: none; }
+.btn-submit { width: 100%; padding: 12px; background: linear-gradient(45deg, #ffd700, #ff8c00); border: none; border-radius: 10px; color: #000; font-weight: bold; cursor: pointer; margin-top: 10px; }
+.timer-badge { position: absolute; top: 8px; left: 8px; background: rgba(0,0,0,0.85); border: 1px solid #ffd700; color: #ffd700; font-size: 10px; padding: 3px 6px; border-radius: 6px; font-weight: bold; }
+/* PREMIUM BANNER (CHO'ZINCHOQ TUGMA) STILI */
+.premium-banner {
+  width: calc(100% - 32px);
+  margin: 12px 16px 4px 16px;
+  background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
+  border-radius: 14px;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(255, 215, 0, 0.15);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.premium-banner:active {
+  transform: scale(0.98);
+}
+
+.premium-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.premium-banner-icon {
+  font-size: 22px;
+  background: rgba(0, 0, 0, 0.2);
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.premium-banner-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.premium-banner-title {
+  color: #000;
+  font-weight: 800;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.premium-banner-sub {
+  color: rgba(0, 0, 0, 0.7);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.premium-banner-action {
+  background: #000;
+  color: #ffd700;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+}
+/* Instagram Grid & Premium Post Card */
+.pin-card {
+  position: relative;
+  background: #121212;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  flex-direction: column;
+}
+
+.pin-media-box {
+  position: relative;
+  width: 100%;
+  background: #000;
+  overflow: hidden;
+}
+
+.pin-media-box video, .pin-media-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* User Author Bar */
+.post-author-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  background: rgba(0,0,0,0.4);
+}
+
+.author-info { display: flex; align-items: center; gap: 6px; }
+.author-avatar { width: 22px; height: 22px; border-radius: 50%; object-fit: cover; }
+.author-name { font-size: 11px; font-weight: 700; color: #fff; }
+
+.follow-btn {
+  background: transparent;
+  border: 1px solid #3897f0;
+  color: #3897f0;
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.follow-btn.following { background: #262626; color: #8e8e8e; border-color: transparent; }
+
+/* Interactive Buttons Area */
+.post-actions-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+}
+.action-item { display: flex; align-items: center; gap: 4px; font-size: 12px; color: #fff; cursor: pointer; }
+
+.buy-now-btn {
+  width: calc(100% - 16px);
+  margin: 0 8px 8px 8px;
+  padding: 8px;
+  background: #fff;
+  color: #000;
+  border: none;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* Options / Modal Stili */
+.options-group { display: flex; flex-wrap: wrap; gap: 8px; margin: 15px 0; }
+.option-chip { padding: 8px 14px; background: #262626; border: 1px solid #333; border-radius: 20px; font-size: 12px; cursor: pointer; }
+.option-chip.selected { background: #fff; color: #000; font-weight: bold; }
+.step-actions { display: flex; justify-content: space-between; gap: 10px; margin-top: 15px; }
+.btn-main { flex: 1; padding: 10px; background: #3897f0; border: none; border-radius: 8px; color: #fff; font-weight: bold; }
+.btn-sec { padding: 10px; background: #262626; border: none; border-radius: 8px; color: #fff; }
+.summary-box { background: #1c1c1e; padding: 12px; border-radius: 8px; font-size: 13px; line-height: 1.6; }
   </style>
 </head>
 <body>
+<div class="header">
+  <h1>GRWM</h1>
+  
+  <!-- Instagram uslubidagi cho'zinchoq qidiruv qutisi -->
+  <div class="search-bar-wrapper" onclick="location.href='search.html'">
+    <span class="search-icon">🔍</span>
+    <input type="text" placeholder="Qidiruv (foydalanuvchilar, kiyimlar...)" readonly />
+  </div>
 
-  <div class="drawer-overlay" id="likesOverlay" onclick="closeLikesDrawer()"></div>
+  <div class="header-actions">
+    <button class="top-like-btn" onclick="location.href='notifications.html'">❤️</button>
+    <span style="font-size:20px; cursor:pointer;" onclick="location.href='chat.html'">✉️</span>
+  </div>
+</div>
 
-  <div class="header">
-    <h1>GRWM</h1>
-    <div class="header-actions">
-      <button class="top-like-btn" onclick="openLikesDrawer()">❤️</button>
-      <span style="font-size:20px; cursor:pointer;" onclick="location.href='chat.html'">✉️</span>
+  <!-- YANGI PREMIUM BANNER: -->
+<div class="premium-banner" onclick="openSellerModal()">
+  <div class="premium-banner-left">
+    <div class="premium-banner-icon">⭐</div>
+    <div class="premium-banner-text">
+      <span class="premium-banner-title">Premium Joy Sotib Olish</span>
+      <span class="premium-banner-sub">Mahsulotingizni topga chiqaring</span>
     </div>
   </div>
-
-  <div class="stories-container">
-    <div class="story-ring"><div class="story-avatar">New</div></div>
-    <div class="story-ring"><div class="story-avatar">Drop</div></div>
-    <div class="story-ring"><div class="story-avatar">Oversize</div></div>
-    <div class="story-ring"><div class="story-avatar">Classic</div></div>
-    <div class="story-ring"><div class="story-avatar">Sale</div></div>
-  </div>
+  <div class="premium-banner-action">Joylash</div>
+</div>
 
   <div class="section-title">Premium Collection</div>
 
-  <div class="pinterest-grid">
+  <div class="pinterest-grid"id="postsGrid">
     <div class="pin-card"><div class="pin-media">🧥 Trench Coat</div><div class="pin-info"><div class="pin-title">Oversize Trench</div><div class="pin-price">450,000 UZS</div></div></div>
     <div class="pin-card"><div class="pin-media">👕 Black Hoodie</div><div class="pin-info"><div class="pin-title">Minimal Hoodie</div><div class="pin-price">329,000 UZS</div></div></div>
     <div class="pin-card"><div class="pin-media">👖 Cargo Pants</div><div class="pin-info"><div class="pin-title">Tech Cargo</div><div class="pin-price">280,000 UZS</div></div></div>
@@ -90,47 +318,291 @@
     <div class="pin-card"><div class="pin-media">🧥 Bomber</div><div class="pin-info"><div class="pin-title">Leather Bomber</div><div class="pin-price">680,000 UZS</div></div></div>
   </div>
 
-  <!-- NOTIFICATION PANEL -->
-  <div class="likes-drawer" id="likesDrawer">
-    <div class="drawer-header">
-      <div style="font-size:14px; font-weight:700;">Bildirishnomalar</div>
-      <button style="background:none; border:none; color:rgba(255,255,255,0.4); font-size:12px;" onclick="closeLikesDrawer()">Yopish</button>
-    </div>
-    <div class="likes-list">
-      <div class="like-item">
-        <div class="like-user-info">
-          <div class="like-user-avatar">👩‍💻</div>
-          <div class="like-text"><strong>muslimaxon</strong> videongizga layk bosdi. <span>2 dqiqa avval</span></div>
-        </div>
-        <div class="liked-post-preview">🎬 2</div>
-      </div>
-      <div class="like-item">
-        <div class="like-user-info">
-          <div class="like-user-avatar">🙋‍♀️</div>
-          <div class="like-text"><strong>laylo_grwm</strong> videongizga layk bosdi. <span>15 dqiqa avval</span></div>
-        </div>
-        <div class="liked-post-preview">🎬 1</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="bottom-bar">
+<div class="bottom-bar">
     <button class="nav-btn active" onclick="location.href='home.html'">🏠</button>
     <button class="nav-btn" onclick="location.href='reels.html'">🎬</button>
     <button class="nav-btn" onclick="location.href='upload.html'">➕</button>
     <button class="nav-btn" onclick="location.href='chat.html'">💬</button>
-    <button class="nav-btn" onclick="location.href='profile.html'">👤</button>
-  </div>
+    <button class="nav-btn" onclick="location.href='profile.html'">
+      <div class="nav-avatar-box">
+        <img id="navAvatar" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Profile">
+      </div>
+    </button>
+</div>
 
-  <script>
-    function openLikesDrawer() {
-      document.getElementById('likesOverlay').classList.add('show');
-      document.getElementById('likesDrawer').classList.add('open');
+   <!-- YANGI INSTAGRAM STYLE BUYURTMA MODALI -->
+<div class="modal-overlay" id="buyerModal">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeBuyerModal()">&times;</button>
+    
+    <!-- 1-BOSQICH: Turi (Kofta, Shim...) -->
+    <div id="step-type" class="buy-step">
+      <h3>1. Turini tanlang</h3>
+      <div id="typeOptions" class="options-group"></div>
+      <div class="step-actions">
+        <button class="btn-sec" onclick="closeBuyerModal()">Bekor qilish</button>
+        <button class="btn-main" onclick="nextOrderStep('size')">Keyingisi ➔</button>
+      </div>
+    </div>
+
+    <!-- 2-BOSQICH: O'lchami -->
+    <div id="step-size" class="buy-step" style="display:none;">
+      <h3>2. O'lchamni tanlang</h3>
+      <div id="sizeOptions" class="options-group"></div>
+      <div class="step-actions">
+        <button class="btn-sec" onclick="prevOrderStep('type')">⬅ Ortga</button>
+        <button class="btn-main" onclick="nextOrderStep('color')">Keyingisi ➔</button>
+      </div>
+    </div>
+
+    <!-- 3-BOSQICH: Rangi -->
+    <div id="step-color" class="buy-step" style="display:none;">
+      <h3>3. Rangni tanlang</h3>
+      <div id="colorOptions" class="options-group"></div>
+      <div class="step-actions">
+        <button class="btn-sec" onclick="prevOrderStep('size')">⬅ Ortga</button>
+        <button class="btn-main" onclick="nextOrderStep('summary')">Keyingisi ➔</button>
+      </div>
+    </div>
+
+    <!-- 4-BOSQICH: Tasdiqlash va Narx -->
+    <div id="step-summary" class="buy-step" style="display:none;">
+      <h3>4. Buyurtmani tasdiqlaysizmi?</h3>
+      <div id="orderSummary" class="summary-box"></div>
+      <div class="step-actions">
+        <button class="btn-sec" onclick="prevOrderStep('color')">Yo'q (Ortga)</button>
+        <button class="btn-main" onclick="sendOrderToChat()">Ha (Sotib olish) 💬</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { firebaseConfig } from './supabase.js';
+  window.firebaseConfig = firebaseConfig;
+// Boshlanishiga Firebase va foydalanuvchini aniqlaymiz
+firebase.initializeApp(window.firebaseConfig);
+const database = firebase.database();
+const myUsername = localStorage.getItem('my_username_key');
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (!myUsername) {
+    location.href = 'index.html';
+    return;
+  }
+  loadOnlineAvatar();
+  fetchPostsFromFirebase();
+});
+
+   function loadOnlineAvatar() {
+  const navImg = document.getElementById('navAvatar');
+  if (!navImg) return;
+
+  const DEFAULT_AVATAR = "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+  const cachedAvatar = localStorage.getItem('my_cached_avatar');
+  if (cachedAvatar) navImg.src = cachedAvatar;
+
+  // Realtime kuzatish
+  database.ref('users/' + myUsername).on('value', (snapshot) => {
+    if (snapshot.exists()) {
+      const userData = snapshot.val();
+      const currentAvatar = userData.avatar || userData.avatarUrl || userData.profilePic;
+
+      if (currentAvatar && currentAvatar.trim() !== '') {
+        navImg.src = currentAvatar;
+        localStorage.setItem('my_cached_avatar', currentAvatar);
+      } else {
+        navImg.src = DEFAULT_AVATAR;
+      }
     }
-    function closeLikesDrawer() {
-      document.getElementById('likesOverlay').classList.remove('show');
-      document.getElementById('likesDrawer').classList.remove('open');
-    }
+  });
+
+  navImg.onerror = () => { navImg.src = DEFAULT_AVATAR; };
+}
+
+// TELEGRAM BOT SOZLAMALARI
+const BOT_TOKEN = "8146785198:AAH5tWSbTkmcD3i0sSGWdk3kGLrqEZLlimY"; // BotFather'dan olingan Token
+const ADMIN_TELEGRAM_ID = "8173787792";     // userinfobot'dan olingan ID
+
+let selectedTariffData = { hours: 0, price: 0 };
+let currentOrder = { sellerUsername: '', prodTitle: '', type: '', size: '', color: '', price: '' };
+
+// Sotuvchi modal funksiyalari
+window.openSellerModal = () => { document.getElementById('sellerModal').style.display = 'flex'; goToSellerStep(1); };
+window.closeSellerModal = () => { document.getElementById('sellerModal').style.display = 'none'; };
+window.selectTariff = (hours, price) => {
+  selectedTariffData = { hours, price };
+  document.getElementById('payPriceText').innerText = price.toLocaleString() + ' UZS';
+  goToSellerStep(2);
+};
+window.goToSellerStep = (step) => {
+  document.getElementById('sellerStep1').style.display = step === 1 ? 'block' : 'none';
+  document.getElementById('sellerStep2').style.display = step === 2 ? 'block' : 'none';
+  document.getElementById('sellerStep3').style.display = step === 3 ? 'block' : 'none';
+};
+
+// Telegramga yuborish
+window.submitSellerRequest = async () => {
+  const title = document.getElementById('prodTitleInput').value;
+  const media = document.getElementById('prodMediaInput').value || 'https://via.placeholder.com/300';
+  const price = document.getElementById('prodPriceInput').value;
+
+  const newRef = database.ref('premium_posts').push();
+  const postId = newRef.key;
+
+  await newRef.set({
+    id: postId, sellerUsername: myUsername, hours: selectedTariffData.hours,
+    title, mediaUrl: media,
+    types: document.getElementById('prodTypesInput').value.split(','),
+    sizes: document.getElementById('prodSizesInput').value.split(','),
+    colors: document.getElementById('prodColorsInput').value.split(','),
+    price, status: 'pending'
+  });
+
+  // Telegram botga xabar
+  const tgMsg = `🚨 *YANGI PREMIUM E'LON!*\n👤 Sotuvchi: ${myUsername}\n⏳ Vaqt: ${selectedTariffData.hours} soat\n📦 Mahsulot: ${title}`;
+  await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ chat_id: ADMIN_TELEGRAM_ID, text: tgMsg, parse_mode: 'Markdown' })
+  });
+
+  alert("Adminga yuborildi!");
+  closeSellerModal();
+};
+
+let currentSelectedPost = null;
+let orderData = { type: '', size: '', color: '', price: 0 };
+
+// Real-time Firebase'dan Postlarni olish va Instagram stilda chiqarish
+function fetchActivePremiumPosts() {
+  const gridContainer = document.getElementById('postsGrid');
+  
+  database.ref('premium_posts').on('value', (snapshot) => {
+    gridContainer.innerHTML = '';
+    const now = Date.now();
+
+    snapshot.forEach((child) => {
+      const post = child.val();
+
+      // Taymer va taymer tugamaganligini tekshirish
+      if (post.status === 'approved' && post.expiresAt > now) {
+        const isVideo = post.mediaUrl.match(/\.(mp4|webm|mov)$/i);
+        const card = document.createElement('div');
+        card.className = 'pin-card';
+
+        const mediaHTML = isVideo 
+          ? `<video src="${post.mediaUrl}" autoplay loop muted playsinline onclick="toggleAudio(this)"></video>`
+          : `<img src="${post.mediaUrl}" alt="Product">`;
+
+        card.innerHTML = `
+          <div class="post-author-bar">
+            <div class="author-info">
+              <img class="author-avatar" src="${post.authorAvatar || 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}">
+              <span class="author-name">@${post.sellerUsername}</span>
+            </div>
+            <button class="follow-btn" onclick="toggleFollow('${post.sellerUsername}', this)">Obuna</button>
+          </div>
+          
+          <div class="pin-media-box">${mediaHTML}</div>
+
+          <div class="post-actions-bar">
+            <span class="action-item" onclick="toggleLike('${post.id}', this)">❤️ <b class="likes-count">${post.likesCount || 0}</b></span>
+            <span class="action-item" onclick="openComments('${post.id}')">💬</span>
+          </div>
+
+          <button class="buy-now-btn" onclick="initBuyModal('${post.id}')">Buyurtma berish</button>
+        `;
+        
+        // Post haqidagi obyektni biriktiramiz
+        card.dataset.postInfo = JSON.stringify(post);
+        gridContainer.appendChild(card);
+      }
+    });
+  });
+}
+
+// Videoga bosganda ovozni yoqish/o'chirish (YouTube kabi)
+window.toggleAudio = (videoEl) => {
+  videoEl.muted = !videoEl.muted;
+};
+
+// Xaridor chat.html ga o'tishi
+window.proceedToChat = () => {
+  const msg = `Salom! Men ${currentOrder.prodTitle} (Tur: ${currentOrder.type}, Razmer: ${currentOrder.size}, Rang: ${currentOrder.color}) sotib olmoqchiman.`;
+  location.href = `chat.html?to=${currentOrder.sellerUsername}&text=${encodeURIComponent(msg)}`;
+};
+
+   window.initBuyModal = (postId) => {
+  database.ref(`premium_posts/${postId}`).once('value', (snapshot) => {
+    currentSelectedPost = snapshot.val();
+    orderData = { type: '', size: '', color: '', price: 0 };
+    
+    // Turlarni to'ldirish (masalan: Kofta, Shim)
+     const typeBox = document.getElementById('typeOptions');
+    typeBox.innerHTML = '';
+    currentSelectedPost.items.forEach(item => {
+      typeBox.innerHTML += `<div class="option-chip" onclick="selectOption('type', '${item.typeName}', this)">${item.typeName}</div>`;
+    });
+
+    document.getElementById('buyerModal').style.display = 'flex';
+    showStep('type');
+  });
+};
+
+window.selectOption = (category, value, el) => {
+  const parent = el.parentElement;
+  parent.querySelectorAll('.option-chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  orderData[category] = value;
+
+  // Agar tur tanlansa, tegishli razmer va ranglarni yuklaymiz
+  if (category === 'type') {
+    const selectedItem = currentSelectedPost.items.find(i => i.typeName === value);
+    orderData.price = selectedItem.price; // Tanlangan tur bo'yicha narx
+
+    // Razmerlarni yuklash
+    const sizeBox = document.getElementById('sizeOptions');
+    sizeBox.innerHTML = selectedItem.sizes.map(s => `<div class="option-chip" onclick="selectOption('size', '${s}', this)">${s}</div>`).join('');
+
+    // Ranglarni yuklash
+    const colorBox = document.getElementById('colorOptions');
+    colorBox.innerHTML = selectedItem.colors.map(c => `<div class="option-chip" onclick="selectOption('color', '${c}', this)">${c}</div>`).join('');
+  }
+};
+
+window.nextOrderStep = (nextStep) => {
+  if (nextStep === 'size' && !orderData.type) return alert("Iltimos, mahsulot turini tanlang!");
+  if (nextStep === 'color' && !orderData.size) return alert("Iltimos, o'lchamni tanlang!");
+  if (nextStep === 'summary' && !orderData.color) return alert("Iltimos, rangni tanlang!");
+
+  if (nextStep === 'summary') {
+    document.getElementById('orderSummary').innerHTML = `
+      📌 <b>Mahsulot:</b> ${orderData.type}<br>
+      📏 <b>O'lcham:</b> ${orderData.size}<br>
+      🎨 <b>Rang:</b> ${orderData.color}<br>
+      💰 <b>Narxi:</b> ${Number(orderData.price).toLocaleString()} UZS
+    `;
+  }
+  showStep(nextStep);
+};
+
+window.prevOrderStep = (prevStep) => showStep(prevStep);
+
+function showStep(stepName) {
+  document.querySelectorAll('.buy-step').forEach(s => s.style.display = 'none');
+  document.getElementById(`step-${stepName}`).style.display = 'block';
+}
+
+window.closeBuyerModal = () => {
+  document.getElementById('buyerModal').style.display = 'none';
+};
+
+// Chat.html ga yuborish
+window.sendOrderToChat = () => {
+  const msg = `Salom! Men sizning premium e'loningiz bo'yicha buyurtma bermoqchiman:\n\n🛍 Tur: ${orderData.type}\n📏 Razmer: ${orderData.size}\n🎨 Rang: ${orderData.color}\n💵 Narxi: ${orderData.price} UZS`;
+  location.href = `chat.html?to=${currentSelectedPost.sellerUsername}&text=${encodeURIComponent(msg)}`;
+};
   </script>
 </body>
 </html>
