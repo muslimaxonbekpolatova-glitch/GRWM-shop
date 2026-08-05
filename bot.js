@@ -67,7 +67,7 @@ const sellerWizard = new Scenes.WizardScene(
       `🚨 **YANGI TO'LOV KELDI!**\nFoydalanuvchi: @${ctx.wizard.state.postData.sellerUsername}\nSumma: ${ctx.wizard.state.postData.price} UZS`
     );
 
-    await ctx.reply('✅ To'lov cheki qabul qilindi va admin tekshiruviga yuborildi.\n\nEndi Premium joyga qo\'yiladigan **Rasm yoki Video** yuboring:');
+    await ctx.reply('✅ Toʼlov cheki qabul qilindi va admin tekshiruviga yuborildi.\n\nEndi Premium joyga qo\'yiladigan **Rasm yoki Video** yuboring:');
     return ctx.wizard.next();
   },
 
